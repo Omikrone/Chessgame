@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "pieces/pawn.hpp"
+#include "pieces/king.hpp"
 
 int main() {
     std::cout << "Hello, Chess Engine!" << std::endl;

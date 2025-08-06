@@ -4,7 +4,7 @@
 #include "../board.hpp"
 
 #include <vector>
-#include <list>
+#include <cstdint>
 
 
 class Pawn : public Piece {
@@ -17,12 +17,12 @@ class Pawn : public Piece {
         std::vector<Position> getPossibleMoves() const override {
             std::vector<Position> possibleMoves;
 
-            signed char direction = static_cast<signed char>(_color);
+            std::int8_t direction = static_cast<std::int8_t>(_color);
 
             if (_position.y + direction >= 0 && _position.y + direction < BOARD_LENGTH) {
 
                 // Forward walk
-                possibleMoves.push_back({_position.x, _position.y + _position.y + direction});
+                possibleMoves.push_back({_position.x, _position.y + direction});
 
                 if (_position.x > 0) {
                     // First side capture

@@ -1,8 +1,18 @@
 #pragma once
 
+#include <cstdint>
+
 
 struct Position
 {
-    signed char x;
-    signed char y;
+    std::int8_t x;
+    std::int8_t y;
+
+    bool operator==(const Position &other) const {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const Position& other) const {
+        return !(*this == other);
+    }
 };
