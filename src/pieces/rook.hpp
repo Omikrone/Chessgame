@@ -10,8 +10,8 @@
 class Rook: public Piece {
 
     public:
-        Rook(const Position &startPosition, Color color)
-            : Piece(startPosition, color) {}
+        Rook(Type pieceType, const Position &startPosition, Color color)
+            : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
             return getRookMoves(_position);

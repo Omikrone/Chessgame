@@ -12,8 +12,8 @@
 class Queen: public Piece {
 
     public:
-        Queen(const Position &startPosition, Color color)
-            : Piece(startPosition, color) {}
+        Queen(Type pieceType, const Position &startPosition, Color color)
+            : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
             std::vector<Position> possibleMoves = Bishop::getBishopMoves(_position);

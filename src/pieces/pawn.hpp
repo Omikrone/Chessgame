@@ -2,6 +2,7 @@
 
 #include "piece.hpp"
 #include "../board.hpp"
+#include "type.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -11,8 +12,8 @@ class Pawn : public Piece {
 
     public:
 
-        Pawn(const Position &startPosition, Color color)
-            : Piece(startPosition, color) {}
+        Pawn(Type pieceType, const Position &startPosition, Color color)
+            : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
             std::vector<Position> possibleMoves;

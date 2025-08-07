@@ -10,8 +10,8 @@
 class King: public Piece {
 
     public:
-        King(const Position &startPosition, Color color)
-            : Piece(startPosition, color) {}
+        King(Type pieceType, const Position &startPosition, Color color)
+            : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
             std::vector<Position> possibleMoves;

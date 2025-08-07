@@ -10,8 +10,8 @@
 class Bishop: public Piece {
 
     public:
-        Bishop(const Position &startPosition, Color color)
-            : Piece(startPosition, color) {}
+        Bishop(Type pieceType, const Position &startPosition, Color color)
+            : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
             getBishopMoves(_position);

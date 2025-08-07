@@ -6,16 +6,18 @@
 #include "position.hpp"
 #include "color.hpp"
 #include "move.hpp"
+#include "type.hpp"
 
 
 class Piece {
 public:
 
+    Type _pieceType;
     Position _position;
     Color _color;
 
-    Piece(const Position& position, Color color)
-        : _position(position), _color(color) {}
+    Piece(Type pieceType, const Position& position, Color color)
+        : _pieceType(pieceType), _position(position), _color(color) {}
 
     virtual ~Piece() = default;
 
