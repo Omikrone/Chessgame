@@ -77,9 +77,55 @@ public:
     }
 
 
-    std::vector<std::vector<Position>> getLegalMoves(Position piecePosition) {
+    std::vector<Position> getLegalMoves(Position piecePosition) {
         std::vector<std::vector<Position>> rawMoves = _board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
-        return rawMoves;
+
+        Piece *piece = _board[piecePosition.rank][piecePosition.file];
+        std::vector<Position> legalMoves;
+
+        if (piece->_pieceType == Type::PAWN) {
+
+            if (rawMoves.size() > 0) {
+                for (Position p: rawMoves[0]) {
+                    Piece *presentPiece = _board[p.rank][p.file];
+                    if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
+                        break;
+                    }
+                    else {
+                        legalMoves.push_back(p);
+                    }
+                }
+            }
+
+            if (rawMoves.size() > 1) {
+                for (int i = 1; i < rawMoves.size(); i++)
+                {
+                    Position takePosition = rawMoves[i][0];
+                    Piece *presentPiece = _board[takePosition.file][takePosition.rank];
+                    if (presentPiece != nullptr && presentPiece->_color != piece->_color)
+                    {
+                        legalMoves.push_back(takePosition);
+                    }
+                }
+            }
+            
+        }
+        else {
+            for (std::vector<Position> dm: rawMoves)
+            {
+                for (Position p: dm) {
+                    Piece *presentPiece = _board[p.rank][p.file];
+                    if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
+                        break;
+                    }
+                    else {
+                        legalMoves.push_back(p);
+                    }
+                }
+            }
+        }
+
+        return legalMoves;
     }
 
 
