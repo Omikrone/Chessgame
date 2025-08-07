@@ -14,8 +14,9 @@ class Knight: public Piece {
             : Piece(pieceType, startPosition, color) {}
 
 
-    std::vector<Position> getPossibleMoves() const override {
-        std::vector<Position> possibleMoves;
+    std::vector<std::vector<Position>> getPossibleMoves() const override {
+        std::vector<std::vector<Position>> possibleMoves;
+        std::vector<Position> directionMoves;
 
         const int8_t dx[] = { 2,  1, -1, -2, -2, -1,  1,  2 };
         const int8_t dy[] = { 1,  2,  2,  1, -1, -2, -2, -1 };
@@ -26,7 +27,9 @@ class Knight: public Piece {
 
             if (newX >= 0 && newX < BOARD_LENGTH &&
                 newY >= 0 && newY < BOARD_LENGTH) {
-                possibleMoves.push_back({static_cast<int8_t>(newX), static_cast<int8_t>(newY)});
+                directionMoves.push_back({static_cast<int8_t>(newX), static_cast<int8_t>(newY)});
+                possibleMoves.push_back(directionMoves);
+                directionMoves.clear();
             }
         }
 

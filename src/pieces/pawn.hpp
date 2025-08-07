@@ -15,23 +15,34 @@ class Pawn : public Piece {
         Pawn(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<Position> getPossibleMoves() const override {
-            std::vector<Position> possibleMoves;
+        std::vector<std::vector<Position>> getPossibleMoves() const override {
+            std::vector<std::vector<Position>> possibleMoves;
 
             std::int8_t direction = static_cast<std::int8_t>(_color);
 
             if (_position.rank + direction >= 0 && _position.rank + direction < BOARD_LENGTH) {
 
+                std::vector<Position> directionMoves;
+
                 // Forward walk
-                possibleMoves.push_back({_position.file, _position.rank + direction});
+                directionMoves.push_back({_position.file, _position.rank + direction});
+                if (_color == Color::WHITE && _position.rank == 1 ||
+                    _color == Color::BLACK && _position.rank == 6) {
+                        directionMoves.push_back({_position.file, _position.rank + direction * 2});
+                    }
+                possibleMoves.push_back(directionMoves);
 
                 if (_position.file > 0) {
+                    directionMoves.clear();
                     // First side capture
-                    possibleMoves.push_back({_position.file - 1, _position.rank + direction});
+                    directionMoves.push_back({_position.file - 1, _position.rank + direction});
+                    possibleMoves.push_back(directionMoves);
                 }
                 if (_position.file < BOARD_LENGTH - 1) {
+                    directionMoves.clear();
                     // Second side capture
-                    possibleMoves.push_back({_position.file + 1, _position.rank + direction});
+                    directionMoves.push_back({_position.file + 1, _position.rank + direction});
+                    possibleMoves.push_back(directionMoves);
                 }
             }
             return possibleMoves;

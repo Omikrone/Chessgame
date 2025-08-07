@@ -9,11 +9,17 @@ int main() {
     GameBoard *board = new GameBoard();
     board->initBoard();
     board->printBoard();
-    std::vector<Position> moves = board->getLegalMoves({4, 0});
-    for (Position p: moves)
+    std::vector<std::vector<Position>> moves = board->getLegalMoves({4, 0});
+
+    std::cout << "RAW POSSIBLE MOVES : ";
+    for (std::vector<Position> v: moves)
     {
-        p.print();
-        std::cout << ", ";
+        std::cout << "[ ";
+        for (Position p: v) {
+            p.print();
+            std::cout << ", ";
+        }
+        std::cout << " ], ";
     }
 
     return 0;

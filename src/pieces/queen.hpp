@@ -15,9 +15,9 @@ class Queen: public Piece {
         Queen(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<Position> getPossibleMoves() const override {
-            std::vector<Position> possibleMoves = Bishop::getBishopMoves(_position);
-            std::vector<Position> rookMoves = Rook::getRookMoves(_position);
+        std::vector<std::vector<Position>> getPossibleMoves() const override {
+            std::vector<std::vector<Position>> possibleMoves = Bishop::getBishopMoves(_position);
+            std::vector<std::vector<Position>> rookMoves = Rook::getRookMoves(_position);
 
             possibleMoves.insert(possibleMoves.end(), rookMoves.begin(), rookMoves.end());
             return possibleMoves;

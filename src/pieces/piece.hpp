@@ -22,5 +22,5 @@ public:
     virtual ~Piece() = default;
 
     virtual char symbol() const = 0;
-    virtual std::vector<Position> getPossibleMoves() const = 0;
+    virtual std::vector<std::vector<Position>> getPossibleMoves() const = 0;
 };

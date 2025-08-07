@@ -77,8 +77,8 @@ public:
     }
 
 
-    std::vector<Position> getLegalMoves(Position piecePosition) {
-        std::vector<Position> rawMoves = _board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
+    std::vector<std::vector<Position>> getLegalMoves(Position piecePosition) {
+        std::vector<std::vector<Position>> rawMoves = _board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
         return rawMoves;
     }
 

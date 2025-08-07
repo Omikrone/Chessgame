@@ -13,22 +13,44 @@ class Rook: public Piece {
         Rook(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<Position> getPossibleMoves() const override {
+        std::vector<std::vector<Position>> getPossibleMoves() const override {
             return getRookMoves(_position);
         }
 
-        static std::vector<Position> getRookMoves(const Position &currentPosition) {
-            std::vector<Position> possibleMoves;
+        static std::vector<std::vector<Position>> getRookMoves(const Position &currentPosition) {
+            std::vector<std::vector<Position>> possibleMoves;
 
-            for (std::int8_t i = 0; i < BOARD_LENGTH; i++)
+            // Direction to the top
+            std::vector<Position> directionMoves;
+            for (std::int8_t i = currentPosition.rank + 1; i < BOARD_LENGTH; i++)
             {
-                if (i != currentPosition.file) possibleMoves.push_back({i, currentPosition.rank});
+                directionMoves.push_back({currentPosition.file, i});
             }
+            possibleMoves.push_back(directionMoves);
 
-            for (std::int8_t j = 0; j < BOARD_LENGTH; j++)
+            // Direction to the bottom
+            directionMoves.clear();
+            for (std::int8_t i = currentPosition.rank - 1; i >= 0; i--)
             {
-                if (j != currentPosition.rank) possibleMoves.push_back({currentPosition.file, j});
+                directionMoves.push_back({currentPosition.file, i});
             }
+            possibleMoves.push_back(directionMoves);
+
+            // Direction to the left
+            directionMoves;
+            for (std::int8_t i = currentPosition.file - 1; i >= 0; i--)
+            {
+                directionMoves.push_back({i, currentPosition.rank});
+            }
+            possibleMoves.push_back(directionMoves);
+
+            // Direction to the right
+            directionMoves.clear();
+            for (std::int8_t i = currentPosition.rank + 1; i < BOARD_LENGTH; i++)
+            {
+                directionMoves.push_back({i, currentPosition.rank});
+            }
+            possibleMoves.push_back(directionMoves);
 
             return possibleMoves;
         }

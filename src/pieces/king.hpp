@@ -13,8 +13,9 @@ class King: public Piece {
         King(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<Position> getPossibleMoves() const override {
-            std::vector<Position> possibleMoves;
+        std::vector<std::vector<Position>> getPossibleMoves() const override {
+            std::vector<std::vector<Position>> possibleMoves;
+            std::vector<Position> directionMoves;
 
             for (std::int8_t i = -1; i <= 1; i++)
             {
@@ -27,7 +28,9 @@ class King: public Piece {
 
                     if (newX >= 0 && newX < BOARD_LENGTH &&
                         newY >= 0 && newY < BOARD_LENGTH) {
-                        possibleMoves.push_back({newX, newY});
+                        directionMoves.push_back({newX, newY});
+                        possibleMoves.push_back(directionMoves);
+                        directionMoves.clear();
                     }
                 }
                 

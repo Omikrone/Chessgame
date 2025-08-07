@@ -13,40 +13,48 @@ class Bishop: public Piece {
         Bishop(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<Position> getPossibleMoves() const override {
+        std::vector<std::vector<Position>> getPossibleMoves() const override {
             return getBishopMoves(_position);
         }
 
-        static std::vector<Position> getBishopMoves(const Position &currentPosition) {
-            std::vector<Position> possibleMoves;
+        static std::vector<std::vector<Position>> getBishopMoves(const Position &currentPosition) {
+            std::vector<std::vector<Position>> possibleMoves;
 
             int8_t count = 1;
+            std::vector<Position> directionMoves;
             while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank + count) < BOARD_LENGTH)
             {
-                possibleMoves.push_back({currentPosition.file + count, currentPosition.rank + count});
+                directionMoves.push_back({currentPosition.file + count, currentPosition.rank + count});
                 count++;
             }
+            possibleMoves.push_back(directionMoves);
 
             count = 1;
+            directionMoves.clear();
             while ((currentPosition.file - count) >= 0 && (currentPosition.rank + count) < BOARD_LENGTH)
             {
-                possibleMoves.push_back({currentPosition.file - count, currentPosition.rank + count});
+                directionMoves.push_back({currentPosition.file - count, currentPosition.rank + count});
                 count++;
             }
+            possibleMoves.push_back(directionMoves);
 
             count = 1;
+            directionMoves.clear();
             while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank - count) >= 0)
             {
-                possibleMoves.push_back({currentPosition.file + count, currentPosition.rank - count});
+                directionMoves.push_back({currentPosition.file + count, currentPosition.rank - count});
                 count++;
             }
+            possibleMoves.push_back(directionMoves);
 
             count = 1;
+            directionMoves.clear();
             while ((currentPosition.file - count) >= 0 && (currentPosition.rank - count) >= 0)
             {
-                possibleMoves.push_back({currentPosition.file - count, currentPosition.rank - count});
+                directionMoves.push_back({currentPosition.file - count, currentPosition.rank - count});
                 count++;
             }
+            possibleMoves.push_back(directionMoves);
 
             return possibleMoves;
         }
