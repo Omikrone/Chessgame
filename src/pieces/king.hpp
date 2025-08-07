@@ -1,7 +1,7 @@
 #pragma once
 
 #include "piece.hpp"
-#include "../board.hpp"
+#include "constants.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -36,7 +36,7 @@ class King: public Piece {
         }
 
         char symbol() const override {
-            return 'Q';
+            return 'K';
         }
 
 };

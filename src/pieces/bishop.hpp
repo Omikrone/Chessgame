@@ -1,7 +1,7 @@
 #pragma once
 
 #include "piece.hpp"
-#include "../board.hpp"
+#include "constants.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -14,7 +14,7 @@ class Bishop: public Piece {
             : Piece(pieceType, startPosition, color) {}
 
         std::vector<Position> getPossibleMoves() const override {
-            getBishopMoves(_position);
+            return getBishopMoves(_position);
         }
 
         static std::vector<Position> getBishopMoves(const Position &currentPosition) {

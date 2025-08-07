@@ -3,7 +3,7 @@
 #include "piece.hpp"
 #include "rook.hpp"
 #include "bishop.hpp"
-#include "../board.hpp"
+#include "constants.hpp"
 
 #include <vector>
 #include <cstdint>

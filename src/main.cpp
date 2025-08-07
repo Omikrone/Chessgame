@@ -1,8 +1,10 @@
 #include <iostream>
 
-#include "pieces/knight.hpp"
+#include "board.hpp"
 
 int main() {
-    std::cout << "Hello, Chess Engine!" << std::endl;
+    GameBoard *board = new GameBoard();
+    board->initBoard();
+    board->printBoard();
     return 0;
 }

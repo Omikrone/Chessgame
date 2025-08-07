@@ -1,7 +1,7 @@
 #pragma once
 
 #include "piece.hpp"
-#include "../board.hpp"
+#include "constants.hpp"
 #include "type.hpp"
 
 #include <vector>
