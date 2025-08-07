@@ -21,30 +21,30 @@ class Bishop: public Piece {
             std::vector<Position> possibleMoves;
 
             int8_t count = 1;
-            while ((currentPosition.x + count) < BOARD_LENGTH && (currentPosition.y + count) < BOARD_LENGTH)
+            while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank + count) < BOARD_LENGTH)
             {
-                possibleMoves.push_back({currentPosition.x + count, currentPosition.y + count});
+                possibleMoves.push_back({currentPosition.file + count, currentPosition.rank + count});
                 count++;
             }
 
             count = 1;
-            while ((currentPosition.x - count) >= 0 && (currentPosition.y + count) < BOARD_LENGTH)
+            while ((currentPosition.file - count) >= 0 && (currentPosition.rank + count) < BOARD_LENGTH)
             {
-                possibleMoves.push_back({currentPosition.x - count, currentPosition.y + count});
+                possibleMoves.push_back({currentPosition.file - count, currentPosition.rank + count});
                 count++;
             }
 
             count = 1;
-            while ((currentPosition.x + count) < BOARD_LENGTH && (currentPosition.y - count) >= 0)
+            while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank - count) >= 0)
             {
-                possibleMoves.push_back({currentPosition.x + count, currentPosition.y - count});
+                possibleMoves.push_back({currentPosition.file + count, currentPosition.rank - count});
                 count++;
             }
 
             count = 1;
-            while ((currentPosition.x - count) >= 0 && (currentPosition.y - count) >= 0)
+            while ((currentPosition.file - count) >= 0 && (currentPosition.rank - count) >= 0)
             {
-                possibleMoves.push_back({currentPosition.x - count, currentPosition.y - count});
+                possibleMoves.push_back({currentPosition.file - count, currentPosition.rank - count});
                 count++;
             }
 

@@ -22,12 +22,12 @@ class Rook: public Piece {
 
             for (std::int8_t i = 0; i < BOARD_LENGTH; i++)
             {
-                if (i != currentPosition.x) possibleMoves.push_back({i, currentPosition.y});
+                if (i != currentPosition.file) possibleMoves.push_back({i, currentPosition.rank});
             }
 
             for (std::int8_t j = 0; j < BOARD_LENGTH; j++)
             {
-                if (j != currentPosition.y) possibleMoves.push_back({currentPosition.x, j});
+                if (j != currentPosition.rank) possibleMoves.push_back({currentPosition.file, j});
             }
 
             return possibleMoves;

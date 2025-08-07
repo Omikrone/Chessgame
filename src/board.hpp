@@ -29,56 +29,62 @@ public:
     void initBoard() {
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
-            _board[1][i] = new Pawn(Type::PAWN, {1, i}, Color::BLACK);
+            _board[1][i] = new Pawn(Type::PAWN, {i, 1}, Color::WHITE);
         }
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
-            _board[6][i] = new Pawn(Type::PAWN, {1, i}, Color::WHITE);
+            _board[6][i] = new Pawn(Type::PAWN, {i, 1}, Color::BLACK);
         }
 
-        const Position knightPositions[] = {{7, 1}, {7, 6}, {0, 6}, {0, 1}};
+        const Position knightPositions[] = {{1, 7}, {6, 7}, {6, 0}, {1, 0}};
         for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {knightPositions[i].x, knightPositions[i].y};
+            Position startPosition = {knightPositions[i].file, knightPositions[i].rank};
             if (i < 2) {
-                _board[startPosition.x][startPosition.y] = new Knight(Type::KNIGHT, startPosition, Color::WHITE);
+                _board[startPosition.rank][startPosition.file] = new Knight(Type::KNIGHT, startPosition, Color::BLACK);
             }
             else {
-                _board[startPosition.x][startPosition.y] = new Knight(Type::KNIGHT, startPosition, Color::BLACK);
-            }
-        }
-
-        const Position bishopPositions[] = {{7, 2}, {7, 5}, {0, 5}, {0, 2}};
-        for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {bishopPositions[i].x, bishopPositions[i].y};
-            if (i < 2) {
-                _board[startPosition.x][startPosition.y] = new Bishop(Type::BISHOP, startPosition, Color::WHITE);
-            }
-            else {
-                _board[startPosition.x][startPosition.y] = new Bishop(Type::BISHOP, startPosition, Color::BLACK);
+                _board[startPosition.rank][startPosition.file] = new Knight(Type::KNIGHT, startPosition, Color::WHITE);
             }
         }
 
-        const Position rookPositions[] = {{7, 0}, {7, 7}, {0, 7}, {0, 0}};
+        const Position bishopPositions[] = {{2, 7}, {5, 7}, {5, 0}, {2, 0}};
         for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {rookPositions[i].x, rookPositions[i].y};
+            Position startPosition = {bishopPositions[i].file, bishopPositions[i].rank};
             if (i < 2) {
-                _board[startPosition.x][startPosition.y] = new Rook(Type::ROOK, startPosition, Color::WHITE);
+                _board[startPosition.rank][startPosition.file] = new Bishop(Type::BISHOP, startPosition, Color::BLACK);
             }
             else {
-                _board[startPosition.x][startPosition.y] = new Rook(Type::ROOK, startPosition, Color::BLACK);
+                _board[startPosition.rank][startPosition.file] = new Bishop(Type::BISHOP, startPosition, Color::WHITE);
+            }
+        }
+
+        const Position rookPositions[] = {{0, 7}, {7, 7}, {7, 0}, {0, 0}};
+        for (int8_t i = 0; i < 4; i++) {
+            Position startPosition = {rookPositions[i].file, rookPositions[i].rank};
+            if (i < 2) {
+                _board[startPosition.rank][startPosition.file] = new Rook(Type::ROOK, startPosition, Color::BLACK);
+            }
+            else {
+                _board[startPosition.rank][startPosition.file] = new Rook(Type::ROOK, startPosition, Color::WHITE);
             }
         }
         
-        _board[0][3] = new Queen(Type::QUEEN, {0, 3}, Color::BLACK);
-        _board[7][3] = new Queen(Type::QUEEN, {7, 3}, Color::WHITE);
+        _board[0][3] = new Queen(Type::QUEEN, {3, 0}, Color::WHITE);
+        _board[7][3] = new Queen(Type::QUEEN, {3, 7}, Color::BLACK);
 
-        _board[0][4] = new King(Type::KING, {0, 4}, Color::BLACK);
-        _board[7][4] = new King(Type::KING, {7, 4}, Color::WHITE);
+        _board[0][4] = new King(Type::KING, {4, 0}, Color::WHITE);
+        _board[7][4] = new King(Type::KING, {4, 7}, Color::BLACK);
+    }
+
+
+    std::vector<Position> getLegalMoves(Position piecePosition) {
+        std::vector<Position> rawMoves = _board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
+        return rawMoves;
     }
 
 
     void printBoard() {
-        for (int8_t j = 0; j < BOARD_LENGTH; j++)
+        for (int8_t j = BOARD_LENGTH - 1; j >= 0; j--)
         {
             for (int8_t i = 0; i < BOARD_LENGTH; i++)
             {

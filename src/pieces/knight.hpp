@@ -21,8 +21,8 @@ class Knight: public Piece {
         const int8_t dy[] = { 1,  2,  2,  1, -1, -2, -2, -1 };
 
         for (int8_t i = 0; i < 8; ++i) {
-            int8_t newX = _position.x + dx[i];
-            int8_t newY = _position.y + dy[i];
+            int8_t newX = _position.file + dx[i];
+            int8_t newY = _position.rank + dy[i];
 
             if (newX >= 0 && newX < BOARD_LENGTH &&
                 newY >= 0 && newY < BOARD_LENGTH) {

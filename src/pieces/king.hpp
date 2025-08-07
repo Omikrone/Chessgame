@@ -22,8 +22,8 @@ class King: public Piece {
                 {
                     if (j == 0 && i == 0) continue;
 
-                    int8_t newX = _position.x + i;
-                    int8_t newY = _position.y + j;
+                    int8_t newX = _position.file + i;
+                    int8_t newY = _position.rank + j;
 
                     if (newX >= 0 && newX < BOARD_LENGTH &&
                         newY >= 0 && newY < BOARD_LENGTH) {
