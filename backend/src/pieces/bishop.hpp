@@ -59,8 +59,9 @@ class Bishop: public Piece {
             return possibleMoves;
         }
 
-        char symbol() const override {
-            return 'B';
+        char toFEN() const override {
+            if (_color == Color::WHITE) return 'B';
+            else return 'b';
         }
 
 };

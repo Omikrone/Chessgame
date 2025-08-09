@@ -48,7 +48,8 @@ class Pawn : public Piece {
             return possibleMoves;
         }
 
-        char symbol() const override {
-            return 'P';
+        char toFEN() const override {
+            if (_color == Color::WHITE) return 'P';
+            else return 'p';
         }
 };

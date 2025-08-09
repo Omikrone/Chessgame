@@ -23,8 +23,8 @@ class Queen: public Piece {
             return possibleMoves;
         }
 
-        char symbol() const override {
-            return 'Q';
+        char toFEN() const override {
+            if (_color == Color::WHITE) return 'Q';
+            else return 'q';
         }
-
 };

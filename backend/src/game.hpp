@@ -11,8 +11,10 @@ class Game {
     public:
 
         GameBoard *_board;
-        Color _currentTurn;
+        Color _currentTurn = Color::WHITE;
         crow::SimpleApp _app;
+        int _blackMoves = 0;
+        int _whiteMoves = 0;
 
 
         Game(crow::SimpleApp& app) {
@@ -36,24 +38,41 @@ class Game {
 
                     if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
                         _board->makeMove(initPos, destPos);
+                        if (_currentTurn == Color::WHITE) {
+                            _whiteMoves++;
+                            _currentTurn = Color::BLACK;
+                        } 
+                        else {
+                            _blackMoves++;
+                            _currentTurn = Color::WHITE;
+                        }
+
                     } else {
-                        std::cout << "This move is not allowed !";
+                        std::cout << "This move is not allowed !" << std::endl;
                     }
                     _board->printBoard();
+                    std::cout << toFEN() << std::endl;
+
+                    crow::json::wvalue response;
+                    response["type"] = "fen";
+                    response["fen"] = toFEN();
+                    conn.send_text(response.dump());
                 })
                 .onclose([this](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
                     CROW_LOG_INFO << "Client disconnected : " << reason;
                 });
         }
 
+        std::string toFEN() {
+            std::string boardFEN = _board->toFEN();
+            if (_currentTurn == Color::WHITE) boardFEN.append(" w ");
+            else boardFEN.append(" b ");
 
-        void start() {
-            
-            Position initPos, destPos;
-
-            while (true) {
-
-            }
+            boardFEN.append("KQkq - ");
+            boardFEN.append(std::to_string(_blackMoves));
+            boardFEN.push_back(' ');
+            boardFEN.append(std::to_string(_whiteMoves));
+            return boardFEN;
         }
 
         bool isGameOver() {

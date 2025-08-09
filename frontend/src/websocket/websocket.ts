@@ -6,7 +6,6 @@ export function createGameSocket(onMessage : GameMessageHandler) {
 
   ws.onopen = () => {
     console.log("WebSocket connected");
-    ws.send("Hello server !");
   };
 
   ws.onmessage = (event) => {
@@ -20,9 +19,7 @@ export function createGameSocket(onMessage : GameMessageHandler) {
 
   return {
     sendMove: (from : string, to : string) => {
-      console.log("from "+ from + " to " + to);
       ws.send(JSON.stringify({type: "move", from, to}));
-      return true;
     },
     close: () => ws.close(),
   };

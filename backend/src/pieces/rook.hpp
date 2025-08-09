@@ -56,8 +56,8 @@ class Rook: public Piece {
         }
 
         
-        char symbol() const override {
-            return 'R';
+        char toFEN() const override {
+            if (_color == Color::WHITE) return 'R';
+            else return 'r';
         }
-
 };

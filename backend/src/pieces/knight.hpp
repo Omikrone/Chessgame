@@ -36,7 +36,8 @@ class Knight: public Piece {
         return possibleMoves;
     }
 
-    char symbol() const override {
-        return 'N';
+    char toFEN() const override {
+        if (_color == Color::WHITE) return 'N';
+        else return 'n';
     }
 };

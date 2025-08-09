@@ -5,30 +5,41 @@ import "@lichess-org/chessground/assets/chessground.base.css";
 
 type ChessBoardProps = {
   onMove: (from: string, to: string) => void;
+  orientation?: "white" | "black";
   fen: string;
+  updateId: number;
 };
 
-export default function ChessBoard({ onMove, fen }: ChessBoardProps) {
+export default function ChessBoard({ onMove, fen, updateId, orientation = "white" }: ChessBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
+  const cgRef = useRef<any>(null);
 
   useEffect(() => {
     if (!boardRef.current) return;
 
-    const cg = Chessground(boardRef.current, {
+    cgRef.current = Chessground(boardRef.current, {
       fen,
+      orientation,
       movable: {
         free: true,
-        color: "white",
         events: {
-          after: (from: string, to: string) => onMove(from, to),
+          after: (from: string, to: string) => {
+            onMove(from, to);
+          }
         },
       },
     });
 
     return () => {
-      cg.destroy();
+      cgRef.current?.destroy();
     };
   }, [fen, onMove]);
+
+  useEffect(() => {
+    if (cgRef.current) {
+      cgRef.current.set({ fen });
+    }
+  }, [fen, updateId]);
 
   return <div ref={boardRef} style={{ width: 400, height: 400 }} />;
 }

@@ -174,13 +174,38 @@ public:
     }
 
 
+    std::string toFEN() {
+        std::string fen;
+
+        for (int8_t i=BOARD_LENGTH - 1; i >= 0; i--) {
+            int8_t wo_piece = 0;
+            for (int8_t j=0; j < BOARD_LENGTH; j++) {
+                if (_board[i][j] != nullptr) {
+                    if (wo_piece != 0) {
+                        fen.append(std::to_string(wo_piece));
+                        wo_piece = 0;
+                    }
+                    fen.push_back(_board[i][j]->toFEN());
+                }
+                else {
+                    wo_piece++;
+                }
+            }
+            if (wo_piece != 0) fen.append(std::to_string(wo_piece));
+            fen.push_back('/');
+        }
+        fen.pop_back(); // Remove the last '/'
+        return fen;
+    }
+
+
     void printBoard() {
         for (int8_t j = BOARD_LENGTH - 1; j >= 0; j--)
         {
             for (int8_t i = 0; i < BOARD_LENGTH; i++)
             {
                 if (_board[j][i] != nullptr) {
-                    std::cout << " " << _board[j][i]->symbol() << " ";
+                    std::cout << " " << _board[j][i]->toFEN() << " ";
                 }
                 else {
                     std::cout << "   ";

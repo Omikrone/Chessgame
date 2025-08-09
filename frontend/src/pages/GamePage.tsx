@@ -16,14 +16,17 @@ type ServerMessage = {
 
 export default function GamePage({ gameId }: GamePageProps) {
   const [fen, setFen] = useState("start");
+  const [updateId, setUpdateId] = useState(0);
   const [socket, setSocket] = useState<ReturnType<typeof createGameSocket> | null>(null);
 
   useEffect(() => {
     const ws = createGameSocket((rawData: string) => {
       try {
         const data: ServerMessage = JSON.parse(rawData);
+        console.log(data.fen);
         if (data.type === "fen" && data.fen) {
           setFen(data.fen);
+          setUpdateId(id => id + 1);
         }
       } catch (e) {
         console.error("Invalid JSON from server:", rawData);
@@ -39,7 +42,7 @@ export default function GamePage({ gameId }: GamePageProps) {
   return (
     <ChessBoard
       fen={fen}
-      
+      updateId = {updateId}
       onMove={(from, to) => socket?.sendMove(from, to)}
     />
   );
