@@ -12,6 +12,7 @@ class Game {
 
         GameBoard *_board;
         Color _currentTurn;
+        crow::SimpleApp _app;
 
 
         Game(crow::SimpleApp& app) {
@@ -23,7 +24,22 @@ class Game {
                     CROW_LOG_INFO << "Client connected!";
                 })
                 .onmessage([this](crow::websocket::connection& conn, const std::string& data, bool is_binary){
+                    crow::json::rvalue body = crow::json::load(data);
+                    std::string from = body["from"].s();
+                    std::string to = body["to"].s();
+                    Position initPos = convertInputToPos(from);
+                    Position destPos = convertInputToPos(to);
                     CROW_LOG_INFO << "New message : " << data;
+
+                    std::vector<Position> moves = _board->getLegalMoves(initPos);
+                    std::vector<Position> legalMoves = _board->filterCheckMoves(&initPos, moves);
+
+                    if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
+                        _board->makeMove(initPos, destPos);
+                    } else {
+                        std::cout << "This move is not allowed !";
+                    }
+                    _board->printBoard();
                 })
                 .onclose([this](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
                     CROW_LOG_INFO << "Client disconnected : " << reason;
@@ -36,20 +52,7 @@ class Game {
             Position initPos, destPos;
 
             while (true) {
-                _board->printBoard();
 
-                Position initPos = getUserInput("Enter the coordinates of the piece you want to play (col,row) : ");
-
-                std::vector<Position> moves = _board->getLegalMoves(initPos);
-                std::vector<Position> legalMoves = _board->filterCheckMoves(&initPos, moves);
-
-                destPos = getUserInput("Enter the destination of the piece (col,row) : ");
-
-                if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
-                    _board->makeMove(initPos, destPos);
-                } else {
-                    std::cout << "This move is not allowed !";
-                }
             }
         }
 
@@ -57,12 +60,11 @@ class Game {
 
         }
 
-        Position getUserInput(std::string text) {
-            std::string input;
+        Position convertInputToPos(std::string pos) {
             Position position;
-            std::cout << text;
-            std::cin >> input;
-            position = {static_cast<signed char>(input.at(0) - '0'), static_cast<signed char>(input[2] - '0')};
+            int8_t file = pos.at(0) - 'a'; // Convert letter (i.e. 'a') to array indice (i.e. 0)
+            int8_t rank = pos.at(1) - '1';
+            position = {file, rank};
             return position;
         }
 
