@@ -4,13 +4,14 @@
 
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#include "board.hpp"
+#include "game.hpp"
+
+
+using namespace crow;
 
 int main() {
-
     crow::SimpleApp app;
-
-
+    Game game(app);
 
     CROW_ROUTE(app, "/game").methods("POST"_method)
     ([](const crow::request& req){
@@ -25,9 +26,4 @@ int main() {
     });
 
     app.port(18080).multithreaded().run();
-
-    GameBoard *board = new GameBoard();
-    board->initBoard();
-
-    return 0;
 }

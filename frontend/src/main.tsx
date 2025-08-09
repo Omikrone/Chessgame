@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './chess.css'
-import App from './App.tsx'
+import GamePage from './pages/GamePage.js'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <GamePage gameId='1234' />
   </StrictMode>,
 )
