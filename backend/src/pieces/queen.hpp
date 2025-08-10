@@ -23,6 +23,10 @@ class Queen: public Piece {
             return possibleMoves;
         }
 
+        Piece* clone() const override {
+            return new Queen(*this);
+        }
+
         char toFEN() const override {
             if (_color == Color::WHITE) return 'Q';
             else return 'q';

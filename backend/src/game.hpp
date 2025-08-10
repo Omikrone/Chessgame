@@ -16,7 +16,6 @@ class Game {
         int _blackMoves = 0;
         int _whiteMoves = 0;
 
-
         Game(crow::SimpleApp& app) {
             _board = new GameBoard();
             _board->initBoard();
@@ -33,11 +32,16 @@ class Game {
                     Position destPos = convertInputToPos(to);
                     CROW_LOG_INFO << "New message : " << data;
 
-                    std::vector<Position> moves = _board->getLegalMoves(initPos);
+                    Piece *piece = _board->_board[initPos.rank][initPos.file];
+
+                    std::vector<Position> moves = _board->getLegalMoves(_board->_board, initPos);
                     std::vector<Position> legalMoves = _board->filterCheckMoves(&initPos, moves);
 
-                    if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
-                        _board->makeMove(initPos, destPos);
+                    if (piece == nullptr || piece->_color != _currentTurn) {
+                        std::cout << "Not your turn !" << std::endl;
+                    }
+                    else if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
+                        _board->makeMove(_board->_board, initPos, destPos);
                         if (_currentTurn == Color::WHITE) {
                             _whiteMoves++;
                             _currentTurn = Color::BLACK;
@@ -50,7 +54,7 @@ class Game {
                     } else {
                         std::cout << "This move is not allowed !" << std::endl;
                     }
-                    _board->printBoard();
+                    _board->printBoard(_board->_board);
                     std::cout << toFEN() << std::endl;
 
                     crow::json::wvalue response;

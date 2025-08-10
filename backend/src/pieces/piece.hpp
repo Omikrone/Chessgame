@@ -19,6 +19,8 @@ public:
     Piece(Type pieceType, const Position& position, Color color)
         : _pieceType(pieceType), _position(position), _color(color) {}
 
+    virtual Piece *clone() const = 0;
+
     virtual ~Piece() = default;
 
     virtual char toFEN() const = 0;

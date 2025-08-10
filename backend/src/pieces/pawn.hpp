@@ -48,6 +48,10 @@ class Pawn : public Piece {
             return possibleMoves;
         }
 
+        Piece* clone() const override {
+            return new Pawn(*this);
+        }
+
         char toFEN() const override {
             if (_color == Color::WHITE) return 'P';
             else return 'p';

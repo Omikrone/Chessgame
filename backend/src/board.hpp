@@ -75,17 +75,17 @@ public:
     }
 
 
-    std::vector<Position> getLegalMoves(Position piecePosition) {
-        std::vector<std::vector<Position>> rawMoves = _board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
+    std::vector<Position> getLegalMoves(std::vector<std::vector<Piece*>> board, Position piecePosition) {
+        std::vector<std::vector<Position>> rawMoves = board[piecePosition.rank][piecePosition.file]->getPossibleMoves();
 
-        Piece *piece = _board[piecePosition.rank][piecePosition.file];
+        Piece *piece = board[piecePosition.rank][piecePosition.file];
         std::vector<Position> legalMoves;
 
         if (piece->_pieceType == Type::PAWN) {
 
             if (rawMoves.size() > 0) {
                 for (Position p: rawMoves[0]) {
-                    Piece *presentPiece = _board[p.rank][p.file];
+                    Piece *presentPiece = board[p.rank][p.file];
                     if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
                         break;
                     }
@@ -99,7 +99,7 @@ public:
                 for (int i = 1; i < rawMoves.size(); i++)
                 {
                     Position takePosition = rawMoves[i][0];
-                    Piece *presentPiece = _board[takePosition.file][takePosition.rank];
+                    Piece *presentPiece = board[takePosition.file][takePosition.rank];
                     if (presentPiece != nullptr && presentPiece->_color != piece->_color)
                     {
                         legalMoves.push_back(takePosition);
@@ -112,8 +112,12 @@ public:
             for (std::vector<Position> dm: rawMoves)
             {
                 for (Position p: dm) {
-                    Piece *presentPiece = _board[p.rank][p.file];
+                    Piece *presentPiece = board[p.rank][p.file];
                     if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
+                        break;
+                    }
+                    else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
+                        legalMoves.push_back(p);
                         break;
                     }
                     else {
@@ -129,15 +133,37 @@ public:
     std::vector<Position> filterCheckMoves(Position *piecePosition, std::vector<Position> possibleMoves) {
         std::vector<Position> legalMoves;
         std::vector<std::vector<Piece *>> simulatedBoard;
+        
+
         Piece *piece = _board[piecePosition->rank][piecePosition->file];
 
         for (Position p: possibleMoves) {
-            simulatedBoard = _board;
+            simulatedBoard = deepCopyBoard(_board);
+            makeMove(simulatedBoard, *piecePosition, p);
             if (!isKingInCheck(piece->_color, simulatedBoard)) {
                 legalMoves.push_back(p);
             }
+            
+            for (auto& row : simulatedBoard) {
+                for (auto& cell : row) {
+                    delete cell;
+                }
+            }
         }
         return legalMoves;
+    }
+
+    std::vector<std::vector<Piece*>> deepCopyBoard(const std::vector<std::vector<Piece*>>& board) {
+        std::vector<std::vector<Piece*>> copy(board.size(), std::vector<Piece*>(board[0].size(), nullptr));
+
+        for (size_t r = 0; r < board.size(); r++) {
+            for (size_t f = 0; f < board[r].size(); f++) {
+                if (board[r][f] != nullptr) {
+                    copy[r][f] = board[r][f]->clone();
+                }
+            }
+        }
+        return copy;
     }
 
     bool isKingInCheck(Color kingColor, std::vector<std::vector<Piece*>> board) {
@@ -149,9 +175,9 @@ public:
         {
             for (int8_t j = 0; j < BOARD_LENGTH; j++)
             {
-                if (board[i][j] == nullptr || board[i][j]->_color == king->_color) continue;
+                if (board[i][j] == nullptr || board[i][j]->_color == kingColor) continue;
                 else {
-                    std::vector<Position> possibleMoves = getLegalMoves({j, i});
+                    std::vector<Position> possibleMoves = getLegalMoves(board, {j, i});
                     for (Position p: possibleMoves)
                     {
                         if (p == king->_position) {
@@ -166,11 +192,13 @@ public:
     }
 
 
-    void makeMove(Position piecePosition, Position destination) {
-        Piece *piece = _board[piecePosition.rank][piecePosition.file];
-        _board[destination.rank][destination.file] = piece;
-        _board[piecePosition.rank][piecePosition.file] = nullptr;
+    void makeMove(std::vector<std::vector<Piece*>> &board, Position piecePosition, Position destination) {
+        Piece *piece = board[piecePosition.rank][piecePosition.file];
+        board[destination.rank][destination.file] = piece;
+        board[piecePosition.rank][piecePosition.file] = nullptr;
         piece->_position = {destination.file, destination.rank};
+        if (piece->toFEN() == 'K') *_whiteKingPos = piece->_position;
+        else if (piece->toFEN() == 'k') *_blackKingPos = piece->_position;
     }
 
 
@@ -199,7 +227,7 @@ public:
     }
 
 
-    void printBoard() {
+    void printBoard(std::vector<std::vector<Piece*>> board) {
         for (int8_t j = BOARD_LENGTH - 1; j >= 0; j--)
         {
             for (int8_t i = 0; i < BOARD_LENGTH; i++)

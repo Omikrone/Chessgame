@@ -19,7 +19,7 @@ class King: public Piece {
 
             for (std::int8_t i = -1; i <= 1; i++)
             {
-                for (std::int8_t j = 0; j <= 1; j++)
+                for (std::int8_t j = -1; j <= 1; j++)
                 {
                     if (j == 0 && i == 0) continue;
 
@@ -36,6 +36,10 @@ class King: public Piece {
                 
             }
             return possibleMoves;
+        }
+
+        Piece* clone() const override {
+            return new King(*this);
         }
 
         char toFEN() const override {

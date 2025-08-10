@@ -37,7 +37,7 @@ class Rook: public Piece {
             possibleMoves.push_back(directionMoves);
 
             // Direction to the left
-            directionMoves;
+            directionMoves.clear();
             for (std::int8_t i = currentPosition.file - 1; i >= 0; i--)
             {
                 directionMoves.push_back({i, currentPosition.rank});
@@ -55,6 +55,9 @@ class Rook: public Piece {
             return possibleMoves;
         }
 
+        Piece* clone() const override {
+            return new Rook(*this);
+        }
         
         char toFEN() const override {
             if (_color == Color::WHITE) return 'R';

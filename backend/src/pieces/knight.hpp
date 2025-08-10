@@ -36,6 +36,10 @@ class Knight: public Piece {
         return possibleMoves;
     }
 
+    Piece* clone() const override {
+        return new Knight(*this);
+    }
+
     char toFEN() const override {
         if (_color == Color::WHITE) return 'N';
         else return 'n';
