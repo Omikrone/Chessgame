@@ -15,6 +15,7 @@ public:
     Type _pieceType;
     Position _position;
     Color _color;
+    bool _hasMoved = false;
 
     Piece(Type pieceType, const Position& position, Color color)
         : _pieceType(pieceType), _position(position), _color(color) {}

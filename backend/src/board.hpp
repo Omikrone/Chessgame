@@ -19,6 +19,10 @@ public:
         std::vector<std::vector<Piece*>>(BOARD_LENGTH, std::vector<Piece*>(BOARD_LENGTH, nullptr));
     Position *_whiteKingPos;
     Position *_blackKingPos;
+    bool _whiteKCastle = true;
+    bool _whiteKQCastle = true;
+    bool _blackKCastle = true;
+    bool _blackKQCastle = true;
 
     GameBoard() {}
 
@@ -171,16 +175,21 @@ public:
         if (kingColor == Color::BLACK) king = board[_blackKingPos->rank][_blackKingPos->file];
         else king = board[_whiteKingPos->rank][_whiteKingPos->file];
 
+        return isSquareAttacked(king->_position, board);
+    }
+
+    bool isSquareAttacked(Position position, std::vector<std::vector<Piece*>> board) {
+        Color color = board[position.rank][position.file]->_color;
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
             for (int8_t j = 0; j < BOARD_LENGTH; j++)
             {
-                if (board[i][j] == nullptr || board[i][j]->_color == kingColor) continue;
+                if (board[i][j] == nullptr || board[i][j]->_color == color) continue;
                 else {
                     std::vector<Position> possibleMoves = getLegalMoves(board, {j, i});
                     for (Position p: possibleMoves)
                     {
-                        if (p == king->_position) {
+                        if (p == position) {
                             return true;
                         }
                     }
@@ -194,12 +203,41 @@ public:
 
     void makeMove(std::vector<std::vector<Piece*>> &board, Position piecePosition, Position destination) {
         Piece *piece = board[piecePosition.rank][piecePosition.file];
-        board[destination.rank][destination.file] = piece;
-        board[piecePosition.rank][piecePosition.file] = nullptr;
-        piece->_position = {destination.file, destination.rank};
-        if (piece->toFEN() == 'K') *_whiteKingPos = piece->_position;
-        else if (piece->toFEN() == 'k') *_blackKingPos = piece->_position;
+        if ((piece->toFEN() == 'K' || piece->toFEN() == 'k') && 
+        (destination.file - piecePosition.file != 1 || destination.file - piecePosition.file != -1)) {
+            Castle(board, piece, true);
+        }
+        else {
+            board[destination.rank][destination.file] = piece;
+            board[piecePosition.rank][piecePosition.file] = nullptr;
+            piece->_position = {destination.file, destination.rank};
+            if (piece->toFEN() == 'K') {
+                *_whiteKingPos = piece->_position;
+            }
+            else if (piece->toFEN() == 'k') {
+                *_blackKingPos = piece->_position;
+            }
+        }
+
+        
     }
+
+
+    void Castle(std::vector<std::vector<Piece*>> &board, Piece *piece, bool queenside) {
+        if (piece->_hasMoved || isKingInCheck(piece->_color, board)) return;
+        if (piece->_color == Color::WHITE && queenside) {
+            
+            if (board[0][0] != nullptr && board[0][0]->toFEN() == 'R' && !board[0][0]->_hasMoved) {
+                std::cout << "coucou" << std::endl;
+                for (int8_t i = piece->_position.file - 1; i > 0; i--) {
+                    if (board[0][i] != nullptr) return;
+                }
+                piece->_position.file -= 2;
+                makeMove(board, {0, 0}, {0, 3});
+            }
+        }
+    }
+
 
 
     std::string toFEN() {
