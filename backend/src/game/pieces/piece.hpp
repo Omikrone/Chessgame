@@ -3,10 +3,10 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "position.hpp"
-#include "color.hpp"
-#include "move.hpp"
-#include "type.hpp"
+#include "utils/position.hpp"
+#include "utils/color.hpp"
+#include "utils/move.hpp"
+#include "utils/type.hpp"
 
 
 class Piece {
@@ -25,5 +25,5 @@ public:
     virtual ~Piece() = default;
 
     virtual char toFEN() const = 0;
-    virtual std::vector<std::vector<Position>> getPossibleMoves() const = 0;
+    virtual std::vector<std::vector<Position>> getRawMoves() const = 0;
 };

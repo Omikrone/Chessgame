@@ -1,8 +1,8 @@
 #pragma once
 
 #include "piece.hpp"
-#include "constants.hpp"
-#include "type.hpp"
+#include "utils/constants.hpp"
+#include "utils/type.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -15,7 +15,7 @@ class Pawn : public Piece {
         Pawn(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getPossibleMoves() const override {
+        std::vector<std::vector<Position>> getRawMoves() const override {
             std::vector<std::vector<Position>> possibleMoves;
 
             std::int8_t direction = static_cast<std::int8_t>(_color);

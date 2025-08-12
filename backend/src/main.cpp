@@ -4,7 +4,8 @@
 
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#include "game.hpp"
+#include "game/game.hpp"
+
 
 
 using namespace crow;

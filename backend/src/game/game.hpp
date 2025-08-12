@@ -3,14 +3,16 @@
 #include "crow.h"
 
 #include "board.hpp"
-#include "pieces/color.hpp"
-#include "pieces/position.hpp"
+#include "move_generator.hpp"
+#include "pieces/utils/color.hpp"
+#include "pieces/utils/position.hpp"
 
 
 class Game {
     public:
 
         GameBoard *_board;
+        MoveGenerator *_moveGenerator;
         Color _currentTurn = Color::WHITE;
         crow::SimpleApp _app;
         int _blackMoves = 0;
@@ -19,6 +21,7 @@ class Game {
         Game(crow::SimpleApp& app) {
             _board = new GameBoard();
             _board->initBoard();
+            _moveGenerator = new MoveGenerator(_board);
 
             CROW_WEBSOCKET_ROUTE(app, "/ws")
                 .onopen([this](crow::websocket::connection& conn) {
@@ -34,26 +37,27 @@ class Game {
 
                     Piece *piece = _board->_board[initPos.rank][initPos.file];
 
-                    std::vector<Position> moves = _board->getLegalMoves(_board->_board, initPos);
-                    std::vector<Position> legalMoves = _board->filterCheckMoves(&initPos, moves);
+                    std::vector<Move> possibleMoves = _moveGenerator->getLegalMoves(_board->_board, initPos);
+                    std::cout << "checking checks";
+                    std::vector<Move> legalMoves = _moveGenerator->filterCheckMoves(&piece->_position, possibleMoves);
+                    std::cout << "checking castles";
+                    std::vector<Move> withoutCastleMoves = _moveGenerator->filterCastleMoves(&piece->_position, legalMoves);
+                    std::cout << "Moves generated";
 
-                    if (piece == nullptr || piece->_color != _currentTurn) {
-                        std::cout << "Not your turn !" << std::endl;
-                    }
-                    else if(std::find(legalMoves.begin(), legalMoves.end(), destPos) != legalMoves.end()) {
-                        _board->makeMove(_board->_board, initPos, destPos);
-                        if (_currentTurn == Color::WHITE) {
-                            _whiteMoves++;
-                            _currentTurn = Color::BLACK;
-                        } 
-                        else {
-                            _blackMoves++;
-                            _currentTurn = Color::WHITE;
+                    for (Move m: withoutCastleMoves) {
+                        if (m.initPos == initPos && m.destPos == destPos) {
+                            _board->makeMove(_board->_board, m);
+                            if (_currentTurn == Color::WHITE) {
+                                _whiteMoves++;
+                                _currentTurn = Color::BLACK;
+                            } 
+                            else {
+                                _blackMoves++;
+                                _currentTurn = Color::WHITE;
+                            }
                         }
-
-                    } else {
-                        std::cout << "This move is not allowed !" << std::endl;
                     }
+
                     _board->printBoard(_board->_board);
                     std::cout << toFEN() << std::endl;
 
@@ -77,10 +81,6 @@ class Game {
             boardFEN.push_back(' ');
             boardFEN.append(std::to_string(_whiteMoves));
             return boardFEN;
-        }
-
-        bool isGameOver() {
-
         }
 
         Position convertInputToPos(std::string pos) {

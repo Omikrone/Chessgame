@@ -3,7 +3,7 @@
 #include "piece.hpp"
 #include "rook.hpp"
 #include "bishop.hpp"
-#include "constants.hpp"
+#include "utils/constants.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -15,7 +15,7 @@ class Queen: public Piece {
         Queen(Type pieceType, const Position &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getPossibleMoves() const override {
+        std::vector<std::vector<Position>> getRawMoves() const override {
             std::vector<std::vector<Position>> possibleMoves = Bishop::getBishopMoves(_position);
             std::vector<std::vector<Position>> rookMoves = Rook::getRookMoves(_position);
 
