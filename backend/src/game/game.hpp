@@ -57,13 +57,23 @@ class Game {
                     _board->printBoard(_board->_board);
                     std::cout << toFEN() << std::endl;
 
-                    GameState state = checkEndGame();
-                    if (state == GameState::CHECKMATE) std::cout << "CHECKMATE";
-                    else if (state == GameState::STALEMATE) std::cout << "STALEMATE";
-
                     crow::json::wvalue response;
-                    response["type"] = "fen";
-                    response["fen"] = toFEN();
+                    GameState state = checkEndGame();
+                    if (state == GameState::CHECKMATE) {
+                        response["type"] = "endgame";
+                        response["game_state"] = "checkmate";
+                        if (_currentTurn == Color::BLACK) response["winner"] = "white";
+                        else response["winner"] = "black";
+                    }
+                    else if (state == GameState::STALEMATE) {
+                        response["type"] = "endgame";
+                        response["game_state"] = "stalemate";
+                    }
+                    else {
+                        response["type"] = "fen";
+                        response["fen"] = toFEN();
+                    }
+
                     conn.send_text(response.dump());
                 })
                 .onclose([this](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
