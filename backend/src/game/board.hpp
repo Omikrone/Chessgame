@@ -94,6 +94,10 @@ public:
             board[pieceMovement.initPos.rank][pieceMovement.initPos.file] = nullptr;
             piece->_position = {pieceMovement.destPos.file, pieceMovement.destPos.rank};
         }
+        if (pieceMovement.type == MoveType::PROMOTION) {
+            board[piece->_position.rank][piece->_position.file] = new Queen(Type::QUEEN, piece->_position, piece->_color);
+            delete piece;
+        }
     }
 
     Piece *findKing(std::vector<std::vector<Piece*>> &board, Color kingColor) {

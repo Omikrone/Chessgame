@@ -25,6 +25,9 @@ public:
                     if (presentPiece != nullptr) {
                         break;
                     }
+                    else if (p.rank == BOARD_LENGTH - 1 || p.rank == 0) {
+                        legalMoves.push_back({piece->_position, p, MoveType::PROMOTION});
+                    }
                     else {
                         legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
                     }
