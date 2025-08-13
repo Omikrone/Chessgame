@@ -87,6 +87,7 @@ public:
             KingSideCastle(board, piece);
         }
         else if (pieceMovement.type == MoveType::CASTLE_QUEENSIDE) QueenSideCastle(board, piece);
+        else if (pieceMovement.type == MoveType::EN_PASSANT) EnPassant(board, piece, pieceMovement);
         else {
             
             // Piece displacement
@@ -109,6 +110,24 @@ public:
             }
         }
         return nullptr;
+    }
+
+    void EnPassant(std::vector<std::vector<Piece*>> &board, Piece *pawn, Move move) {
+            
+        // Pawn displacement
+        board[move.destPos.rank][move.destPos.file] = pawn;
+        board[move.initPos.rank][move.initPos.file] = nullptr;
+
+        // Other pawn destruction
+        if (pawn->_color == Color::WHITE) {
+            board[move.destPos.rank - 1][move.destPos.file] = nullptr;
+            delete board[move.destPos.rank - 1][move.destPos.file];
+        }
+        else {
+            board[move.destPos.rank + 1][move.destPos.file] = nullptr;
+            delete board[move.destPos.rank + 1][move.destPos.file];
+        }
+        pawn->_position = {move.destPos.file, move.destPos.rank};
     }
 
     void KingSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king) {

@@ -6,6 +6,8 @@ class MoveGenerator {
 public:
 
     GameBoard *_board;
+    std::vector<Move> _history;
+    
 
     MoveGenerator(GameBoard *board) {
         _board = board;
@@ -18,31 +20,34 @@ public:
 
         if (piece->_pieceType == Type::PAWN) {
 
-            // Forward
-            if (rawMoves.size() > 0) {
-                for (Position p: rawMoves[0]) {
-                    Piece *presentPiece = board[p.rank][p.file];
-                    if (presentPiece != nullptr) {
-                        break;
-                    }
-                    else if (p.rank == BOARD_LENGTH - 1 || p.rank == 0) {
-                        legalMoves.push_back({piece->_position, p, MoveType::PROMOTION});
-                    }
-                    else {
-                        legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
+            for (std::vector<Position> dm: rawMoves) {
+
+                // Forward
+                if (dm[0].file == piece->_position.file) {
+                    for (Position p: dm) {
+                        Piece *presentPiece = board[p.rank][p.file];
+                        if (presentPiece != nullptr) {
+                            break;
+                        }
+                        else if (p.rank == BOARD_LENGTH - 1 || p.rank == 0) {
+                            legalMoves.push_back({piece->_position, p, MoveType::PROMOTION});
+                        }
+                        else {
+                            legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
+                        }
                     }
                 }
-            }
 
-            // Side take
-            if (rawMoves.size() > 1) {
-                for (int i = 1; i < rawMoves.size(); i++)
-                {
-                    Position takePosition = rawMoves[i][0];
-                    Piece *presentPiece = board[takePosition.file][takePosition.rank];
+                // Side take
+                else {
+                    Position takePosition = dm[0];
+                    Piece *presentPiece = board[takePosition.rank][takePosition.file];
                     if (presentPiece != nullptr && presentPiece->_color != piece->_color)
                     {
                         legalMoves.push_back({piece->_position, takePosition, MoveType::TAKE});
+                    }
+                    else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
+                        legalMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT});
                     }
                 }
             }
@@ -91,6 +96,14 @@ public:
         return legalMoves;
     }
 
+    bool checkEnPassant(std::vector<std::vector<Piece*>> board, Piece *piece, Position *takePosition, Move lastMove) {
+        Piece *pieceToTake = board[lastMove.destPos.rank][lastMove.destPos.file];
+        if (pieceToTake == nullptr || pieceToTake->_color == piece->_color || pieceToTake->_pieceType != Type::PAWN) return false;
+        int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;
+        if (distance != 2 && distance != -2) return false;
+        if (takePosition->file == pieceToTake->_position.file && piece->_position.rank == pieceToTake->_position.rank) return true;
+    }
+
 
     std::vector<Move> getLegalMoves(std::vector<std::vector<Piece*>> board, Position piecePosition) {
         Piece *piece = board[piecePosition.rank][piecePosition.file];
@@ -113,7 +126,6 @@ public:
             m.initPos.print();
             m.destPos.print();
             _board->makeMove(simulatedBoard, m);
-            std::cout << "Move finished" << std::endl;
             
             if (!isKingInCheck(piece->_color, simulatedBoard)) {
                 legalMoves.push_back(m);
@@ -137,7 +149,6 @@ public:
         for (Move m: possibleMoves) {
             if (m.type == MoveType::CASTLE_KINGSIDE) {
                 if (checkKingSideCastle(piece)) legalMoves.push_back(m);
-                else std::cout << "CASTLE NOT ALLOWED";
             }
             else if (m.type == MoveType::CASTLE_QUEENSIDE) {
                 if (checkQueenSideCastle(piece)) legalMoves.push_back(m);
@@ -223,21 +234,5 @@ public:
             }
         }
         return false;
-    }
-
-
-    void Castle(std::vector<std::vector<Piece*>> &board, Piece *piece, bool queenside) {
-        if (piece->_hasMoved || isKingInCheck(piece->_color, board)) return;
-        if (piece->_color == Color::WHITE && queenside) {
-            
-            if (board[0][0] != nullptr && board[0][0]->toFEN() == 'R' && !board[0][0]->_hasMoved) {
-                std::cout << "coucou" << std::endl;
-                for (int8_t i = piece->_position.file - 1; i > 0; i--) {
-                    if (board[0][i] != nullptr) return;
-                }
-                piece->_position.file -= 2;
-                _board->makeMove(board, {{0, 0}, {0, 3}, MoveType::CASTLE_KINGSIDE});
-            }
-        }
     }
 };

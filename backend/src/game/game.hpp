@@ -18,6 +18,7 @@ class Game {
         int _blackMoves = 0;
         int _whiteMoves = 0;
 
+
         Game(crow::SimpleApp& app) {
             _board = new GameBoard();
             _board->initBoard();
@@ -38,15 +39,13 @@ class Game {
                     Piece *piece = _board->_board[initPos.rank][initPos.file];
 
                     std::vector<Move> possibleMoves = _moveGenerator->getLegalMoves(_board->_board, initPos);
-                    std::cout << "checking checks";
                     std::vector<Move> legalMoves = _moveGenerator->filterCheckMoves(&piece->_position, possibleMoves);
-                    std::cout << "checking castles";
                     std::vector<Move> withoutCastleMoves = _moveGenerator->filterCastleMoves(&piece->_position, legalMoves);
-                    std::cout << "Moves generated";
 
                     for (Move m: withoutCastleMoves) {
                         if (m.initPos == initPos && m.destPos == destPos) {
                             _board->makeMove(_board->_board, m);
+                            _moveGenerator->_history.push_back(m);
                             if (_currentTurn == Color::WHITE) {
                                 _whiteMoves++;
                                 _currentTurn = Color::BLACK;
