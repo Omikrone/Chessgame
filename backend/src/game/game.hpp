@@ -6,6 +6,7 @@
 #include "move_generator.hpp"
 #include "pieces/utils/color.hpp"
 #include "pieces/utils/position.hpp"
+#include "pieces/utils/game_state.hpp"
 
 
 class Game {
@@ -36,13 +37,9 @@ class Game {
                     Position destPos = convertInputToPos(to);
                     CROW_LOG_INFO << "New message : " << data;
 
-                    Piece *piece = _board->_board[initPos.rank][initPos.file];
+                    std::vector<Move> possibleMoves = _moveGenerator->getPossibleMoves(_board->_board, initPos);
 
-                    std::vector<Move> possibleMoves = _moveGenerator->getLegalMoves(_board->_board, initPos);
-                    std::vector<Move> legalMoves = _moveGenerator->filterCheckMoves(&piece->_position, possibleMoves);
-                    std::vector<Move> withoutCastleMoves = _moveGenerator->filterCastleMoves(&piece->_position, legalMoves);
-
-                    for (Move m: withoutCastleMoves) {
+                    for (Move m: possibleMoves) {
                         if (m.initPos == initPos && m.destPos == destPos) {
                             _board->makeMove(_board->_board, m);
                             _moveGenerator->_history.push_back(m);
@@ -60,6 +57,10 @@ class Game {
                     _board->printBoard(_board->_board);
                     std::cout << toFEN() << std::endl;
 
+                    GameState state = checkEndGame();
+                    if (state == GameState::CHECKMATE) std::cout << "CHECKMATE";
+                    else if (state == GameState::STALEMATE) std::cout << "STALEMATE";
+
                     crow::json::wvalue response;
                     response["type"] = "fen";
                     response["fen"] = toFEN();
@@ -68,6 +69,19 @@ class Game {
                 .onclose([this](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
                     CROW_LOG_INFO << "Client disconnected : " << reason;
                 });
+        }
+
+        GameState checkEndGame() {
+            for (auto row: _board->_board) {
+                for (auto cell: row) {
+                    if (cell != nullptr && cell->_color == _currentTurn) {
+                        std::vector<Move> possibleMoves = _moveGenerator->getPossibleMoves(_board->_board, {cell->_position.file, cell->_position.rank});
+                        if (!possibleMoves.empty()) return GameState::CONTINUING;
+                    }
+                }
+            }
+            if (_moveGenerator->isKingInCheck(_currentTurn, _board->_board)) return GameState::CHECKMATE;
+            else return GameState::STALEMATE;
         }
 
         std::string toFEN() {

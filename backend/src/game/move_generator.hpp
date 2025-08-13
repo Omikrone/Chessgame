@@ -105,6 +105,16 @@ public:
     }
 
 
+    std::vector<Move> getPossibleMoves(std::vector<std::vector<Piece*>> board, Position initPos) {
+        Piece *piece = _board->_board[initPos.rank][initPos.file];
+        
+        std::vector<Move> possibleMoves = getLegalMoves(_board->_board, initPos);
+        std::vector<Move> legalMoves = filterCheckMoves(&piece->_position, possibleMoves);
+        std::vector<Move> withoutCastleMoves = filterCastleMoves(&piece->_position, legalMoves);
+        return withoutCastleMoves;
+    }
+
+
     std::vector<Move> getLegalMoves(std::vector<std::vector<Piece*>> board, Position piecePosition) {
         Piece *piece = board[piecePosition.rank][piecePosition.file];
         std::vector<std::vector<Position>> rawMoves = piece->getRawMoves();
