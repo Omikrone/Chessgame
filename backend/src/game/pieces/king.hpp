@@ -29,8 +29,8 @@ class King: public Piece {
                     if (newX >= 0 && newX < BOARD_LENGTH &&
                         newY >= 0 && newY < BOARD_LENGTH) {
                         directionMoves.push_back({newX, newY});
-                        if (i == -1 && j == 0 && _position.file >= 2) directionMoves.push_back({newX - 1, newY});               // King Side Castle
-                        if (i == 1 && j == 0 && _position.file < BOARD_LENGTH - 2) directionMoves.push_back({newX + 1, newY});  // Queen Side Castle
+                        if (i == -1 && j == 0 && _position.file > 3) directionMoves.push_back({newX - 1, newY});                // Queen Side Castle
+                        if (i == 1 && j == 0 && _position.file < BOARD_LENGTH - 3) directionMoves.push_back({newX + 1, newY});  // King Side Castle
                         possibleMoves.push_back(directionMoves);
                         directionMoves.clear();
                     }

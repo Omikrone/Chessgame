@@ -68,8 +68,10 @@ class Game {
                         else response["winner"] = "black";
                     }
                     else if (state == GameState::STALEMATE) {
+                        std::cout << "STALEMATE";
                         response["type"] = "endgame";
                         response["game_state"] = "stalemate";
+                        response["winner"] = "draw";
                     }
                     else {
                         response["type"] = "fen";

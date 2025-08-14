@@ -73,6 +73,9 @@ public:
                     }
                 }
             }
+            std::cout << "POSSIBLE MOVES FOR KING : " << std::endl;
+            for (Move m : legalMoves) m.destPos.print();
+            std::cout << "END : " << std::endl;
         }
         else {
 
@@ -109,9 +112,9 @@ public:
         Piece *piece = _board->_board[initPos.rank][initPos.file];
         
         std::vector<Move> possibleMoves = getLegalMoves(_board->_board, initPos);
-        std::vector<Move> legalMoves = filterCheckMoves(&piece->_position, possibleMoves);
-        std::vector<Move> withoutCastleMoves = filterCastleMoves(&piece->_position, legalMoves);
-        return withoutCastleMoves;
+        std::vector<Move> withoutCastleMoves = filterCastleMoves(&piece->_position, possibleMoves);
+        std::vector<Move> legalMoves = filterCheckMoves(&piece->_position, withoutCastleMoves);  
+        return legalMoves;
     }
 
 
@@ -216,7 +219,7 @@ public:
         Piece *king = _board->findKing(board, kingColor);
         if (!king) {
             std::cerr << "Erreur : Roi introuvable !" << std::endl;
-            return false; // ou true si tu veux traiter ça comme une position illégale
+            return false;
         }
         
         king->_position.print();
