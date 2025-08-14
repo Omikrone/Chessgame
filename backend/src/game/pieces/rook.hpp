@@ -46,7 +46,7 @@ class Rook: public Piece {
 
             // Direction to the right
             directionMoves.clear();
-            for (std::int8_t i = currentPosition.rank + 1; i < BOARD_LENGTH; i++)
+            for (std::int8_t i = currentPosition.file + 1; i < BOARD_LENGTH; i++)
             {
                 directionMoves.push_back({i, currentPosition.rank});
             }

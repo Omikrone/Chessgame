@@ -39,17 +39,19 @@ class Game {
 
                     std::vector<Move> possibleMoves = _moveGenerator->getPossibleMoves(_board->_board, initPos);
 
-                    for (Move m: possibleMoves) {
-                        if (m.initPos == initPos && m.destPos == destPos) {
-                            _board->makeMove(_board->_board, m);
-                            _moveGenerator->_history.push_back(m);
-                            if (_currentTurn == Color::WHITE) {
-                                _whiteMoves++;
-                                _currentTurn = Color::BLACK;
-                            } 
-                            else {
-                                _blackMoves++;
-                                _currentTurn = Color::WHITE;
+                    if (_board->_board[initPos.rank][initPos.file] != nullptr && _board->_board[initPos.rank][initPos.file]->_color == _currentTurn) {
+                        for (Move m: possibleMoves) {
+                            if (m.initPos == initPos && m.destPos == destPos) {
+                                _board->makeMove(_board->_board, m);
+                                _moveGenerator->_history.push_back(m);
+                                if (_currentTurn == Color::WHITE) {
+                                    _whiteMoves++;
+                                    _currentTurn = Color::BLACK;
+                                } 
+                                else {
+                                    _blackMoves++;
+                                    _currentTurn = Color::WHITE;
+                                }
                             }
                         }
                     }
