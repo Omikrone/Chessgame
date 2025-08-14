@@ -30,10 +30,10 @@ public:
                             break;
                         }
                         else if (p.rank == BOARD_LENGTH - 1 || p.rank == 0) {
-                            legalMoves.push_back({piece->_position, p, MoveType::PROMOTION});
+                            legalMoves.push_back({piece->_position, p, MoveType::PROMOTION, false});
                         }
                         else {
-                            legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
+                            legalMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
                         }
                     }
                 }
@@ -44,10 +44,18 @@ public:
                     Piece *presentPiece = board[takePosition.rank][takePosition.file];
                     if (presentPiece != nullptr && presentPiece->_color != piece->_color)
                     {
-                        legalMoves.push_back({piece->_position, takePosition, MoveType::TAKE});
+                        if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
+                            legalMoves.push_back({piece->_position, takePosition, MoveType::PROMOTION, true});
+                        }
+                        else {
+                            legalMoves.push_back({piece->_position, takePosition, MoveType::NORMAL, true});
+                        }
+                    }
+                    else if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
+                        
                     }
                     else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
-                        legalMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT});
+                        legalMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT, true});
                     }
                 }
             }
@@ -65,17 +73,14 @@ public:
                         break;
                     }
                     else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
-                        legalMoves.push_back({piece->_position, p, MoveType::TAKE});
+                        legalMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
                         break;
                     }
                     else {
-                        legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
+                        legalMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
                     }
                 }
             }
-            std::cout << "POSSIBLE MOVES FOR KING : " << std::endl;
-            for (Move m : legalMoves) m.destPos.print();
-            std::cout << "END : " << std::endl;
         }
         else {
 
@@ -87,11 +92,11 @@ public:
                         break;
                     }
                     else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
-                        legalMoves.push_back({piece->_position, p, MoveType::TAKE});
+                        legalMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
                         break;
                     }
                     else {
-                        legalMoves.push_back({piece->_position, p, MoveType::TRAVEL});
+                        legalMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
                     }
                 }
             }
@@ -136,8 +141,6 @@ public:
 
         for (Move m: possibleMoves) {
             simulatedBoard = deepCopyBoard(_board->_board);
-            m.initPos.print();
-            m.destPos.print();
             _board->makeMove(simulatedBoard, m);
             
             if (!isKingInCheck(piece->_color, simulatedBoard)) {
@@ -221,8 +224,6 @@ public:
             std::cerr << "Erreur : Roi introuvable !" << std::endl;
             return false;
         }
-        
-        king->_position.print();
 
         return isSquareAttacked(king->_position, board, king->_color);
     }

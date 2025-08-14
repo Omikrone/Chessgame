@@ -60,25 +60,28 @@ class Game {
                     std::cout << toFEN() << std::endl;
 
                     crow::json::wvalue response;
+                    response["type"] = "fen";
+                    response["fen"] = toFEN();
+
+                    conn.send_text(response.dump());
+                    
                     GameState state = checkEndGame();
+                    crow::json::wvalue endGameRes;
+
                     if (state == GameState::CHECKMATE) {
-                        response["type"] = "endgame";
-                        response["game_state"] = "checkmate";
-                        if (_currentTurn == Color::BLACK) response["winner"] = "white";
-                        else response["winner"] = "black";
+                        endGameRes["type"] = "endgame";
+                        endGameRes["game_state"] = "checkmate";
+                        if (_currentTurn == Color::BLACK) endGameRes["winner"] = "white";
+                        else endGameRes["winner"] = "black";
+                        conn.send_text(endGameRes.dump());
                     }
                     else if (state == GameState::STALEMATE) {
                         std::cout << "STALEMATE";
-                        response["type"] = "endgame";
-                        response["game_state"] = "stalemate";
-                        response["winner"] = "draw";
+                        endGameRes["type"] = "endgame";
+                        endGameRes["game_state"] = "stalemate";
+                        endGameRes["winner"] = "draw";
+                        conn.send_text(endGameRes.dump());
                     }
-                    else {
-                        response["type"] = "fen";
-                        response["fen"] = toFEN();
-                    }
-
-                    conn.send_text(response.dump());
                 })
                 .onclose([this](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
                     CROW_LOG_INFO << "Client disconnected : " << reason;

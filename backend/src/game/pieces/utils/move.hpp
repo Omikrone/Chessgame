@@ -3,8 +3,7 @@
 #include "position.hpp"
 
 enum class MoveType {
-    TRAVEL,
-    TAKE,
+    NORMAL,
     EN_PASSANT,
     CASTLE_KINGSIDE,
     CASTLE_QUEENSIDE,
@@ -16,4 +15,5 @@ struct Move
     Position initPos;
     Position destPos;
     MoveType type;
+    bool take;
 };
