@@ -12,12 +12,12 @@
 class Queen: public Piece {
 
     public:
-        Queen(Type pieceType, const Position &startPosition, Color color)
+        Queen(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getRawMoves() const override {
-            std::vector<std::vector<Position>> possibleMoves = Bishop::getBishopMoves(_position);
-            std::vector<std::vector<Position>> rookMoves = Rook::getRookMoves(_position);
+        std::vector<std::vector<Square>> getRawMoves() const override {
+            std::vector<std::vector<Square>> possibleMoves = Bishop::getBishopMoves(_position);
+            std::vector<std::vector<Square>> rookMoves = Rook::getRookMoves(_position);
 
             possibleMoves.insert(possibleMoves.end(), rookMoves.begin(), rookMoves.end());
             return possibleMoves;

@@ -10,18 +10,18 @@
 class Bishop: public Piece {
 
     public:
-        Bishop(Type pieceType, const Position &startPosition, Color color)
+        Bishop(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getRawMoves() const override {
+        std::vector<std::vector<Square>> getRawMoves() const override {
             return getBishopMoves(_position);
         }
 
-        static std::vector<std::vector<Position>> getBishopMoves(const Position &currentPosition) {
-            std::vector<std::vector<Position>> possibleMoves;
+        static std::vector<std::vector<Square>> getBishopMoves(const Square &currentPosition) {
+            std::vector<std::vector<Square>> possibleMoves;
 
             int8_t count = 1;
-            std::vector<Position> directionMoves;
+            std::vector<Square> directionMoves;
             while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank + count) < BOARD_LENGTH)
             {
                 directionMoves.push_back({currentPosition.file + count, currentPosition.rank + count});

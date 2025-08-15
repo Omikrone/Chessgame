@@ -1,6 +1,6 @@
 #pragma once
 
-#include "position.hpp"
+#include "square.hpp"
 
 enum class MoveType {
     NORMAL,
@@ -12,8 +12,8 @@ enum class MoveType {
 
 struct Move
 {
-    Position initPos;
-    Position destPos;
+    Square initPos;
+    Square destPos;
     MoveType type;
     bool take;
 };

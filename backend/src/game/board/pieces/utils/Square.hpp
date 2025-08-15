@@ -4,16 +4,16 @@
 #include <iostream>
 
 
-struct Position
+struct Square
 {
-    std::int8_t file;
-    std::int8_t rank;
+    int8_t file;
+    int8_t rank;
 
-    bool operator==(const Position &other) const {
+    bool operator==(const Square &other) const {
         return file == other.file && rank == other.rank;
     }
 
-    bool operator!=(const Position& other) const {
+    bool operator!=(const Square& other) const {
         return !(*this == other);
     }
 

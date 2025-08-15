@@ -10,12 +10,12 @@
 class King: public Piece {
 
     public:
-        King(Type pieceType, const Position &startPosition, Color color)
+        King(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getRawMoves() const override {
-            std::vector<std::vector<Position>> possibleMoves;
-            std::vector<Position> directionMoves;
+        std::vector<std::vector<Square>> getRawMoves() const override {
+            std::vector<std::vector<Square>> possibleMoves;
+            std::vector<Square> directionMoves;
 
             for (std::int8_t i = -1; i <= 1; i++)
             {

@@ -12,17 +12,17 @@ class Pawn : public Piece {
 
     public:
 
-        Pawn(Type pieceType, const Position &startPosition, Color color)
+        Pawn(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getRawMoves() const override {
-            std::vector<std::vector<Position>> possibleMoves;
+        std::vector<std::vector<Square>> getRawMoves() const override {
+            std::vector<std::vector<Square>> possibleMoves;
 
             std::int8_t direction = static_cast<std::int8_t>(_color);
 
             if (_position.rank + direction >= 0 && _position.rank + direction < BOARD_LENGTH) {
 
-                std::vector<Position> directionMoves;
+                std::vector<Square> directionMoves;
 
                 // Forward walk
                 directionMoves.push_back({_position.file, _position.rank + direction});

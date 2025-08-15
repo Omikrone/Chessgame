@@ -10,13 +10,13 @@
 class Knight: public Piece {
 
     public:
-        Knight(Type pieceType, const Position &startPosition, Color color)
+        Knight(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
 
-    std::vector<std::vector<Position>> getRawMoves() const override {
-        std::vector<std::vector<Position>> possibleMoves;
-        std::vector<Position> directionMoves;
+    std::vector<std::vector<Square>> getRawMoves() const override {
+        std::vector<std::vector<Square>> possibleMoves;
+        std::vector<Square> directionMoves;
 
         const int8_t dx[] = { 2,  1, -1, -2, -2, -1,  1,  2 };
         const int8_t dy[] = { 1,  2,  2,  1, -1, -2, -2, -1 };

@@ -13,11 +13,11 @@ class Piece {
 public:
 
     Type _pieceType;
-    Position _position;
+    Square _position;
     Color _color;
     bool _hasMoved = false;
 
-    Piece(Type pieceType, const Position& position, Color color)
+    Piece(Type pieceType, const Square& position, Color color)
         : _pieceType(pieceType), _position(position), _color(color) {}
 
     virtual Piece *clone() const = 0;
@@ -25,5 +25,5 @@ public:
     virtual ~Piece() = default;
 
     virtual char toFEN() const = 0;
-    virtual std::vector<std::vector<Position>> getRawMoves() const = 0;
+    virtual std::vector<std::vector<Square>> getRawMoves() const = 0;
 };

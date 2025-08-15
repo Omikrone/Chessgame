@@ -2,15 +2,7 @@
 
 #include <iostream>
 
-#include "pieces/utils/type.hpp"
-#include "pieces/utils/move.hpp"
-#include "pieces/piece.hpp"
-#include "pieces/pawn.hpp"
-#include "pieces/rook.hpp"
-#include "pieces/bishop.hpp"
-#include "pieces/knight.hpp"
-#include "pieces/king.hpp"
-#include "pieces/queen.hpp"
+#include "Board.hpp"
 
 
 class GameBoard {
@@ -35,9 +27,9 @@ public:
         }
 
         // Knights initialization
-        const Position knightPositions[] = {{1, 7}, {6, 7}, {6, 0}, {1, 0}};
+        const Square knightPositions[] = {{1, 7}, {6, 7}, {6, 0}, {1, 0}};
         for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {knightPositions[i].file, knightPositions[i].rank};
+            Square startPosition = {knightPositions[i].file, knightPositions[i].rank};
             if (i < 2) {
                 _board[startPosition.rank][startPosition.file] = new Knight(Type::KNIGHT, startPosition, Color::BLACK);
             }
@@ -47,9 +39,9 @@ public:
         }
 
         // Bishops initialization
-        const Position bishopPositions[] = {{2, 7}, {5, 7}, {5, 0}, {2, 0}};
+        const Square bishopPositions[] = {{2, 7}, {5, 7}, {5, 0}, {2, 0}};
         for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {bishopPositions[i].file, bishopPositions[i].rank};
+            Square startPosition = {bishopPositions[i].file, bishopPositions[i].rank};
             if (i < 2) {
                 _board[startPosition.rank][startPosition.file] = new Bishop(Type::BISHOP, startPosition, Color::BLACK);
             }
@@ -59,9 +51,9 @@ public:
         }
 
         // Rooks initialization
-        const Position rookPositions[] = {{0, 7}, {7, 7}, {7, 0}, {0, 0}};
+        const Square rookPositions[] = {{0, 7}, {7, 7}, {7, 0}, {0, 0}};
         for (int8_t i = 0; i < 4; i++) {
-            Position startPosition = {rookPositions[i].file, rookPositions[i].rank};
+            Square startPosition = {rookPositions[i].file, rookPositions[i].rank};
             if (i < 2) {
                 _board[startPosition.rank][startPosition.file] = new Rook(Type::ROOK, startPosition, Color::BLACK);
             }
@@ -80,24 +72,36 @@ public:
     }
 
 
-    void makeMove(std::vector<std::vector<Piece*>> &board, Move pieceMovement) {
+    Piece getPieceAt(Square sq) {
+        return _board[sq.rank][sq.file];
+    }
+
+
+    void makeMove(const Move& move) {
         Piece *piece = board[pieceMovement.initPos.rank][pieceMovement.initPos.file];
 
-        if (pieceMovement.type == MoveType::CASTLE_KINGSIDE) {
-            KingSideCastle(board, piece);
-        }
-        else if (pieceMovement.type == MoveType::CASTLE_QUEENSIDE) QueenSideCastle(board, piece);
-        else if (pieceMovement.type == MoveType::EN_PASSANT) EnPassant(board, piece, pieceMovement);
-        else {
-            
-            // Piece displacement
-            board[pieceMovement.destPos.rank][pieceMovement.destPos.file] = piece;
-            board[pieceMovement.initPos.rank][pieceMovement.initPos.file] = nullptr;
-            piece->_position = {pieceMovement.destPos.file, pieceMovement.destPos.rank};
-        }
-        if (pieceMovement.type == MoveType::PROMOTION) {
-            board[piece->_position.rank][piece->_position.file] = new Queen(Type::QUEEN, piece->_position, piece->_color);
-            delete piece;
+        switch (move.type)
+        {
+            case MoveType::CASTLE_KINGSIDE:
+                KingSideCastle(board, piece);
+                break;
+
+            case MoveType::CASTLE_QUEENSIDE:
+                QueenSideCastle(board, piece);
+                break;
+
+            case MoveType::EN_PASSANT:
+                EnPassant(board, piece, pieceMovement);
+                break;
+
+            case MoveType::PROMOTION:
+                movePiece(move.initPos, move.destPos)
+                board[piece->_position.rank][piece->_position.file] = new Queen(Type::QUEEN, piece->_position, piece->_color);
+                delete piece;
+        
+            default:
+                movePiece(move.initPos, move.destPos);
+                break;
         }
     }
 
@@ -112,7 +116,7 @@ public:
         return nullptr;
     }
 
-    void EnPassant(std::vector<std::vector<Piece*>> &board, Piece *pawn, Move move) {
+    void enPassant(std::vector<std::vector<Piece*>> &board, Piece *pawn, Move move) {
             
         // Pawn displacement
         board[move.destPos.rank][move.destPos.file] = pawn;
@@ -130,7 +134,8 @@ public:
         pawn->_position = {move.destPos.file, move.destPos.rank};
     }
 
-    void KingSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king) {
+
+    void kingSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king) {
 
         // Rook displacement
         board[king->_position.rank][king->_position.file + 1] = board[king->_position.rank][king->_position.file + 3];
@@ -143,7 +148,8 @@ public:
         king->_position = {static_cast<int8_t>(king->_position.file + 2), king->_position.rank};
     }
 
-    void QueenSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king) {
+
+    void queenSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king) {
 
         // Rook displacement
         board[king->_position.rank][king->_position.file - 1] = board[king->_position.rank][king->_position.file - 4];
@@ -154,32 +160,6 @@ public:
         board[king->_position.rank][king->_position.file] = nullptr;
         board[king->_position.rank][king->_position.file - 2] = king;
         king->_position = {static_cast<int8_t>(king->_position.file - 2), king->_position.rank};
-        
-    }
-
-
-    std::string toFEN() {
-        std::string fen;
-
-        for (int8_t i=BOARD_LENGTH - 1; i >= 0; i--) {
-            int8_t wo_piece = 0;
-            for (int8_t j=0; j < BOARD_LENGTH; j++) {
-                if (_board[i][j] != nullptr) {
-                    if (wo_piece != 0) {
-                        fen.append(std::to_string(wo_piece));
-                        wo_piece = 0;
-                    }
-                    fen.push_back(_board[i][j]->toFEN());
-                }
-                else {
-                    wo_piece++;
-                }
-            }
-            if (wo_piece != 0) fen.append(std::to_string(wo_piece));
-            fen.push_back('/');
-        }
-        fen.pop_back(); // Remove the last '/'
-        return fen;
     }
 
 
@@ -196,7 +176,78 @@ public:
                 }
             }
             std::cout << std::endl;
-            
         }
+    }
+
+    
+    bool isKingInCheck(Color kingColor, std::vector<std::vector<Piece*>> board) {
+        Piece *king = _board->findKing(board, kingColor);
+        if (!king) {
+            std::cerr << "Erreur : Roi introuvable !" << std::endl;
+            return false;
+        }
+
+        return isSquareAttacked(king->_position, board, king->_color);
+    }
+
+
+    bool isSquareAttacked(Square position, std::vector<std::vector<Piece*>> board, Color color) {
+        for (int8_t i = 0; i < BOARD_LENGTH; i++)
+        {
+            for (int8_t j = 0; j < BOARD_LENGTH; j++)
+            {
+                if (board[i][j] == nullptr || board[i][j]->_color == color) continue;
+                else {
+                    std::vector<Move> possibleMoves = getLegalMoves(board, {j, i});
+                    for (Move m: possibleMoves)
+                    {
+                        if (m.destPos == position) {
+                            return true;
+                        }
+                    }
+                    
+                } 
+            }
+        }
+        return false;
+    }
+
+private:
+
+    void movePiece(Square from, Square to) {
+            
+        // Piece displacement
+        board[to.rank][to.file] = board[from.rank][from.file];
+        board[from.rank][from.file] = nullptr;
+        piece->_position = to;
+    }
+
+    void promotion(Square pawnSq, Type pieceType) {
+
+        delete _board[pawnSq.rank][pawnSq.file];
+        Color pawnColor = _board[pawnSq.rank][pawnSq.file]->_color;
+        Piece *newPiece;
+
+        switch (pieceType)
+        {
+
+        case Type::ROOK:
+            newPiece = new Rook(pieceType, pawnSq, pawnColor);
+            break;
+
+        case Type::BISHOP:
+            newPiece = new Bishop(pieceType, pawnSq, pawnColor);
+            break;
+
+        case Type::KNIGHT:
+            newPiece = new Knight(pieceType, pawnSq, pawnColor);
+            break;
+        
+        default:
+            newPiece = new Queen(pieceType, pawnSq, pawnColor);
+            break;
+        }
+
+        _board[pawnSq.rank][pawnSq.file] = newPiece;
     }
 };

@@ -1,0 +1,101 @@
+
+#include "../board.hpp"
+#include "pieces/utils/move.hpp"
+#include "MoveGenerator.hpp"
+    
+
+MoveGenerator::MoveGenerator(GameBoard& board) {
+    _board = board;
+}
+
+
+std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
+
+    std::vector<std::vector<Square>> rawMoves = piece->getRawMoves();
+    std::vector<Move> rawPossibleMoves;
+
+    if (piece->_pieceType == Type::PAWN) {
+
+        for (std::vector<Square> dm: rawMoves) {
+
+            // Forward
+            if (dm[0].file == piece->_position.file) {
+                for (Square p: dm) {
+                    Piece *presentPiece = board[p.rank][p.file];
+                    if (presentPiece != nullptr) {
+                        break;
+                    }
+                    else if (p.rank == BOARD_LENGTH - 1 || p.rank == 0) {
+                        rawPossibleMoves.push_back({piece->_position, p, MoveType::PROMOTION, false});
+                    }
+                    else {
+                        rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
+                    }
+                }
+            }
+
+            // Side take
+            else {
+                Square takePosition = dm[0];
+                Piece *presentPiece = board[takePosition.rank][takePosition.file];
+                if (presentPiece != nullptr && presentPiece->_color != piece->_color)
+                {
+                    if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
+                        rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::PROMOTION, true});
+                    }
+                    else {
+                        rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::NORMAL, true});
+                    }
+                }
+                else if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
+                    
+                }
+                else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
+                    rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT, true});
+                }
+            }
+        }
+    }
+
+    else if (piece->_pieceType == Type::KING) {
+        for (std::vector<Square> dm: rawMoves)
+        {
+            for (Square p: dm) {
+                int8_t distance  = p.file - piece->_position.file;
+                Piece *presentPiece = board[p.rank][p.file];
+                if (distance == 2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_KINGSIDE});
+                else if (distance == -2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_QUEENSIDE});
+                else if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
+                    break;
+                }
+                else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
+                    rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
+                    break;
+                }
+                else {
+                    rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
+                }
+            }
+        }
+    }
+    else {
+
+        for (std::vector<Square> dm: rawMoves)
+        {
+            for (Square p: dm) {
+                Piece *presentPiece = board[p.rank][p.file];
+                if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
+                    break;
+                }
+                else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
+                    rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
+                    break;
+                }
+                else {
+                    rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
+                }
+            }
+        }
+    }
+    return rawPossibleMoves;
+}

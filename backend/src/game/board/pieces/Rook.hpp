@@ -10,18 +10,18 @@
 class Rook: public Piece {
 
     public:
-        Rook(Type pieceType, const Position &startPosition, Color color)
+        Rook(Type pieceType, const Square &startPosition, Color color)
             : Piece(pieceType, startPosition, color) {}
 
-        std::vector<std::vector<Position>> getRawMoves() const override {
+        std::vector<std::vector<Square>> getRawMoves() const override {
             return getRookMoves(_position);
         }
 
-        static std::vector<std::vector<Position>> getRookMoves(const Position &currentPosition) {
-            std::vector<std::vector<Position>> possibleMoves;
+        static std::vector<std::vector<Square>> getRookMoves(const Square &currentPosition) {
+            std::vector<std::vector<Square>> possibleMoves;
 
             // Direction to the top
-            std::vector<Position> directionMoves;
+            std::vector<Square> directionMoves;
             for (std::int8_t i = currentPosition.rank + 1; i < BOARD_LENGTH; i++)
             {
                 directionMoves.push_back({currentPosition.file, i});
