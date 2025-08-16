@@ -12,6 +12,26 @@ Game::Game(crow::SimpleApp& app) {
 }
 
 
+bool Game::applyMove(const Move& move) {
+    std::vector<Move> legalMoves = getLegalMoves(move.initPos);
+    for (Move m: legalMoves) {
+        if (m == move) {
+            _board.makeMove(move);
+            return true;
+        }
+    }
+    return false;
+}
+
+
+std::vector<Move> Game::getLegalMoves(Square sq) {
+    Piece piece = _board.getPieceAt(move.initPos);
+    std::vector<Move> rawMoves = rawMoves_moveGenerator.getRawPossibleMoves(&piece);
+    std::vector<Move> legalMoves = _moveValidator.filterLegalMoves(rawMoves);
+    return legalMoves;
+}
+
+
 GameState Game::getGameState() {
     for (auto row: _board->_board) {
         for (auto cell: row) {

@@ -4,7 +4,7 @@
 #include "move/MoveGenerator.hpp
 #include "move/MoveValidator.hpp"
 #include "pieces/utils/color.hpp"
-#include "pieces/utils/position.hpp"
+#include "pieces/utils/Square.hpp"
 #include "board/pieces/utils/GameState.hpp"
 
 
@@ -21,4 +21,6 @@ public:
     Game();
     ~Game();
     GameState getGameState();
+    bool applyMove(const Move& move);
+    std::vector<Move> getLegalMoves(Square sq) const;
 };

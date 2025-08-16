@@ -1,17 +1,20 @@
 #pragma once
 
-#include "game.hpp"
+#include <unordered_map>
 
+#include "game.hpp"
+#include "api/websocket/GameSession.hpp"
 
 
 class GameController
 {
 private:
-    Game& _game;
-    GameSession& _gameSession;
+    std::unordered_map<int, GameSession> _sessions;
+    int _nextId = 1;
+    
 public:
     GameController();
     ~GameController();
     int createGame();
-    GameSession* getGameSession();
+    GameSession* getGameSession(int gameId);
 };
