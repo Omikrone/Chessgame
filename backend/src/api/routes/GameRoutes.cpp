@@ -4,14 +4,14 @@
 void registerGameRoutes(crow::SimpleApp& app, GameController &gameController) {
     
     CROW_ROUTE(app, "/games").methods("POST"_method)
-    ([&app, &games](const crow::request& req){
+    ([&app, &gameController](const crow::request& req){
         auto body = crow::json::load(req.body);
         if (!body) return crow::response(400, "Invalid JSON");
 
         std::string from = body["from"].s();
         std::string to = body["to"].s();
         std::cout << "New game !" << std::endl;
-        auto game = std::make_unique<Game>(app);
+        gameController.
 
         return crow::response(200, "ok");
     });

@@ -7,8 +7,9 @@ class GameSession
 {
 private:
     Game _game;
-    crow::websocket::connection* ws;
+    crow::websocket::connection* _ws;
 public:
     GameSession();
     ~GameSession();
+    onMoveReceived(std::string rawMove);
 };
