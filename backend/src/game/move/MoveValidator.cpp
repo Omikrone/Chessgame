@@ -2,23 +2,22 @@
 
 
 std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, Square piecePosition) {
-    Piece *piece = _board->_board[initPos.rank][initPos.file];
+    Piece *piece = _board._board[piecePosition.rank][piecePosition.file];
 
-    std::vector<Move> withoutCastleMoves = filterCastleMoves(&piece->_position, rawPossibleMoves);
-    std::vector<Move> legalMoves = filterCheckMoves(&piece->_position, withoutCastleMoves);  
+    std::vector<Move> withoutCastleMoves = filterCastleMoves(piece->_position, rawPossibleMoves);
+    std::vector<Move> legalMoves = filterCheckMoves(piece->_position, withoutCastleMoves);  
     return legalMoves;
 }
 
 
-std::vector<Move>& MoveValidator::filterCheckMoves(Square *piecePosition, std::vector<Move> possibleMoves) {
+std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move> possibleMoves) {
     std::vector<Move> legalMoves;
     std::vector<std::vector<Piece *>> simulatedBoard;
 
-    Piece *piece = _board->_board[piecePosition->rank][piecePosition->file];
-
     for (Move m: possibleMoves) {
-        simulatedBoard = deepCopyBoard(_board->_board);
-        _board->makeMove(simulatedBoard, m);
+        Piece *piece = _board.getPieceAt(m.initPos);
+        simulatedBoard = deepCopyBoard(_board._board);
+        _board.makeMove(simulatedBoard, m);
         
         if (!isKingInCheck(piece->_color, simulatedBoard)) {
             legalMoves.push_back(m);

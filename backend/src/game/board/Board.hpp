@@ -18,20 +18,25 @@ public:
 
     std::vector<std::vector<Piece*>> _board =
         std::vector<std::vector<Piece*>>(BOARD_LENGTH, std::vector<Piece*>(BOARD_LENGTH, nullptr));
+    King& _whiteKing;
+    King& _blackKing;
 
     GameBoard();
 
     void initBoard();
-    Piece getPieceAt(Square sq) const;
+    Piece *getPieceAt(Square sq) const;
     Color getCurrentTurn() const;
     void makeMove(Move &move);
+    King& getKing(Color kingColor);
+    bool isSquareAttacked(std::vector<Move&> possibleMoves, Square position);
+    void printBoard();
 
-    Piece *findKing(std::vector<std::vector<Piece*>> &board, Color kingColor);
+private:
+    void movePiece(Square from, Square to);
+    void enPassant(Piece *pawn, Move move);
 
-    void EnPassant(std::vector<std::vector<Piece*>> &board, Piece *pawn, Move move);
+    void kingSideCastle(Piece *king);
 
-    void KingSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king);
-
-    void QueenSideCastle(std::vector<std::vector<Piece*>> &board, Piece *king);
-    void printBoard(std::vector<std::vector<Piece*>> board);
+    void queenSideCastle(Piece *king);
+    void promotion(Piece *pawnToPromote, Type pieceType);
 };

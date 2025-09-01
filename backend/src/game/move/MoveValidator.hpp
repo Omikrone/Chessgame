@@ -1,8 +1,10 @@
+#pragma once
+
 #include <vector>
 
-#include "pieces/utils/move.hpp"
-#include "pieces/piece.hpp"
-#include "Board.hpp"
+#include "../board/pieces/utils/Move.hpp"
+#include "../board/pieces/Piece.hpp"
+#include "../board/Board.hpp"
 
 
 class MoveValidator

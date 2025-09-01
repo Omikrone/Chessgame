@@ -3,8 +3,8 @@
 #include "board/Board.hpp"
 #include "move/MoveGenerator.hpp
 #include "move/MoveValidator.hpp"
-#include "pieces/utils/color.hpp"
-#include "pieces/utils/Square.hpp"
+#include "board/pieces/utils/color.hpp"
+#include "board/pieces/utils/Square.hpp"
 #include "board/pieces/utils/GameState.hpp"
 
 

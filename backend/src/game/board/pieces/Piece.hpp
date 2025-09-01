@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "utils/position.hpp"
+#include "utils/Square.hpp"
 #include "utils/color.hpp"
 #include "utils/move.hpp"
 #include "utils/type.hpp"

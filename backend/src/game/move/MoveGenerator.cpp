@@ -21,7 +21,7 @@ std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
             // Forward
             if (dm[0].file == piece->_position.file) {
                 for (Square p: dm) {
-                    Piece *presentPiece = board[p.rank][p.file];
+                    Piece *presentPiece = _board._board[p.rank][p.file];
                     if (presentPiece != nullptr) {
                         break;
                     }
@@ -37,7 +37,7 @@ std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
             // Side take
             else {
                 Square takePosition = dm[0];
-                Piece *presentPiece = board[takePosition.rank][takePosition.file];
+                Piece *presentPiece = _board._board[takePosition.rank][takePosition.file];
                 if (presentPiece != nullptr && presentPiece->_color != piece->_color)
                 {
                     if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
@@ -50,9 +50,9 @@ std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
                 else if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
                     
                 }
-                else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
+                /*else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
                     rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT, true});
-                }
+                }*/
             }
         }
     }
@@ -62,7 +62,7 @@ std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
         {
             for (Square p: dm) {
                 int8_t distance  = p.file - piece->_position.file;
-                Piece *presentPiece = board[p.rank][p.file];
+                Piece *presentPiece = _board._board[p.rank][p.file];
                 if (distance == 2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_KINGSIDE});
                 else if (distance == -2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_QUEENSIDE});
                 else if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
@@ -83,7 +83,7 @@ std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
         for (std::vector<Square> dm: rawMoves)
         {
             for (Square p: dm) {
-                Piece *presentPiece = board[p.rank][p.file];
+                Piece *presentPiece = _board._board[p.rank][p.file];
                 if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
                     break;
                 }
