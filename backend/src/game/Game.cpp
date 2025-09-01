@@ -7,8 +7,8 @@ Game::Game(crow::SimpleApp& app) {
     _moveGenerator = new MoveGenerator(_board);
     _moveValidator = new MoveValidator(_board);
     _currentTurn = Color::WHITE;
-    _blackMoves = 0;
-    _whiteMoves = 0;
+    _blackMovesNb = 0;
+    _whiteMovesNb = 0;
 }
 
 
@@ -43,4 +43,13 @@ GameState Game::getGameState() {
     }
     if (_moveGenerator->isKingInCheck(_currentTurn, _board->_board)) return GameState::CHECKMATE;
     else return GameState::STALEMATE;
+}
+
+GameBoard& Game::getGameBoard() const {
+    return _board;
+}
+
+int Game::getNbMoves(Color side) const {
+    if (side == Color::WHITE) return _whiteMovesNb;
+    else return _blackMovesNb;
 }

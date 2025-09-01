@@ -15,12 +15,15 @@ private:
     MoveGenerator& _moveGenerator;
     MoveValidator& _moveValidator;
     Color _currentTurn;
-    int _blackMoves;
-    int _whiteMoves;
+    int _blackMovesNb;
+    int _whiteMovesNb;
 public:
     Game();
     ~Game();
     GameState getGameState();
     bool applyMove(const Move& move);
     std::vector<Move> getLegalMoves(Square sq) const;
+    Color getCurrentTurn() const;
+    GameBoard& getGameBoard() const;
+    int getNbMoves(Color side) const;
 };

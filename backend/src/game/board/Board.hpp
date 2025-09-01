@@ -25,7 +25,6 @@ public:
 
     void initBoard();
     Piece *getPieceAt(Square sq) const;
-    Color getCurrentTurn() const;
     void makeMove(Move &move);
     King& getKing(Color kingColor);
     bool isSquareAttacked(std::vector<Move&> possibleMoves, Square position);
