@@ -69,7 +69,7 @@ Piece *GameBoard::getPieceAt(Square sq) const {
 }
 
 
-void GameBoard::makeMove(Move& move) {
+void GameBoard::makeMove(const Move& move) {
     Piece *piece = getPieceAt(move.initPos);
 
     switch (move.type)

@@ -7,7 +7,21 @@
 MoveGenerator::MoveGenerator(GameBoard& board) : _board(board) {}
 
 
-std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {
+std::vector<Move> MoveGenerator::getAllPossibleMoves(Color side) {
+    std::vector<Move> allPossibleMoves;
+
+    for (auto rank: _board._board) {
+        for (auto cell: rank) {
+            if (cell != nullptr && cell->_color == side) {
+                std::vector<Move> possibleMoves = getPossibleMoves(cell);
+                allPossibleMoves.insert(allPossibleMoves.end(), possibleMoves.begin(), possibleMoves.end());
+            }
+        }
+    }
+    return allPossibleMoves;
+}
+
+std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
 
     std::vector<std::vector<Square>> rawMoves = piece->getRawMoves();
     std::vector<Move> rawPossibleMoves;

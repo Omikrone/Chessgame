@@ -1,5 +1,5 @@
 #include "../board/Board.hpp"
-#include "pieces/utils/move.hpp"
+#include "../board/pieces/utils/Move.hpp"
 
 
 class MoveGenerator
@@ -10,5 +10,6 @@ class MoveGenerator
         MoveGenerator(GameBoard& board);
         ~MoveGenerator();
 
-        std::vector<Move> getRawPossibleMoves(Piece *piece);
+        std::vector<Move> getAllPossibleMoves(Color side);
+        std::vector<Move> getPossibleMoves(Piece *piece);
 };

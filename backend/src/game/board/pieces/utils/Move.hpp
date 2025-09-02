@@ -16,4 +16,8 @@ struct Move
     Square destPos;
     MoveType type;
     bool take;
+
+    bool operator==(const Move& other) const {
+        return (this->initPos == other.initPos && this->destPos == other.destPos);
+    }
 };

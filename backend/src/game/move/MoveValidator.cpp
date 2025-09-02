@@ -9,7 +9,7 @@ std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibl
 }
 
 
-/*ool MoveValidator::filterEnPassantMoves(std::vector<Move>& rawPossibleMoves) {
+/*bool MoveValidator::filterEnPassantMoves(std::vector<Move>& rawPossibleMoves) {
     Piece *pieceToTake = _board._board[lastMove.destPos.rank][lastMove.destPos.file];
     if (pieceToTake == nullptr || pieceToTake->_color == piece->_color || pieceToTake->_pieceType != Type::PAWN) return false;
     int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;

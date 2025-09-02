@@ -1,15 +1,17 @@
 #include "Game.hpp"
 
 
-Game::Game(crow::SimpleApp& app) {
-    _board = new GameBoard();
+Game::Game()
+    : _board(),
+      _moveGenerator(_board),
+      _moveValidator(_board),
+      _currentTurn(Color::WHITE),
+      _blackMovesNb(0),
+      _whiteMovesNb(0)
+{
     _board.initBoard();
-    _moveGenerator = new MoveGenerator(_board);
-    _moveValidator = new MoveValidator(_board);
-    _currentTurn = Color::WHITE;
-    _blackMovesNb = 0;
-    _whiteMovesNb = 0;
 }
+
 
 
 bool Game::applyMove(const Move& move) {
@@ -25,27 +27,39 @@ bool Game::applyMove(const Move& move) {
 
 
 std::vector<Move> Game::getLegalMoves(Square sq) {
-    Piece piece = _board.getPieceAt(move.initPos);
-    std::vector<Move> rawMoves = rawMoves_moveGenerator.getRawPossibleMoves(&piece);
-    std::vector<Move> legalMoves = _moveValidator.filterLegalMoves(rawMoves);
+    Piece *piece = _board.getPieceAt(sq);
+    std::vector<Move> rawMoves = _moveGenerator.getPossibleMoves(piece);
+
+    std::vector<Move> ennemyMoves;
+    if (piece->_color == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
+    else ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::WHITE);
+
+    std::vector<Move> legalMoves = _moveValidator.filterLegalMoves(rawMoves, ennemyMoves);
     return legalMoves;
 }
 
 
 GameState Game::getGameState() {
-    for (auto row: _board->_board) {
+    for (auto row: _board._board) {
         for (auto cell: row) {
             if (cell != nullptr && cell->_color == _currentTurn) {
-                std::vector<Move> possibleMoves = _moveGenerator->getPossibleMoves(_board->_board, {cell->_position.file, cell->_position.rank});
+                std::vector<Move> possibleMoves = _moveGenerator.getPossibleMoves(cell);
                 if (!possibleMoves.empty()) return GameState::CONTINUING;
             }
         }
     }
-    if (_moveGenerator->isKingInCheck(_currentTurn, _board->_board)) return GameState::CHECKMATE;
+
+    
+    std::vector<Move> ennemyMoves;
+    if (_currentTurn == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
+    else ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::WHITE);
+
+    King& king = _board.getKing(_currentTurn);
+    if (_board.isSquareAttacked(ennemyMoves, king._position)) return GameState::CHECKMATE;
     else return GameState::STALEMATE;
 }
 
-GameBoard& Game::getGameBoard() const {
+GameBoard& Game::getGameBoard() {
     return _board;
 }
 
