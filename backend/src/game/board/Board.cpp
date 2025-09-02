@@ -182,7 +182,7 @@ void GameBoard::promotion(Piece *pawnToPromote, Type pieceType) {
 }
 
 
-bool GameBoard::isSquareAttacked(std::vector<Move&> ennemyMoves, Square sq) {
+bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
     for (Move m: ennemyMoves)
     {
         // If a possible (legal) ennemy move reach the square, then the square is attacked by the other team

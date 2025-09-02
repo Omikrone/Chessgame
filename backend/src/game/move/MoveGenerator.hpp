@@ -5,7 +5,7 @@
 class MoveGenerator
 {
     private:
-        GameBoard _board;
+        GameBoard& _board;
     public:
         MoveGenerator(GameBoard& board);
         ~MoveGenerator();

@@ -4,9 +4,7 @@
 #include "MoveGenerator.hpp"
     
 
-MoveGenerator::MoveGenerator(GameBoard& board) {
-    _board = board;
-}
+MoveGenerator::MoveGenerator(GameBoard& board) : _board(board) {}
 
 
 std::vector<Move> MoveGenerator::getRawPossibleMoves(Piece *piece) {

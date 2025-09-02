@@ -27,7 +27,7 @@ public:
     Piece *getPieceAt(Square sq) const;
     void makeMove(Move &move);
     King& getKing(Color kingColor);
-    bool isSquareAttacked(std::vector<Move&> possibleMoves, Square position);
+    bool isSquareAttacked(std::vector<Move>& ennemyMoves, Square position);
     void printBoard();
 
 private:

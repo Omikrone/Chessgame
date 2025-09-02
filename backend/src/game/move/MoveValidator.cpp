@@ -1,25 +1,36 @@
 #include "MoveValidator.hpp"
 
 
-std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, Square piecePosition) {
-    Piece *piece = _board._board[piecePosition.rank][piecePosition.file];
+std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves) {
 
-    std::vector<Move> withoutCastleMoves = filterCastleMoves(piece->_position, rawPossibleMoves);
-    std::vector<Move> legalMoves = filterCheckMoves(piece->_position, withoutCastleMoves);  
+    std::vector<Move> withoutCastleMoves = filterCastleMoves(rawPossibleMoves, ennemyPossibleMoves);
+    std::vector<Move> legalMoves = filterCheckMoves(withoutCastleMoves, ennemyPossibleMoves);  
     return legalMoves;
 }
 
 
-std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move> possibleMoves) {
+/*ool MoveValidator::filterEnPassantMoves(std::vector<Move>& rawPossibleMoves) {
+    Piece *pieceToTake = _board._board[lastMove.destPos.rank][lastMove.destPos.file];
+    if (pieceToTake == nullptr || pieceToTake->_color == piece->_color || pieceToTake->_pieceType != Type::PAWN) return false;
+    int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;
+    if (distance != 2 && distance != -2) return false;
+    if (takePosition->file == pieceToTake->_position.file && piece->_position.rank == pieceToTake->_position.rank) return true;
+}
+EN PASSANT FOURNIR L'HISTORIQUE    
+*/
+
+
+std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
     std::vector<Move> legalMoves;
     std::vector<std::vector<Piece *>> simulatedBoard;
 
     for (Move m: possibleMoves) {
         Piece *piece = _board.getPieceAt(m.initPos);
         simulatedBoard = deepCopyBoard(_board._board);
-        _board.makeMove(simulatedBoard, m);
+        _board.makeMove(m); // INTEGRER LA SIMULATION DE BOARD (DEEP COPY)
         
-        if (!isKingInCheck(piece->_color, simulatedBoard)) {
+        King& king = _board.getKing(piece->_color);
+        if (!_board.isSquareAttacked(ennemyPossibleMoves, king._position)) {
             legalMoves.push_back(m);
         }
         
@@ -33,18 +44,16 @@ std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move> possibleMov
 }
 
 
-std::vector<Move>& MoveValidator::filterCastleMoves(Square *piecePosition, std::vector<Move> possibleMoves) {
+std::vector<Move>& MoveValidator::filterCastleMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
     std::vector<Move> legalMoves;
 
-    Piece *piece = _board->_board[piecePosition->rank][piecePosition->file];
-    if (piece->_pieceType != Type::KING) return possibleMoves;
-
     for (Move m: possibleMoves) {
+        Piece *piece = _board.getPieceAt(m.initPos);
         if (m.type == MoveType::CASTLE_KINGSIDE) {
-            if (checkKingSideCastle(piece)) legalMoves.push_back(m);
+            if (checkKingSideCastle(piece, ennemyPossibleMoves)) legalMoves.push_back(m);
         }
         else if (m.type == MoveType::CASTLE_QUEENSIDE) {
-            if (checkQueenSideCastle(piece)) legalMoves.push_back(m);
+            if (checkQueenSideCastle(piece, ennemyPossibleMoves)) legalMoves.push_back(m);
         }
         else {
             legalMoves.push_back(m);
@@ -54,39 +63,31 @@ std::vector<Move>& MoveValidator::filterCastleMoves(Square *piecePosition, std::
 }
 
 
-bool MoveValidator::checkKingSideCastle(Piece *king) {
+bool MoveValidator::checkKingSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves) {
     if (king->_hasMoved) return false;
-    Piece *rook = _board->_board[king->_position.rank][king->_position.file + 3];
+    Piece *rook = _board._board[king->_position.rank][king->_position.file + 3];
     if (rook == nullptr || rook->_hasMoved) return false;
-    if (isSquareAttacked(king->_position, _board->_board, king->_color)) return false;
+    if (_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) return false;
     for (int8_t f = BOARD_LENGTH - 2; f > king->_position.file; f--)
     {
-        if (_board->_board[king->_position.rank][f] != nullptr || isSquareAttacked({f, king->_position.rank}, _board->_board, king->_color)) {
+        if (_board._board[king->_position.rank][f] != nullptr || _board.isSquareAttacked(ennemyPossibleMoves, {f, king->_position.rank})) {
             return false;
         }
     }
     return true;
 }
 
-bool MoveValidator::checkQueenSideCastle(Piece *king) {
+
+bool MoveValidator::checkQueenSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves) {
     if (king->_hasMoved) return false;
-    Piece *rook = _board->_board[king->_position.rank][king->_position.file - 4];
+    Piece *rook = _board._board[king->_position.rank][king->_position.file - 4];
     if (rook == nullptr || rook->_hasMoved) return false;
-    if (isSquareAttacked(king->_position, _board->_board, king->_color)) return false;
+    if (_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) return false;
     for (int8_t f = 1; f < king->_position.file; f++)
     {
-        if (_board->_board[king->_position.rank][f] != nullptr || isSquareAttacked({f, king->_position.rank}, _board->_board, king->_color)) return false;
+        if (_board._board[king->_position.rank][f] != nullptr || _board.isSquareAttacked(ennemyPossibleMoves, {f, king->_position.rank})) return false;
     }
     return true;
-}
-
-
-bool MoveValidator::checkEnPassant(std::vector<std::vector<Piece*>> board, Piece *piece, Square *takePosition, Move lastMove) {
-    Piece *pieceToTake = board[lastMove.destPos.rank][lastMove.destPos.file];
-    if (pieceToTake == nullptr || pieceToTake->_color == piece->_color || pieceToTake->_pieceType != Type::PAWN) return false;
-    int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;
-    if (distance != 2 && distance != -2) return false;
-    if (takePosition->file == pieceToTake->_position.file && piece->_position.rank == pieceToTake->_position.rank) return true;
 }
 
     
