@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include "game.hpp"
-#include "api/websocket/GameSession.hpp"
+#include "../websocket/GameSession.hpp"
 
 
 class GameController

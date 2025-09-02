@@ -3,10 +3,7 @@
 
 GameController::GameController() {}
 
-
-GameController::~GameController()
-{
-}
+GameController::~GameController() {}
 
 
 int GameController::createGame() {
