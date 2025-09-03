@@ -1,18 +1,18 @@
 #include "GameRoutes.hpp"
 
 
-void registerGameRoutes(crow::SimpleApp& app, GameController &gameController) {
+crow::response registerGameRoutes(crow::SimpleApp& app, GameController &gameController) {
     
     CROW_ROUTE(app, "/games").methods("POST"_method)
     ([&app, &gameController](const crow::request& req){
         auto body = crow::json::load(req.body);
         if (!body) return crow::response(400, "Invalid JSON");
 
-        std::string from = body["from"].s();
-        std::string to = body["to"].s();
-        std::cout << "New game !" << std::endl;
-        gameController.
+        int gameId = gameController.createGame();
 
-        return crow::response(200, "ok");
+        crow::json::wvalue res;
+        res["status"] = "success";
+        res["gameId"] = gameId;
+        return crow::response(200, res);
     });
 }
