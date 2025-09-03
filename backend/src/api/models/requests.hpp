@@ -25,7 +25,6 @@ struct PossibleMovesReq
 struct MakeMoveReq 
 {
     MessageType type;
-    std::string move_type;
     std::string move;
 
     static MakeMoveReq fromJson(const crow::json::rvalue& json) {

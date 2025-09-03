@@ -1,29 +1,31 @@
 #include "GameSession.hpp"
 
 
-GameSession::GameSession() {
-    _game = new Game();
-}
+GameSession::GameSession()
+: _game(Game()) 
+{}
 
 
-GameSession::onMoveReceived(std::string rawMove) {
+void GameSession::onMoveReceived(std::string rawMove) {
                 
-    std::string from = body["from"].s();
-    std::string to = body["to"].s();
-    Square initPos = convertInputToPos(from);
-    Square destPos = convertInputToPos(to);
-    CROW_LOG_INFO << "New message : " << data;
+    std::string from = rawMove["from"].s();
+    std::string to = rawMove["to"].s();
+    Move moveReq = Parser::parseMove(from, to);
+    CROW_LOG_INFO << "New message : " << rawMove;
 
-    std::vector<Move> possibleMoves = _moveGenerator->getPossibleMoves(_board->_board, initPos);
+    std::vector<Move> possibleMoves = _game.getLegalMoves(moveReq.initPos);
+    for (Move m: possibleMoves) {
+        if (m == moveReq) {
+            _game.applyMove(m);
+        }
+    }
 
-    _board->printBoard(_board->_board);
+    GameBoard& board = _game.getGameBoard();
+    board.printBoard();
 
     crow::json::wvalue response;
     response["type"] = "fen";
-    response["fen"] = toFEN();
+    response["fen"] = FEN::toString(_game);
 
-    conn.send_text(response.dump());
-    
-    GameState state = checkEndGame();
-    crow::json::wvalue endGameRes;
+    _ws->send_text(response.dump());
 }

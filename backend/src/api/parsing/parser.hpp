@@ -5,6 +5,6 @@
 
 class Parser {
 public:
-    static Square parsePosition(PossibleMovesReq req);
-    static Move parseMove(MakeMoveReq req);
+    static Square parsePosition(std::string pos);
+    static Move parseMove(std::string from, std::string to);
 };

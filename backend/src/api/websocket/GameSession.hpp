@@ -1,7 +1,10 @@
 #pragma once
 
-#include "crow.h"
 #include "game/Game.hpp"
+#include "parsing/parser.hpp"
+#include "game/Fen.hpp"
+#include "crow.h"
+
 
 
 class GameSession
@@ -12,5 +15,5 @@ private:
 public:
     GameSession();
     ~GameSession();
-    onMoveReceived(std::string rawMove);
+    void onMoveReceived(std::string rawMove);
 };
