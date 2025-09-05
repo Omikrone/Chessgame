@@ -1,7 +1,7 @@
 #include "WebSocketRoutes.hpp"
 
 
-void registerWebSocketRoutes(crow::SimpleApp& app, GameController& gameController) {
+void registerWebSocketRoutes(crow::App<crow::CORSHandler>& app, GameController& gameController) {
     CROW_WEBSOCKET_ROUTE(app, "/ws/<int>")
         .onopen([](crow::websocket::connection& conn) {
             CROW_LOG_INFO << "Client connected!";

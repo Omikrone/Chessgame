@@ -13,7 +13,7 @@
 using namespace crow;
 
 int main() {
-    crow::SimpleApp app;
+    crow::App<crow::CORSHandler> app;
     std::vector<std::unique_ptr<Game>> games;
 
     GameController controller = GameController();
