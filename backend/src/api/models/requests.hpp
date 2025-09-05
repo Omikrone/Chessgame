@@ -1,22 +1,18 @@
 #pragma once
 
 #include <string>
+#include <crow.h>
 
-
-enum class MessageType {
-    MOVE_REQUEST,
-    MAKE_MOVE
-};
 
 struct PossibleMovesReq
 {
-    MessageType type;
+    std::string type;
     std::string position;
 
     static PossibleMovesReq fromJson(const crow::json::rvalue& json) {
         PossibleMovesReq req;
-        req.type = json["type"];
-        req.position = json["position"];
+        req.type = json["type"].s();
+        req.position = json["position"].s();
         return req;
     }
 };
@@ -24,13 +20,13 @@ struct PossibleMovesReq
 
 struct MakeMoveReq 
 {
-    MessageType type;
+    std::string type;
     std::string move;
 
     static MakeMoveReq fromJson(const crow::json::rvalue& json) {
         MakeMoveReq req;
-        req.type = json["type"];
-        req.move = json["move"];
+        req.type = json["type"].s();
+        req.move = json["move"].s();
         return req;
     }
 };

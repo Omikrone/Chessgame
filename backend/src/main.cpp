@@ -4,10 +4,10 @@
 
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#include "game/game.hpp"
+#include "api/controllers/GameController.hpp"
+#include "game/Game.hpp"
 #include "api/routes/GameRoutes.hpp"
 #include "api/routes/WebSocketRoutes.hpp"
-#include "api/controllers/GameController.hpp"
 
 
 using namespace crow;

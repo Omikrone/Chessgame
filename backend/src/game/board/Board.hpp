@@ -23,7 +23,6 @@ public:
 
     GameBoard();
 
-    void initBoard();
     Piece *getPieceAt(Square sq) const;
     void makeMove(const Move &move);
     King& getKing(Color kingColor);

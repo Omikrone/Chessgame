@@ -6,7 +6,7 @@ GameSession::GameSession()
 {}
 
 
-void GameSession::onMoveReceived(std::string rawMove) {
+void GameSession::onMoveReceived(crow::json::rvalue rawMove) {
                 
     std::string from = rawMove["from"].s();
     std::string to = rawMove["to"].s();

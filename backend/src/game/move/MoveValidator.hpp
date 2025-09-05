@@ -18,6 +18,8 @@ private:
     std::vector<Move>& filterCheckMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves);
 public:
     MoveValidator(GameBoard& board);
-    ~MoveValidator();
+    ~MoveValidator() = default;
     std::vector<Move>& filterLegalMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves);
 };
+
+std::vector<std::vector<Piece*>> deepCopyBoard(const std::vector<std::vector<Piece*>>& board);

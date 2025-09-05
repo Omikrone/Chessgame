@@ -19,7 +19,7 @@ private:
     int _whiteMovesNb;
 public:
     Game();
-    ~Game();
+    ~Game() = default;
     bool applyMove(const Move& move);
     std::vector<Move> getLegalMoves(Square sq);
     GameState getGameState();

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "game/Game.hpp"
-#include "parsing/parser.hpp"
-#include "game/Fen.hpp"
+#include "../../game/Game.hpp"
+#include "../parsing/parser.hpp"
+#include "../../game/Fen.hpp"
 #include "crow.h"
 
 
@@ -14,6 +14,6 @@ private:
     crow::websocket::connection* _ws;
 public:
     GameSession();
-    ~GameSession();
-    void onMoveReceived(std::string rawMove);
+    ~GameSession() = default;
+    void onMoveReceived(crow::json::rvalue rawMove);
 };

@@ -8,9 +8,7 @@ Game::Game()
       _currentTurn(Color::WHITE),
       _blackMovesNb(0),
       _whiteMovesNb(0)
-{
-    _board.initBoard();
-}
+{}
 
 
 
@@ -48,7 +46,6 @@ GameState Game::getGameState() {
             }
         }
     }
-
     
     std::vector<Move> ennemyMoves;
     if (_currentTurn == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
@@ -66,4 +63,8 @@ GameBoard& Game::getGameBoard() {
 int Game::getNbMoves(Color side) const {
     if (side == Color::WHITE) return _whiteMovesNb;
     else return _blackMovesNb;
+}
+
+Color Game::getCurrentTurn() const {
+    return _currentTurn;
 }

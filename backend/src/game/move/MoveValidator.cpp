@@ -1,6 +1,9 @@
 #include "MoveValidator.hpp"
 
 
+MoveValidator::MoveValidator(GameBoard& gameBoard) : _board(gameBoard) {}
+
+
 std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves) {
 
     std::vector<Move> withoutCastleMoves = filterCastleMoves(rawPossibleMoves, ennemyPossibleMoves);

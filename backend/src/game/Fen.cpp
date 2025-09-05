@@ -1,8 +1,7 @@
 #include "Fen.hpp"
 
 
-
-std::string FEN::toString(const Game& game) {
+std::string FEN::toString(Game& game) {
     std::string fen;
 
     GameBoard& board = game.getGameBoard();

@@ -1,7 +1,7 @@
 #include "GameRoutes.hpp"
 
 
-crow::response registerGameRoutes(crow::SimpleApp& app, GameController &gameController) {
+void registerGameRoutes(crow::SimpleApp& app, GameController &gameController) {
     
     CROW_ROUTE(app, "/games").methods("POST"_method)
     ([&app, &gameController](const crow::request& req){

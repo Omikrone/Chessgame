@@ -5,8 +5,7 @@
 #include "Board.hpp"
 
 
-
-void GameBoard::initBoard() {
+GameBoard::GameBoard() : _whiteKing(King(Type::KING, {4, 0}, Color::WHITE)), _blackKing(King(Type::KING, {4, 7}, Color::BLACK)) {
 
     // Pawns initialization
     for (int8_t i = 0; i < BOARD_LENGTH; i++)
@@ -59,8 +58,8 @@ void GameBoard::initBoard() {
     _board[7][3] = new Queen(Type::QUEEN, {3, 7}, Color::BLACK);
 
     // Kings initialization
-    _board[0][4] = new King(Type::KING, {4, 0}, Color::WHITE);
-    _board[7][4] = new King(Type::KING, {4, 7}, Color::BLACK);
+    _board[0][4] = &_whiteKing;
+    _board[7][4] = &_blackKing;
 }
 
 

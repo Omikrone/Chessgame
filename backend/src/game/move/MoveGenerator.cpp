@@ -1,6 +1,6 @@
 
-#include "../Board.hpp"
-#include "pieces/utils/move.hpp"
+#include "../board/Board.hpp"
+#include "../board/pieces/utils/move.hpp"
 #include "MoveGenerator.hpp"
     
 

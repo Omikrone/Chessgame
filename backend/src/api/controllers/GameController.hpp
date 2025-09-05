@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "game.hpp"
+#include "../../game/Game.hpp"
 #include "../websocket/GameSession.hpp"
 
 
@@ -13,8 +13,8 @@ private:
     int _nextId = 1;
     
 public:
-    GameController();
-    ~GameController();
+    GameController() = default;
+    ~GameController() = default;
     int createGame();
     GameSession* getGameSession(int gameId);
 };

@@ -8,7 +8,7 @@ class MoveGenerator
         GameBoard& _board;
     public:
         MoveGenerator(GameBoard& board);
-        ~MoveGenerator();
+        ~MoveGenerator() = default;
 
         std::vector<Move> getAllPossibleMoves(Color side);
         std::vector<Move> getPossibleMoves(Piece *piece);
