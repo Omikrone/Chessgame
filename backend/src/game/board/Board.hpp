@@ -31,6 +31,7 @@ public:
     void makeMove(const Move &move);
     King& getKing(Color kingColor);
     bool isSquareAttacked(std::vector<Move>& ennemyMoves, Square position);
+    std::unique_ptr<GameBoard> clone() const;
     void printBoard();
 
 private:

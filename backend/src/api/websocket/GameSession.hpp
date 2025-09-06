@@ -11,9 +11,8 @@ class GameSession
 {
 private:
     Game _game;
-    crow::websocket::connection* _ws;
 public:
     GameSession();
     ~GameSession() = default;
-    void onMoveReceived(std::string from, std::string to);
+    void onMoveReceived(crow::websocket::connection& ws, std::string from, std::string to);
 };

@@ -36,8 +36,8 @@ class Knight: public Piece {
         return possibleMoves;
     }
 
-    Piece* clone() const override {
-        return new Knight(*this);
+    std::unique_ptr<Piece> clone() const override {
+        return std::make_unique<Knight>(*this);
     }
 
     char toFEN() const override {

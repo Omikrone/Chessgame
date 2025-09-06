@@ -6,7 +6,7 @@ GameSession::GameSession()
 {}
 
 
-void GameSession::onMoveReceived(std::string from, std::string to) {
+void GameSession::onMoveReceived(crow::websocket::connection& ws, std::string from, std::string to) {
 
     Move moveReq = Parser::parseMove(from, to);
 
@@ -19,10 +19,14 @@ void GameSession::onMoveReceived(std::string from, std::string to) {
             _game.applyMove(m);
         }
     }
+    board.printBoard();
+
+    std::cout << "CACA2";
 
     crow::json::wvalue response;
     response["type"] = "fen";
     response["fen"] = FEN::toString(_game);
 
-    _ws->send_text(response.dump());
+    ws.send_text(response.dump());
+    std::cout << response.dump();
 }

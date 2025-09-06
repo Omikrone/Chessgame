@@ -48,8 +48,8 @@ class Pawn : public Piece {
             return possibleMoves;
         }
 
-        Piece* clone() const override {
-            return new Pawn(*this);
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Pawn>(*this);
         }
 
         char toFEN() const override {

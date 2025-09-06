@@ -40,8 +40,8 @@ class King: public Piece {
             return possibleMoves;
         }
 
-        Piece* clone() const override {
-            return new King(*this);
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<King>(*this);
         }
 
         char toFEN() const override {

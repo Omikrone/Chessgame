@@ -34,7 +34,7 @@ void registerWebSocketRoutes(crow::App<crow::CORSHandler>& app, GameController& 
                 std::cout << "no game";
                 return crow::response(404, "Requested game not found");
             }
-            session->onMoveReceived(from, to);
+            session->onMoveReceived(conn, from, to);
         })
         .onclose([](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
             CROW_LOG_INFO << "Client disconnected : " << reason;

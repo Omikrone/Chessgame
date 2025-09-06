@@ -4,10 +4,10 @@
 MoveValidator::MoveValidator(GameBoard& gameBoard) : _board(gameBoard) {}
 
 
-std::vector<Move>& MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves) {
-
+std::vector<Move> MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, std::vector<Move>& ennemyPossibleMoves) {
+    
     std::vector<Move> withoutCastleMoves = filterCastleMoves(rawPossibleMoves, ennemyPossibleMoves);
-    std::vector<Move> legalMoves = filterCheckMoves(withoutCastleMoves, ennemyPossibleMoves);  
+    std::vector<Move> legalMoves = filterCheckMoves(withoutCastleMoves, ennemyPossibleMoves);
     return legalMoves;
 }
 
@@ -23,17 +23,16 @@ EN PASSANT FOURNIR L'HISTORIQUE
 */
 
 
-std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
+std::vector<Move> MoveValidator::filterCheckMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
     std::vector<Move> legalMoves;
-    //std::vector<std::vector<std::unique_ptr<Piece>>> simulatedBoard;
 
     for (Move m: possibleMoves) {
+        std::unique_ptr<GameBoard> simulatedBoard = _board.clone();
         Piece *piece = _board.getPieceAt(m.initPos);
-        //simulatedBoard = deepCopyBoard(_board._board);
-        _board.makeMove(m); // INTEGRER LA SIMULATION DE BOARD (DEEP COPY)
+        simulatedBoard.get()->makeMove(m);
         
-        King& king = _board.getKing(piece->_color);
-        if (!_board.isSquareAttacked(ennemyPossibleMoves, king._position)) {
+        King& king = simulatedBoard.get()->getKing(piece->_color);
+        if (!simulatedBoard.get()->isSquareAttacked(ennemyPossibleMoves, king._position)) {
             legalMoves.push_back(m);
         }
     }
@@ -41,7 +40,7 @@ std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move>& possibleMo
 }
 
 
-std::vector<Move>& MoveValidator::filterCastleMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
+std::vector<Move> MoveValidator::filterCastleMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
     std::vector<Move> legalMoves;
 
     for (Move m: possibleMoves) {

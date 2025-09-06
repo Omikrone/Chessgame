@@ -14,6 +14,7 @@ Game::Game()
 
 bool Game::applyMove(const Move& move) {
     std::vector<Move> legalMoves = getLegalMoves(move.initPos);
+    std::cout << std::endl << "POSSIBLE MOVES LENGTH : " << legalMoves.size() << std::endl;  
     for (Move m: legalMoves) {
         if (m == move) {
             _board.makeMove(move);
@@ -31,11 +32,11 @@ std::vector<Move> Game::getLegalMoves(Square sq) {
         return std::vector<Move>{};
     }
     std::vector<Move> rawMoves = _moveGenerator.getPossibleMoves(piece);
-    std::cout << "raw moves generated";
 
     std::vector<Move> ennemyMoves;
     if (piece->_color == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
     else ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::WHITE);
+    std::cout << "raw moves generated";
 
     std::vector<Move> legalMoves = _moveValidator.filterLegalMoves(rawMoves, ennemyMoves);
     return legalMoves;

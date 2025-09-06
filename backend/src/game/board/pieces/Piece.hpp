@@ -20,7 +20,7 @@ public:
     Piece(Type pieceType, const Square& position, Color color)
         : _pieceType(pieceType), _position(position), _color(color) {}
 
-    virtual Piece *clone() const = 0;
+    virtual std::unique_ptr<Piece> clone() const = 0;
 
     virtual ~Piece() = default;
 

@@ -59,8 +59,8 @@ class Bishop: public Piece {
             return possibleMoves;
         }
   
-        Piece* clone() const override {
-            return new Bishop(*this);
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Bishop>(*this);
         }
 
         char toFEN() const override {

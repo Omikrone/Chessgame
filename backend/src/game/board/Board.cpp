@@ -189,12 +189,14 @@ bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
 
 
 void GameBoard::movePiece(Square from, Square to) {
+    std::cout << "ACCA";
         
     // Piece displacement
     Piece *piece = getPieceAt(from);
     _board[to.rank][to.file] = std::move(_board[from.rank][from.file]);
     _board[from.rank][from.file].reset();
     piece->_position = to;
+    std::cout << "CACA";
 }
 
 
@@ -203,6 +205,20 @@ King &GameBoard::getKing(Color kingColor) {
     else return *_blackKing;
 }
 
+
+std::unique_ptr<GameBoard> GameBoard::clone() const {
+    auto newBoard = std::make_unique<GameBoard>();
+    newBoard->_board.resize(BOARD_LENGTH);
+    for (int r = 0; r < BOARD_LENGTH; ++r) {
+        newBoard->_board[r].resize(BOARD_LENGTH);
+        for (int f = 0; f < BOARD_LENGTH; ++f) {
+            if (_board[r][f]) {
+                newBoard->_board[r][f] = _board[r][f]->clone();
+            }
+        }
+    }
+    return newBoard;
+}
 
 
 void GameBoard::printBoard() {

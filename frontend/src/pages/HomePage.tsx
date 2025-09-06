@@ -1,8 +1,7 @@
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import "./pieces.css";
 import { createGame } from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 

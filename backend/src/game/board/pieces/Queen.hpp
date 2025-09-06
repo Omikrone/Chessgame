@@ -23,8 +23,8 @@ class Queen: public Piece {
             return possibleMoves;
         }
 
-        Piece* clone() const override {
-            return new Queen(*this);
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Queen>(*this);
         }
 
         char toFEN() const override {
