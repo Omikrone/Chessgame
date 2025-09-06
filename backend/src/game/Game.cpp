@@ -26,7 +26,12 @@ bool Game::applyMove(const Move& move) {
 
 std::vector<Move> Game::getLegalMoves(Square sq) {
     Piece *piece = _board.getPieceAt(sq);
+    if (piece == nullptr) {
+        std::cout << "Piece doesn't exists";
+        return std::vector<Move>{};
+    }
     std::vector<Move> rawMoves = _moveGenerator.getPossibleMoves(piece);
+    std::cout << "raw moves generated";
 
     std::vector<Move> ennemyMoves;
     if (piece->_color == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
@@ -51,8 +56,8 @@ GameState Game::getGameState() {
     if (_currentTurn == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
     else ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::WHITE);
 
-    King& king = _board.getKing(_currentTurn);
-    if (_board.isSquareAttacked(ennemyMoves, king._position)) return GameState::CHECKMATE;
+    King* king = _board.getKing(_currentTurn);
+    if (_board.isSquareAttacked(ennemyMoves, king->_position)) return GameState::CHECKMATE;
     else return GameState::STALEMATE;
 }
 

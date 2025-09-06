@@ -6,14 +6,13 @@ GameSession::GameSession()
 {}
 
 
-void GameSession::onMoveReceived(crow::json::rvalue rawMove) {
-                
-    std::string from = rawMove["from"].s();
-    std::string to = rawMove["to"].s();
+void GameSession::onMoveReceived(std::string from, std::string to) {
+
     Move moveReq = Parser::parseMove(from, to);
-    CROW_LOG_INFO << "New message : " << rawMove;
+
 
     std::vector<Move> possibleMoves = _game.getLegalMoves(moveReq.initPos);
+    std::cout << "all good";
     for (Move m: possibleMoves) {
         if (m == moveReq) {
             _game.applyMove(m);

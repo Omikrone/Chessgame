@@ -11,8 +11,8 @@ Square Parser::parsePosition(std::string pos) {
 
 Move Parser::parseMove(std::string from, std::string to) {
     Move move;
-    move.initPos = Parser::parsePosition(from.substr(0, 1));
-    move.destPos = Parser::parsePosition(to.substr(0, 1));
+    move.initPos = Parser::parsePosition(from.substr(0, 2));
+    move.destPos = Parser::parsePosition(to.substr(0, 2));
     move.take = false;
     move.type = MoveType::NORMAL;
     return move;

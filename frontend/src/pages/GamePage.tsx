@@ -1,67 +1,38 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChessBoard from "../components/ChessBoard";
-import { createGameSocket } from "../websocket/websocket";
+import { createGameSocket } from "../services/websocket";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import "./pieces.css";
-import GameOverModal from "../components/GameOverModal";
+import { useParams } from "react-router-dom";
 
 
-type GamePageProps = {
-  gameId: string;
-};
+export default function GamePage() {
 
-type ServerMessage = {
-  type: "fen" | "endgame";
-  fen?: string;
-  game_state?: "checkmate" | "stalemate";
-  winner?: "black" | "white";
-};
-
-export default function GamePage({ gameId }: GamePageProps) {
+  const { gameId } = useParams<{ gameId: string }>();
+  
   const [fen, setFen] = useState("start");
   const [updateId, setUpdateId] = useState(0);
-  const [socket, setSocket] = useState<ReturnType<typeof createGameSocket> | null>(null);
-  const [winner, setWinner] = useState<"black" | "white" | null>(null);
-
-  
-  const restartGame = () => {
-    setWinner(null);
-  };
+  const socketRef = useRef<ReturnType<typeof createGameSocket> | null>(null);
 
   useEffect(() => {
-    const ws = createGameSocket((rawData: string) => {
-      try {
-        fetch()
-        const data: ServerMessage = JSON.parse(rawData);
-        if (data.type === "fen" && data.fen) {
-          setFen(data.fen);
-          setUpdateId(id => id + 1);
-        }
-        else if (data.type === "endgame") {
-          setWinner(data.winner ?? null);
-        }
-      } catch (e) {
-        console.error("Invalid JSON from server:", rawData);
-      }
-    });
-    setSocket(ws);
+    if (!gameId) return;
 
-    return () => {
-      ws?.close?.();
-    };
-  }, [gameId]);
+    const socket = createGameSocket((message) => setFen(message.fen), Number(gameId));
+    socketRef.current = socket;
+  }, [gameId])
+
+  function handleMoveSubmitted(from: string, to: string) {
+    if (!gameId) return;
+    socketRef.current?.sendMove({type: 'move', gameId: Number(gameId), from, to});
+  }
 
   return (
     <>
       <ChessBoard
         fen={fen}
         updateId = {updateId}
-        onMove={(from, to) => socket?.sendMove(from, to)}
+        onMove={(from, to) => handleMoveSubmitted(from, to)}
       />
-      
-      {winner && (
-        <GameOverModal winner={winner} onRestart={restartGame} />
-      )}
     </>
   );
 }

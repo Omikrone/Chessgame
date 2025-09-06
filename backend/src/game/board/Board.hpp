@@ -18,14 +18,14 @@ public:
 
     std::vector<std::vector<Piece*>> _board =
         std::vector<std::vector<Piece*>>(BOARD_LENGTH, std::vector<Piece*>(BOARD_LENGTH, nullptr));
-    King& _whiteKing;
-    King& _blackKing;
+    King* _whiteKing;
+    King* _blackKing;
 
     GameBoard();
 
     Piece *getPieceAt(Square sq) const;
     void makeMove(const Move &move);
-    King& getKing(Color kingColor);
+    King* getKing(Color kingColor);
     bool isSquareAttacked(std::vector<Move>& ennemyMoves, Square position);
     void printBoard();
 

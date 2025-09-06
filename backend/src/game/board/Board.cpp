@@ -5,7 +5,7 @@
 #include "Board.hpp"
 
 
-GameBoard::GameBoard() : _whiteKing(King(Type::KING, {4, 0}, Color::WHITE)), _blackKing(King(Type::KING, {4, 7}, Color::BLACK)) {
+GameBoard::GameBoard() : _whiteKing(new King(Type::KING, {4, 0}, Color::WHITE)), _blackKing(new King(Type::KING, {4, 7}, Color::BLACK)) {
 
     // Pawns initialization
     for (int8_t i = 0; i < BOARD_LENGTH; i++)
@@ -58,8 +58,8 @@ GameBoard::GameBoard() : _whiteKing(King(Type::KING, {4, 0}, Color::WHITE)), _bl
     _board[7][3] = new Queen(Type::QUEEN, {3, 7}, Color::BLACK);
 
     // Kings initialization
-    _board[0][4] = &_whiteKing;
-    _board[7][4] = &_blackKing;
+    _board[0][4] = _whiteKing;
+    _board[7][4] = _blackKing;
 }
 
 
@@ -203,7 +203,7 @@ void GameBoard::movePiece(Square from, Square to) {
 }
 
 
-King& GameBoard::getKing(Color kingColor) {
+King* GameBoard::getKing(Color kingColor) {
     if (kingColor == Color::WHITE) return _whiteKing;
     else return _blackKing;
 }

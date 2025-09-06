@@ -15,5 +15,5 @@ private:
 public:
     GameSession();
     ~GameSession() = default;
-    void onMoveReceived(crow::json::rvalue rawMove);
+    void onMoveReceived(std::string from, std::string to);
 };

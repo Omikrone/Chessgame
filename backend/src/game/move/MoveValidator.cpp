@@ -32,8 +32,8 @@ std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move>& possibleMo
         simulatedBoard = deepCopyBoard(_board._board);
         _board.makeMove(m); // INTEGRER LA SIMULATION DE BOARD (DEEP COPY)
         
-        King& king = _board.getKing(piece->_color);
-        if (!_board.isSquareAttacked(ennemyPossibleMoves, king._position)) {
+        King* king = _board.getKing(piece->_color);
+        if (!_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) {
             legalMoves.push_back(m);
         }
         
