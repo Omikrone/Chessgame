@@ -10,7 +10,8 @@ void GameSession::onMoveReceived(std::string from, std::string to) {
 
     Move moveReq = Parser::parseMove(from, to);
 
-
+    GameBoard& board = _game.getGameBoard();
+    board.printBoard();
     std::vector<Move> possibleMoves = _game.getLegalMoves(moveReq.initPos);
     std::cout << "all good";
     for (Move m: possibleMoves) {
@@ -18,9 +19,6 @@ void GameSession::onMoveReceived(std::string from, std::string to) {
             _game.applyMove(m);
         }
     }
-
-    GameBoard& board = _game.getGameBoard();
-    board.printBoard();
 
     crow::json::wvalue response;
     response["type"] = "fen";

@@ -25,22 +25,16 @@ EN PASSANT FOURNIR L'HISTORIQUE
 
 std::vector<Move>& MoveValidator::filterCheckMoves(std::vector<Move>& possibleMoves, std::vector<Move>& ennemyPossibleMoves) {
     std::vector<Move> legalMoves;
-    std::vector<std::vector<Piece *>> simulatedBoard;
+    //std::vector<std::vector<std::unique_ptr<Piece>>> simulatedBoard;
 
     for (Move m: possibleMoves) {
         Piece *piece = _board.getPieceAt(m.initPos);
-        simulatedBoard = deepCopyBoard(_board._board);
+        //simulatedBoard = deepCopyBoard(_board._board);
         _board.makeMove(m); // INTEGRER LA SIMULATION DE BOARD (DEEP COPY)
         
-        King* king = _board.getKing(piece->_color);
-        if (!_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) {
+        King& king = _board.getKing(piece->_color);
+        if (!_board.isSquareAttacked(ennemyPossibleMoves, king._position)) {
             legalMoves.push_back(m);
-        }
-        
-        for (auto& row : simulatedBoard) {
-            for (auto& cell : row) {
-                delete cell;
-            }
         }
     }
     return legalMoves;
@@ -68,7 +62,7 @@ std::vector<Move>& MoveValidator::filterCastleMoves(std::vector<Move>& possibleM
 
 bool MoveValidator::checkKingSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves) {
     if (king->_hasMoved) return false;
-    Piece *rook = _board._board[king->_position.rank][king->_position.file + 3];
+    Piece *rook = _board._board[king->_position.rank][king->_position.file + 3].get();
     if (rook == nullptr || rook->_hasMoved) return false;
     if (_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) return false;
     for (int8_t f = BOARD_LENGTH - 2; f > king->_position.file; f--)
@@ -83,7 +77,7 @@ bool MoveValidator::checkKingSideCastle(Piece *king, std::vector<Move>& ennemyPo
 
 bool MoveValidator::checkQueenSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves) {
     if (king->_hasMoved) return false;
-    Piece *rook = _board._board[king->_position.rank][king->_position.file - 4];
+    Piece *rook = _board._board[king->_position.rank][king->_position.file - 4].get();
     if (rook == nullptr || rook->_hasMoved) return false;
     if (_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) return false;
     for (int8_t f = 1; f < king->_position.file; f++)
@@ -91,18 +85,4 @@ bool MoveValidator::checkQueenSideCastle(Piece *king, std::vector<Move>& ennemyP
         if (_board._board[king->_position.rank][f] != nullptr || _board.isSquareAttacked(ennemyPossibleMoves, {f, king->_position.rank})) return false;
     }
     return true;
-}
-
-    
-std::vector<std::vector<Piece*>> deepCopyBoard(const std::vector<std::vector<Piece*>>& board) {
-    std::vector<std::vector<Piece*>> copy(board.size(), std::vector<Piece*>(board[0].size(), nullptr));
-
-    for (int8_t r = 0; r < board.size(); r++) {
-        for (int8_t f = 0; f < board[r].size(); f++) {
-            if (board[r][f] != nullptr) {
-                copy[r][f] = board[r][f]->clone();
-            }
-        }
-    }
-    return copy;
 }

@@ -3,7 +3,7 @@
 
 int GameController::createGame() {
     int id = _nextId++;
-    _sessions.emplace(id, GameSession());
+    _sessions.try_emplace(id);
     return id;
 }
 

@@ -43,10 +43,10 @@ std::vector<Move> Game::getLegalMoves(Square sq) {
 
 
 GameState Game::getGameState() {
-    for (auto row: _board._board) {
-        for (auto cell: row) {
+    for (auto& row: _board._board) {
+        for (const auto &cell: row) {
             if (cell != nullptr && cell->_color == _currentTurn) {
-                std::vector<Move> possibleMoves = _moveGenerator.getPossibleMoves(cell);
+                std::vector<Move> possibleMoves = _moveGenerator.getPossibleMoves(cell.get());
                 if (!possibleMoves.empty()) return GameState::CONTINUING;
             }
         }
@@ -56,8 +56,8 @@ GameState Game::getGameState() {
     if (_currentTurn == Color::WHITE) ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::BLACK);
     else ennemyMoves = _moveGenerator.getAllPossibleMoves(Color::WHITE);
 
-    King* king = _board.getKing(_currentTurn);
-    if (_board.isSquareAttacked(ennemyMoves, king->_position)) return GameState::CHECKMATE;
+    King& king = _board.getKing(_currentTurn);
+    if (_board.isSquareAttacked(ennemyMoves, king._position)) return GameState::CHECKMATE;
     else return GameState::STALEMATE;
 }
 

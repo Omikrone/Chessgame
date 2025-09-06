@@ -16,16 +16,20 @@
 class GameBoard {
 public:
 
-    std::vector<std::vector<Piece*>> _board =
-        std::vector<std::vector<Piece*>>(BOARD_LENGTH, std::vector<Piece*>(BOARD_LENGTH, nullptr));
-    King* _whiteKing;
-    King* _blackKing;
+    std::vector<std::vector<std::unique_ptr<Piece>>> _board;
+    King *_whiteKing;
+    King *_blackKing;
 
     GameBoard();
+    GameBoard(const GameBoard&) = delete;
+    GameBoard& operator=(const GameBoard&) = delete;
+    
+    GameBoard(GameBoard&&) = default;
+    GameBoard& operator=(GameBoard&&) = default;
 
     Piece *getPieceAt(Square sq) const;
     void makeMove(const Move &move);
-    King* getKing(Color kingColor);
+    King& getKing(Color kingColor);
     bool isSquareAttacked(std::vector<Move>& ennemyMoves, Square position);
     void printBoard();
 

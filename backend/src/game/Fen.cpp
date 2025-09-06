@@ -8,7 +8,7 @@ std::string FEN::toString(Game& game) {
     for (int8_t i=BOARD_LENGTH - 1; i >= 0; i--) {
         int8_t wo_piece = 0;
         for (int8_t j=0; j < BOARD_LENGTH; j++) {
-            if (board._board[i][j] != nullptr) {
+            if (board._board[i][j].get() != nullptr) {
                 if (wo_piece != 0) {
                     fen.append(std::to_string(wo_piece));
                     wo_piece = 0;

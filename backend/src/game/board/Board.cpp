@@ -5,16 +5,21 @@
 #include "Board.hpp"
 
 
-GameBoard::GameBoard() : _whiteKing(new King(Type::KING, {4, 0}, Color::WHITE)), _blackKing(new King(Type::KING, {4, 7}, Color::BLACK)) {
+GameBoard::GameBoard()
+{
+    _board.resize(BOARD_LENGTH); 
+    for (auto &row : _board) {
+        row.resize(BOARD_LENGTH);
+    }
 
     // Pawns initialization
     for (int8_t i = 0; i < BOARD_LENGTH; i++)
     {
-        _board[1][i] = new Pawn(Type::PAWN, {i, 1}, Color::WHITE);
+        _board[1][i] = std::make_unique<Pawn>(Type::PAWN, Square{i, 1}, Color::WHITE);
     }
     for (int8_t i = 0; i < BOARD_LENGTH; i++)
     {
-        _board[6][i] = new Pawn(Type::PAWN, {i, 6}, Color::BLACK);
+        _board[6][i] = std::make_unique<Pawn>(Type::PAWN, Square{i, 6}, Color::BLACK);
     }
 
     // Knights initialization
@@ -22,10 +27,10 @@ GameBoard::GameBoard() : _whiteKing(new King(Type::KING, {4, 0}, Color::WHITE)),
     for (int8_t i = 0; i < 4; i++) {
         Square startPosition = {knightPositions[i].file, knightPositions[i].rank};
         if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = new Knight(Type::KNIGHT, startPosition, Color::BLACK);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Knight>(Type::KNIGHT, startPosition, Color::BLACK);
         }
         else {
-            _board[startPosition.rank][startPosition.file] = new Knight(Type::KNIGHT, startPosition, Color::WHITE);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Knight>(Type::KNIGHT, startPosition, Color::WHITE);
         }
     }
 
@@ -34,10 +39,10 @@ GameBoard::GameBoard() : _whiteKing(new King(Type::KING, {4, 0}, Color::WHITE)),
     for (int8_t i = 0; i < 4; i++) {
         Square startPosition = {bishopPositions[i].file, bishopPositions[i].rank};
         if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = new Bishop(Type::BISHOP, startPosition, Color::BLACK);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Bishop>(Type::BISHOP, startPosition, Color::BLACK);
         }
         else {
-            _board[startPosition.rank][startPosition.file] = new Bishop(Type::BISHOP, startPosition, Color::WHITE);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Bishop>(Type::BISHOP, startPosition, Color::WHITE);
         }
     }
 
@@ -46,25 +51,27 @@ GameBoard::GameBoard() : _whiteKing(new King(Type::KING, {4, 0}, Color::WHITE)),
     for (int8_t i = 0; i < 4; i++) {
         Square startPosition = {rookPositions[i].file, rookPositions[i].rank};
         if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = new Rook(Type::ROOK, startPosition, Color::BLACK);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Rook>(Type::ROOK, startPosition, Color::BLACK);
         }
         else {
-            _board[startPosition.rank][startPosition.file] = new Rook(Type::ROOK, startPosition, Color::WHITE);
+            _board[startPosition.rank][startPosition.file] = std::make_unique<Rook>(Type::ROOK, startPosition, Color::WHITE);
         }
     }
     
     // Queens initialization
-    _board[0][3] = new Queen(Type::QUEEN, {3, 0}, Color::WHITE);
-    _board[7][3] = new Queen(Type::QUEEN, {3, 7}, Color::BLACK);
+    _board[0][3] = std::make_unique<Queen>(Type::QUEEN, Square{3, 0}, Color::WHITE);
+    _board[7][3] = std::make_unique<Queen>(Type::QUEEN, Square{3, 7}, Color::BLACK);
 
     // Kings initialization
-    _board[0][4] = _whiteKing;
-    _board[7][4] = _blackKing;
+    _board[0][4] = std::make_unique<King>(Type::KING, Square{4, 0}, Color::WHITE);
+    _board[7][4] = std::make_unique<King>(Type::KING, Square{4, 7}, Color::BLACK);
+    _whiteKing = static_cast<King *>(_board[0][4].get());
+    _blackKing = static_cast<King *>(_board[7][4].get());
 }
 
 
 Piece *GameBoard::getPieceAt(Square sq) const {
-    return _board[sq.rank][sq.file];
+    return _board[sq.rank][sq.file].get();
 }
 
 
@@ -95,16 +102,6 @@ void GameBoard::makeMove(const Move& move) {
     }
 }
 
-Piece *findKing(std::vector<std::vector<Piece*>> &board, Color kingColor) {
-    for (auto& row : board) {
-        for (auto& cell : row) {
-            if (cell != nullptr && cell->_pieceType == Type::KING && cell->_color == kingColor) {
-                return cell;
-            }
-        }
-    }
-    return nullptr;
-}
 
 void GameBoard::enPassant(Piece *pawn, Move move) {
 
@@ -113,12 +110,10 @@ void GameBoard::enPassant(Piece *pawn, Move move) {
 
     // Other pawn destruction
     if (pawn->_color == Color::WHITE) {
-        delete _board[move.destPos.rank - 1][move.destPos.file];
-        _board[move.destPos.rank - 1][move.destPos.file] = nullptr;
+        _board[move.destPos.rank - 1][move.destPos.file].reset();
     }
     else {
-        delete _board[move.destPos.rank + 1][move.destPos.file];
-        _board[move.destPos.rank + 1][move.destPos.file] = nullptr; 
+        _board[move.destPos.rank + 1][move.destPos.file].reset();
     }
     pawn->_position = {move.destPos.file, move.destPos.rank};
 }
@@ -197,15 +192,15 @@ void GameBoard::movePiece(Square from, Square to) {
         
     // Piece displacement
     Piece *piece = getPieceAt(from);
-    _board[to.rank][to.file] = _board[from.rank][from.file];
-    _board[from.rank][from.file] = nullptr;
+    _board[to.rank][to.file] = std::move(_board[from.rank][from.file]);
+    _board[from.rank][from.file].reset();
     piece->_position = to;
 }
 
 
-King* GameBoard::getKing(Color kingColor) {
-    if (kingColor == Color::WHITE) return _whiteKing;
-    else return _blackKing;
+King &GameBoard::getKing(Color kingColor) {
+    if (kingColor == Color::WHITE) return *_whiteKing;
+    else return *_blackKing;
 }
 
 
@@ -215,8 +210,8 @@ void GameBoard::printBoard() {
     {
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
-            if (_board[j][i] != nullptr) {
-                std::cout << " " << _board[j][i]->toFEN() << " ";
+            if (_board[j][i].get() != nullptr) {
+                std::cout << " " << _board[j][i].get()->toFEN() << " ";
             }
             else {
                 std::cout << "   ";
