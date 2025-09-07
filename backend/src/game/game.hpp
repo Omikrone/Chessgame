@@ -12,7 +12,6 @@ class Game
 {
 private:    
     GameBoard _board;
-    MoveGenerator _moveGenerator;
     MoveValidator _moveValidator;
     Color _currentTurn;
     int _blackMovesNb;
@@ -22,6 +21,7 @@ public:
     ~Game() = default;
     bool applyMove(const Move& move);
     std::vector<Move> getLegalMoves(Square sq);
+    void Game::nextTurn();
     GameState getGameState();
     Color getCurrentTurn() const;
     GameBoard& getGameBoard();

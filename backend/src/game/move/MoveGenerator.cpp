@@ -2,18 +2,15 @@
 #include "../board/Board.hpp"
 #include "../board/pieces/utils/move.hpp"
 #include "MoveGenerator.hpp"
-    
-
-MoveGenerator::MoveGenerator(GameBoard& board) : _board(board) {}
 
 
-std::vector<Move> MoveGenerator::getAllPossibleMoves(Color side) {
+std::vector<Move> MoveGenerator::getAllPossibleMoves(GameBoard& board, Color side) {
     std::vector<Move> allPossibleMoves;
 
-    for (auto& rank: _board._board) {
+    for (auto& rank: board._board) {
         for (const auto& cell: rank) {
             if (cell != nullptr && cell->_color == side) {
-                std::vector<Move> possibleMoves = getPossibleMoves(cell.get());
+                std::vector<Move> possibleMoves = getPossibleMoves(board, cell.get());
                 allPossibleMoves.insert(allPossibleMoves.end(), possibleMoves.begin(), possibleMoves.end());
             }
         }
@@ -21,7 +18,7 @@ std::vector<Move> MoveGenerator::getAllPossibleMoves(Color side) {
     return allPossibleMoves;
 }
 
-std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
+std::vector<Move> MoveGenerator::getPossibleMoves(GameBoard& board, Piece *piece) {
 
     std::vector<std::vector<Square>> rawMoves = piece->getRawMoves();
     std::vector<Move> rawPossibleMoves;
@@ -34,7 +31,7 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
             // Forward
             if (dm[0].file == piece->_position.file) {
                 for (Square p: dm) {
-                    Piece *presentPiece = _board._board[p.rank][p.file].get();
+                    Piece *presentPiece = board._board[p.rank][p.file].get();
                     if (presentPiece != nullptr) {
                         break;
                     }
@@ -50,7 +47,7 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
             // Side take
             else {
                 Square takePosition = dm[0];
-                Piece *presentPiece = _board._board[takePosition.rank][takePosition.file].get();
+                Piece *presentPiece = board._board[takePosition.rank][takePosition.file].get();
                 if (presentPiece != nullptr && presentPiece->_color != piece->_color)
                 {
                     if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
@@ -74,7 +71,7 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
         {
             for (Square p: dm) {
                 int8_t distance  = p.file - piece->_position.file;
-                Piece *presentPiece = _board._board[p.rank][p.file].get();
+                Piece *presentPiece = board._board[p.rank][p.file].get();
                 if (distance == 2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_KINGSIDE});
                 else if (distance == -2) rawPossibleMoves.push_back({piece->_position, p, MoveType::CASTLE_QUEENSIDE});
                 else if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
@@ -95,11 +92,12 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
         for (std::vector<Square> dm: rawMoves)
         {
             for (Square p: dm) {
-                Piece *presentPiece = _board._board[p.rank][p.file].get();
+                Piece *presentPiece = board._board[p.rank][p.file].get();
                 if (presentPiece != nullptr && presentPiece->_color == piece->_color) {
                     break;
                 }
                 else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
+                    //p.print();
                     rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
                     break;
                 }

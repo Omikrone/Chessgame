@@ -12,12 +12,9 @@ void GameSession::onMoveReceived(crow::websocket::connection& ws, std::string fr
 
     GameBoard& board = _game.getGameBoard();
     board.printBoard();
-    std::vector<Move> possibleMoves = _game.getLegalMoves(moveReq.initPos);
-    for (Move m: possibleMoves) {
-        if (m == moveReq) {
-            _game.applyMove(m);
-        }
-    }
+    bool res = _game.applyMove(moveReq);
+    if (res) _game.nextTurn();
+
     board.printBoard();
 
     crow::json::wvalue response;

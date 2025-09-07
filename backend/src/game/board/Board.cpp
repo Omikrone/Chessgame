@@ -179,6 +179,7 @@ void GameBoard::promotion(Piece *pawnToPromote, Type pieceType) {
 bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
     for (Move m: ennemyMoves)
     {
+        m.destPos.print();
         // If a possible (legal) ennemy move reach the square, then the square is attacked by the other team
         if (m.destPos == sq) {
             return true;
@@ -189,14 +190,12 @@ bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
 
 
 void GameBoard::movePiece(Square from, Square to) {
-    std::cout << "ACCA";
         
     // Piece displacement
-    Piece *piece = getPieceAt(from);
-    _board[to.rank][to.file] = std::move(_board[from.rank][from.file]);
-    _board[from.rank][from.file].reset();
-    piece->_position = to;
-    std::cout << "CACA";
+    auto& src = _board[from.rank][from.file];
+    std::unique_ptr<Piece> moving = std::move(src);
+    _board[to.rank][to.file] = std::move(moving);
+    _board[to.rank][to.file]->_position = to;
 }
 
 
@@ -207,14 +206,23 @@ King &GameBoard::getKing(Color kingColor) {
 
 
 std::unique_ptr<GameBoard> GameBoard::clone() const {
-    auto newBoard = std::make_unique<GameBoard>();
+    std::unique_ptr<GameBoard> newBoard = std::make_unique<GameBoard>();
     newBoard->_board.resize(BOARD_LENGTH);
+
     for (int r = 0; r < BOARD_LENGTH; ++r) {
         newBoard->_board[r].resize(BOARD_LENGTH);
         for (int f = 0; f < BOARD_LENGTH; ++f) {
-            if (_board[r][f]) {
+            if (_board[r][f] != nullptr) {
+                _board[r][f].get()->_position.print();
                 newBoard->_board[r][f] = _board[r][f]->clone();
+                if (_board[r][f]->_pieceType == Type::KING && _board[r][f]->_color == Color::WHITE) {
+                    newBoard->_whiteKing = static_cast<King *>(newBoard->_board[r][f].get());
+                } 
+                else if (_board[r][f]->_pieceType == Type::KING && _board[r][f]->_color == Color::BLACK) {
+                    newBoard->_blackKing = static_cast<King *>(newBoard->_board[r][f].get());
+                } 
             }
+            else newBoard->_board[r][f] = nullptr;
         }
     }
     return newBoard;
@@ -226,7 +234,7 @@ void GameBoard::printBoard() {
     {
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
-            if (_board[j][i].get() != nullptr) {
+            if (_board[j][i] != nullptr) {
                 std::cout << " " << _board[j][i].get()->toFEN() << " ";
             }
             else {
