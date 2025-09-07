@@ -14,7 +14,6 @@ Game::Game()
 
 bool Game::applyMove(const Move& move) {
     std::vector<Move> legalMoves = getLegalMoves(move.initPos);
-    std::cout << std::endl << "POSSIBLE MOVES LENGTH : " << legalMoves.size() << std::endl;  
     for (Move m: legalMoves) {
         if (m == move) {
             _board.makeMove(move);

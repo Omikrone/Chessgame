@@ -14,7 +14,12 @@ export function createGameSocket(onMessage : GameMessageHandler, gameId: number)
 
   ws.onmessage = (event) => {
     console.log("Message received :", event.data);
-    onMessage(event.data)
+    try {
+      const parsed = JSON.parse(event.data) as MoveResponse;
+      onMessage(parsed);
+    } catch (error) {
+      console.error("Invalid message received:", event.data, error);
+    }
   };
 
   ws.onclose = () => {

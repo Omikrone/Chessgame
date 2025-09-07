@@ -4,10 +4,7 @@
 #include "MoveGenerator.hpp"
     
 
-MoveGenerator::MoveGenerator(GameBoard& board) : _board(board) {
-    std::cout << "TEST: ";
-    _board.printBoard();
-}
+MoveGenerator::MoveGenerator(GameBoard& board) : _board(board) {}
 
 
 std::vector<Move> MoveGenerator::getAllPossibleMoves(Color side) {
@@ -28,9 +25,6 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
 
     std::vector<std::vector<Square>> rawMoves = piece->getRawMoves();
     std::vector<Move> rawPossibleMoves;
-    std::cout << "PRINT BOARD";
-    _board.printBoard();
-    std::cout << "Gameboard printed";
 
     if (piece->_pieceType == Type::PAWN) {
 
@@ -40,7 +34,6 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
             // Forward
             if (dm[0].file == piece->_position.file) {
                 for (Square p: dm) {
-                    p.print();
                     Piece *presentPiece = _board._board[p.rank][p.file].get();
                     if (presentPiece != nullptr) {
                         break;
@@ -51,7 +44,6 @@ std::vector<Move> MoveGenerator::getPossibleMoves(Piece *piece) {
                     else {
                         rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, false});
                     }
-                    std::cout << "ALL GOOD";
                 }
             }
 

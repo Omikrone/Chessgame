@@ -33,7 +33,7 @@ export default function ChessBoard({ onMove, fen, updateId, orientation = "white
     return () => {
       cgRef.current?.destroy();
     };
-  }, [fen, onMove]);
+  }, [orientation, onMove]);
 
   useEffect(() => {
     if (cgRef.current) {

@@ -17,8 +17,18 @@ export default function GamePage() {
   useEffect(() => {
     if (!gameId) return;
 
-    const socket = createGameSocket((message) => setFen(message.fen), Number(gameId));
+    const socket = createGameSocket((message) => {
+      if (message.type === "fen" && message.fen) {
+        setFen(message.fen);
+        setUpdateId(id => id + 1);
+      }
+    }, Number(gameId));
     socketRef.current = socket;
+
+    return () => {
+      socket.close();
+      socketRef.current = null;
+    }
   }, [gameId])
 
   function handleMoveSubmitted(from: string, to: string) {
