@@ -1,3 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-beige-light: #F5F0E6;
+  --color-beige-default: #E8DAC3;
+  --color-brown-light: #C8A97E;
+  --color-brown-medium: #8B5E3C;
+  --color-brown-dark: #4B2E2B
+}
+
 .cg-wrap {
   width: 512px;
   height: 512px;

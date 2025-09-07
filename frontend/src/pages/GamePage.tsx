@@ -37,12 +37,12 @@ export default function GamePage() {
   }
 
   return (
-    <>
+    <div className="h-screen flex items-center justify-center p-max bg-beige-light">
       <ChessBoard
         fen={fen}
         updateId = {updateId}
         onMove={(from, to) => handleMoveSubmitted(from, to)}
       />
-    </>
+    </div>
   );
 }
