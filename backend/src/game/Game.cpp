@@ -18,7 +18,7 @@ bool Game::applyMove(const Move& move) {
     std::vector<Move> legalMoves = getLegalMoves(move.initPos);
     for (Move m: legalMoves) {
         if (m == move) {
-            _board.makeMove(move);
+            _board.makeMove(m);
             return true;
         }
     }
@@ -49,7 +49,6 @@ GameState Game::getGameState() {
             }
         }
     }
-    std::cout << "ENDGAME";
     
     std::vector<Move> enemyMoves;
     if (_currentTurn == Color::WHITE) enemyMoves = MoveGenerator::getAllPossibleMoves(_board, Color::BLACK);

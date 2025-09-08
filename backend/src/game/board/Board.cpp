@@ -93,9 +93,10 @@ void GameBoard::makeMove(const Move& move) {
             break;
 
         case MoveType::PROMOTION:
-            movePiece(move.initPos, move.destPos);
             promotion(piece, Type::QUEEN);
-    
+            piece = getPieceAt(move.initPos);
+            movePiece(move.initPos, move.destPos);
+            
         default:
             movePiece(move.initPos, move.destPos);
             break;
@@ -146,33 +147,36 @@ void GameBoard::queenSideCastle(Piece *king) {
 
 
 void GameBoard::promotion(Piece *pawnToPromote, Type pieceType) {
+    printBoard();
 
     // Store the pawn promotion data
     Color promotionColor = pawnToPromote->_color;
     Square promotionSq = pawnToPromote->_position;
-
-    delete pawnToPromote; // Free the pawn memory space
+    std::unique_ptr<Piece> newPiece;
 
     // Fill the free memory space with the new promotion piece
     switch (pieceType)
     {
 
     case Type::ROOK:
-        pawnToPromote = new Rook(pieceType, promotionSq, promotionColor);
+        newPiece = std::make_unique<Rook>(pieceType, promotionSq, promotionColor);
         break;
 
     case Type::BISHOP:
-        pawnToPromote = new Bishop(pieceType, promotionSq, promotionColor);
+        newPiece = std::make_unique<Bishop>(pieceType, promotionSq, promotionColor);
         break;
 
     case Type::KNIGHT:
-        pawnToPromote = new Knight(pieceType, promotionSq, promotionColor);
+        newPiece = std::make_unique<Knight>(pieceType, promotionSq, promotionColor);
         break;
     
     default:
-        pawnToPromote = new Queen(pieceType, promotionSq, promotionColor);
+        newPiece = std::make_unique<Queen>(pieceType, promotionSq, promotionColor);
         break;
     }
+    _board[promotionSq.rank][promotionSq.file] = std::move(newPiece);
+    printBoard();
+
 }
 
 
@@ -192,6 +196,8 @@ void GameBoard::movePiece(Square from, Square to) {
         
     // Piece displacement
     auto& src = _board[from.rank][from.file];
+    if (!src) return;
+
     std::unique_ptr<Piece> moving = std::move(src);
     _board[to.rank][to.file] = std::move(moving);
     _board[to.rank][to.file]->_position = to;
