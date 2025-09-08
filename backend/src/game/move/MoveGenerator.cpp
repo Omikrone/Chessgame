@@ -97,7 +97,6 @@ std::vector<Move> MoveGenerator::getPossibleMoves(GameBoard& board, Piece *piece
                     break;
                 }
                 else if (presentPiece != nullptr && presentPiece->_color != piece->_color) {
-                    //p.print();
                     rawPossibleMoves.push_back({piece->_position, p, MoveType::NORMAL, true});
                     break;
                 }

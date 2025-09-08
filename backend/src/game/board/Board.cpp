@@ -179,7 +179,6 @@ void GameBoard::promotion(Piece *pawnToPromote, Type pieceType) {
 bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
     for (Move m: ennemyMoves)
     {
-        m.destPos.print();
         // If a possible (legal) ennemy move reach the square, then the square is attacked by the other team
         if (m.destPos == sq) {
             return true;
@@ -213,7 +212,6 @@ std::unique_ptr<GameBoard> GameBoard::clone() const {
         newBoard->_board[r].resize(BOARD_LENGTH);
         for (int f = 0; f < BOARD_LENGTH; ++f) {
             if (_board[r][f] != nullptr) {
-                _board[r][f].get()->_position.print();
                 newBoard->_board[r][f] = _board[r][f]->clone();
                 if (_board[r][f]->_pieceType == Type::KING && _board[r][f]->_color == Color::WHITE) {
                     newBoard->_whiteKing = static_cast<King *>(newBoard->_board[r][f].get());

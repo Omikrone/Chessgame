@@ -1,7 +1,7 @@
-import type { MoveRequest, MoveResponse } from "../types/game";
+import type { MoveRequest, ServerResponse } from "../types/game";
 
 
-type GameMessageHandler = (message : MoveResponse) => void;
+type GameMessageHandler = (message : ServerResponse) => void;
 
 
 export function createGameSocket(onMessage : GameMessageHandler, gameId: number) {
@@ -15,7 +15,7 @@ export function createGameSocket(onMessage : GameMessageHandler, gameId: number)
   ws.onmessage = (event) => {
     console.log("Message received :", event.data);
     try {
-      const parsed = JSON.parse(event.data) as MoveResponse;
+      const parsed = JSON.parse(event.data) as ServerResponse;
       onMessage(parsed);
     } catch (error) {
       console.error("Invalid message received:", event.data, error);

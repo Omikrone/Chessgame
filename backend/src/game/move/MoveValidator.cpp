@@ -33,7 +33,6 @@ std::vector<Move> MoveValidator::filterCheckMoves(std::vector<Move>& possibleMov
         std::vector<Move> enemyMoves;
         Color enemyColor = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
         enemyMoves = MoveGenerator::getAllPossibleMoves(*simulatedBoard, enemyColor);
-        std::cout << "SIMULATED BOARD" << std::endl;
         
         King& king = simulatedBoard.get()->getKing(side);
         if (!simulatedBoard.get()->isSquareAttacked(enemyMoves, king._position)) {

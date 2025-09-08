@@ -10,7 +10,16 @@ export interface MoveRequest {
     to: string;
 }
 
+export type ServerResponse = MoveResponse | EndGameResponse;
+
 export interface MoveResponse {
     type: 'fen';
     fen: string;
+}
+
+export interface EndGameResponse {
+    type: 'endgame';
+    fen: string;
+    result: 'checkmate' | 'draw';
+    winner?: 'white' | 'black'
 }

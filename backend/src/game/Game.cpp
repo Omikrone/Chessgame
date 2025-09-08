@@ -44,17 +44,19 @@ GameState Game::getGameState() {
         for (const auto &cell: row) {
             if (cell != nullptr && cell->_color == _currentTurn) {
                 std::vector<Move> possibleMoves = MoveGenerator::getPossibleMoves(_board, cell.get());
-                if (!possibleMoves.empty()) return GameState::CONTINUING;
+                std::vector<Move> legalMoves = _moveValidator.filterLegalMoves(possibleMoves, cell.get()->_color);
+                if (!legalMoves.empty()) return GameState::CONTINUING;
             }
         }
     }
+    std::cout << "ENDGAME";
     
-    std::vector<Move> ennemyMoves;
-    if (_currentTurn == Color::WHITE) ennemyMoves = MoveGenerator::getAllPossibleMoves(_board, Color::BLACK);
-    else ennemyMoves = MoveGenerator::getAllPossibleMoves(_board, Color::WHITE);
+    std::vector<Move> enemyMoves;
+    if (_currentTurn == Color::WHITE) enemyMoves = MoveGenerator::getAllPossibleMoves(_board, Color::BLACK);
+    else enemyMoves = MoveGenerator::getAllPossibleMoves(_board, Color::WHITE);
 
     King& king = _board.getKing(_currentTurn);
-    if (_board.isSquareAttacked(ennemyMoves, king._position)) return GameState::CHECKMATE;
+    if (_board.isSquareAttacked(enemyMoves, king._position)) return GameState::CHECKMATE;
     else return GameState::STALEMATE;
 }
 

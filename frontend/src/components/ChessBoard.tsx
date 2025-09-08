@@ -41,5 +41,5 @@ export default function ChessBoard({ onMove, fen, updateId, orientation = "white
     }
   }, [fen, updateId]);
 
-  return <div ref={boardRef} style={{ width: 400, height: 400 }} />;
+  return <div ref={boardRef} style={{ width: 700, height: 700 }} />;
 }
