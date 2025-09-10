@@ -101,6 +101,7 @@ void GameBoard::makeMove(const Move& move) {
             movePiece(move.initPos, move.destPos);
             break;
     }
+    piece->_hasMoved = true;
 }
 
 

@@ -1,26 +1,47 @@
 #include "MoveValidator.hpp"
 
 
-MoveValidator::MoveValidator(GameBoard& gameBoard) : _board(gameBoard) {}
+MoveValidator::MoveValidator(GameBoard& gameBoard, GameHistory& history) 
+: _board(gameBoard),
+  _history(history) {}
 
 
 std::vector<Move> MoveValidator::filterLegalMoves(std::vector<Move>& rawPossibleMoves, Color side) {
     
     std::vector<Move> withoutCastleMoves = filterCastleMoves(rawPossibleMoves, side);
-    std::vector<Move> legalMoves = filterCheckMoves(withoutCastleMoves, side);
+    std::vector<Move> withoutCheckMoves = filterCheckMoves(withoutCastleMoves, side);
+    std::vector<Move> legalMoves = filterEnPassantMoves(withoutCheckMoves, side);
     return legalMoves;
 }
 
 
-/*bool MoveValidator::filterEnPassantMoves(std::vector<Move>& rawPossibleMoves) {
-    Piece *pieceToTake = _board._board[lastMove.destPos.rank][lastMove.destPos.file];
-    if (pieceToTake == nullptr || pieceToTake->_color == piece->_color || pieceToTake->_pieceType != Type::PAWN) return false;
-    int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;
-    if (distance != 2 && distance != -2) return false;
-    if (takePosition->file == pieceToTake->_position.file && piece->_position.rank == pieceToTake->_position.rank) return true;
+std::vector<Move> MoveValidator::filterEnPassantMoves(std::vector<Move>& possibleMoves, Color side) {
+    std::vector<Move> legalMoves;
+
+    if (!_history.empty()) {
+        const Move& lastMove = _history.last();
+        Piece *pieceToTake = _board._board[lastMove.destPos.rank][lastMove.destPos.file].get();
+
+        for (Move m: possibleMoves) {
+            if (m.type == MoveType::EN_PASSANT) {
+                Piece *piece = _board._board[m.initPos.rank][m.initPos.file].get();
+                if (pieceToTake == nullptr || pieceToTake->_color == side || pieceToTake->_pieceType != Type::PAWN) continue;
+                int8_t distance = lastMove.destPos.rank - lastMove.initPos.rank;
+                if (distance != 2 && distance != -2) continue;
+                if (lastMove.destPos.file == pieceToTake->_position.file && piece->_position.rank == pieceToTake->_position.rank) legalMoves.push_back(m);
+            }
+            else {
+                legalMoves.push_back(m);
+            }
+        }
+    }
+    else {
+        for (Move m: possibleMoves) {
+            if (m.type != MoveType::EN_PASSANT) legalMoves.push_back(m);
+        }
+    }
+    return legalMoves;
 }
-EN PASSANT FOURNIR L'HISTORIQUE    
-*/
 
 
 std::vector<Move> MoveValidator::filterCheckMoves(std::vector<Move>& possibleMoves, Color side) {
@@ -85,7 +106,7 @@ bool MoveValidator::checkQueenSideCastle(Piece *king, std::vector<Move>& ennemyP
     Piece *rook = _board._board[king->_position.rank][king->_position.file - 4].get();
     if (rook == nullptr || rook->_hasMoved) return false;
     if (_board.isSquareAttacked(ennemyPossibleMoves, king->_position)) return false;
-    for (int8_t f = 1; f < king->_position.file; f++)
+    for (int8_t f = 2; f < king->_position.file; f++)
     {
         if (_board._board[king->_position.rank][f] != nullptr || _board.isSquareAttacked(ennemyPossibleMoves, {f, king->_position.rank})) return false;
     }

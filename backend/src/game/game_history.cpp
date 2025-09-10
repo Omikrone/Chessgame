@@ -1,10 +1,15 @@
 #include "game_history.hpp"
 
 
-void GameHistory::addMove(Move move) {
+void GameHistory::push(Move move) {
     _history.push_back(move);
 }
 
-bool GameHistory::isTripleRepetition() {
-    return false;
+const Move& GameHistory::last() const {
+    assert(!_history.empty());
+    return _history.back();
+}
+
+bool GameHistory::empty() const {
+    return _history.empty();
 }

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <cassert>
 
 #include "board/pieces/utils/Move.hpp"
 #include "board/pieces/utils/Color.hpp"
+
 
 
 class GameHistory {
@@ -12,6 +14,7 @@ private:
 public:
     GameHistory() = default;
     ~GameHistory() = default;
-    void addMove(Move move);
-    bool isTripleRepetition();
+    void push(Move move);
+    const Move& last() const;
+    bool empty() const;
 };

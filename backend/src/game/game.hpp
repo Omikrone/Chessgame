@@ -6,6 +6,7 @@
 #include "board/pieces/utils/color.hpp"
 #include "board/pieces/utils/Square.hpp"
 #include "board/pieces/utils/GameState.hpp"
+#include "game_history.hpp"
 
 
 class Game
@@ -13,6 +14,7 @@ class Game
 private:    
     GameBoard _board;
     MoveValidator _moveValidator;
+    GameHistory _history;
     Color _currentTurn;
     int _blackMovesNb;
     int _whiteMovesNb;

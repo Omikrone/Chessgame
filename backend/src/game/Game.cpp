@@ -3,7 +3,8 @@
 
 Game::Game()
     : _board(),
-      _moveValidator(_board),
+      _history(),
+      _moveValidator(_board, _history),
       _currentTurn(Color::WHITE),
       _blackMovesNb(0),
       _whiteMovesNb(0)
@@ -19,6 +20,7 @@ bool Game::applyMove(const Move& move) {
     for (Move m: legalMoves) {
         if (m == move) {
             _board.makeMove(m);
+            _history.push(m);
             return true;
         }
     }

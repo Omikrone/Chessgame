@@ -57,12 +57,9 @@ std::vector<Move> MoveGenerator::getPossibleMoves(GameBoard& board, Piece *piece
                         rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::NORMAL, true});
                     }
                 }
-                else if (takePosition.rank == BOARD_LENGTH - 1 || takePosition.rank == 0) {
-                    
-                }
-                /*else if (_history.size() > 0 && checkEnPassant(board, piece, &takePosition, _history.back())) {
+                else {
                     rawPossibleMoves.push_back({piece->_position, takePosition, MoveType::EN_PASSANT, true});
-                }*/
+                }
             }
         }
     }
