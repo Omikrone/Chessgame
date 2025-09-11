@@ -1,71 +1,60 @@
-#pragma once
-
-#include "piece.hpp"
-#include "utils/constants.hpp"
-
-#include <vector>
-#include <cstdint>
+#include "Bishop.hpp"
 
 
-class Bishop: public Piece {
+Bishop::Bishop(Type pieceType, const Square &startPosition, Color color)
+    : Piece(pieceType, startPosition, color) {}
 
-    public:
-        Bishop(Type pieceType, const Square &startPosition, Color color)
-            : Piece(pieceType, startPosition, color) {}
+std::vector<std::vector<Square>> Bishop::getRawMoves() const {
+    return getBishopMoves(_position);
+}
 
-        std::vector<std::vector<Square>> getRawMoves() const override {
-            return getBishopMoves(_position);
-        }
+std::vector<std::vector<Square>> Bishop::getBishopMoves(const Square &currentPosition) {
+    std::vector<std::vector<Square>> possibleMoves;
 
-        static std::vector<std::vector<Square>> getBishopMoves(const Square &currentPosition) {
-            std::vector<std::vector<Square>> possibleMoves;
+    int8_t count = 1;
+    std::vector<Square> directionMoves;
+    while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank + count) < BOARD_LENGTH)
+    {
+        directionMoves.push_back({currentPosition.file + count, currentPosition.rank + count});
+        count++;
+    }
+    possibleMoves.push_back(directionMoves);
 
-            int8_t count = 1;
-            std::vector<Square> directionMoves;
-            while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank + count) < BOARD_LENGTH)
-            {
-                directionMoves.push_back({currentPosition.file + count, currentPosition.rank + count});
-                count++;
-            }
-            possibleMoves.push_back(directionMoves);
+    count = 1;
+    directionMoves.clear();
+    while ((currentPosition.file - count) >= 0 && (currentPosition.rank + count) < BOARD_LENGTH)
+    {
+        directionMoves.push_back({currentPosition.file - count, currentPosition.rank + count});
+        count++;
+    }
+    possibleMoves.push_back(directionMoves);
 
-            count = 1;
-            directionMoves.clear();
-            while ((currentPosition.file - count) >= 0 && (currentPosition.rank + count) < BOARD_LENGTH)
-            {
-                directionMoves.push_back({currentPosition.file - count, currentPosition.rank + count});
-                count++;
-            }
-            possibleMoves.push_back(directionMoves);
+    count = 1;
+    directionMoves.clear();
+    while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank - count) >= 0)
+    {
+        directionMoves.push_back({currentPosition.file + count, currentPosition.rank - count});
+        count++;
+    }
+    possibleMoves.push_back(directionMoves);
 
-            count = 1;
-            directionMoves.clear();
-            while ((currentPosition.file + count) < BOARD_LENGTH && (currentPosition.rank - count) >= 0)
-            {
-                directionMoves.push_back({currentPosition.file + count, currentPosition.rank - count});
-                count++;
-            }
-            possibleMoves.push_back(directionMoves);
+    count = 1;
+    directionMoves.clear();
+    while ((currentPosition.file - count) >= 0 && (currentPosition.rank - count) >= 0)
+    {
+        directionMoves.push_back({currentPosition.file - count, currentPosition.rank - count});
+        count++;
+    }
+    possibleMoves.push_back(directionMoves);
 
-            count = 1;
-            directionMoves.clear();
-            while ((currentPosition.file - count) >= 0 && (currentPosition.rank - count) >= 0)
-            {
-                directionMoves.push_back({currentPosition.file - count, currentPosition.rank - count});
-                count++;
-            }
-            possibleMoves.push_back(directionMoves);
+    return possibleMoves;
+}
 
-            return possibleMoves;
-        }
-  
-        std::unique_ptr<Piece> clone() const override {
-            return std::make_unique<Bishop>(*this);
-        }
+std::unique_ptr<Piece> Bishop::clone() const {
+    return std::make_unique<Bishop>(*this);
+}
 
-        char toFEN() const override {
-            if (_color == Color::WHITE) return 'B';
-            else return 'b';
-        }
-
-};
+char Bishop::toFEN() const {
+    if (_color == Color::WHITE) return 'B';
+    else return 'b';
+}

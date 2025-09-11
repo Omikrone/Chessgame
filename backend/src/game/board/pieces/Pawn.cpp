@@ -1,59 +1,47 @@
-#pragma once
-
-#include "piece.hpp"
-#include "utils/constants.hpp"
-#include "utils/type.hpp"
-
-#include <vector>
-#include <cstdint>
+#include "Pawn.hpp"
 
 
-class Pawn : public Piece {
+Pawn::Pawn(Type pieceType, const Square &startPosition, Color color)
+    : Piece(pieceType, startPosition, color) {}
 
-    public:
+std::vector<std::vector<Square>> Pawn::getRawMoves() const {
+    std::vector<std::vector<Square>> possibleMoves;
 
-        Pawn(Type pieceType, const Square &startPosition, Color color)
-            : Piece(pieceType, startPosition, color) {}
+    std::int8_t direction = static_cast<std::int8_t>(_color);
 
-        std::vector<std::vector<Square>> getRawMoves() const override {
-            std::vector<std::vector<Square>> possibleMoves;
+    if (_position.rank + direction >= 0 && _position.rank + direction < BOARD_LENGTH) {
 
-            std::int8_t direction = static_cast<std::int8_t>(_color);
+        std::vector<Square> directionMoves;
 
-            if (_position.rank + direction >= 0 && _position.rank + direction < BOARD_LENGTH) {
-
-                std::vector<Square> directionMoves;
-
-                // Forward walk
-                directionMoves.push_back({_position.file, _position.rank + direction});
-                if (_color == Color::WHITE && _position.rank == 1 ||
-                    _color == Color::BLACK && _position.rank == 6) {
-                        directionMoves.push_back({_position.file, _position.rank + direction * 2});
-                    }
-                possibleMoves.push_back(directionMoves);
-
-                if (_position.file > 0) {
-                    directionMoves.clear();
-                    // First side capture
-                    directionMoves.push_back({_position.file - 1, _position.rank + direction});
-                    possibleMoves.push_back(directionMoves);
-                }
-                if (_position.file < BOARD_LENGTH - 1) {
-                    directionMoves.clear();
-                    // Second side capture
-                    directionMoves.push_back({_position.file + 1, _position.rank + direction});
-                    possibleMoves.push_back(directionMoves);
-                }
+        // Forward walk
+        directionMoves.push_back(Square{_position.file, _position.rank + direction});
+        if (_color == Color::WHITE && _position.rank == 1 ||
+            _color == Color::BLACK && _position.rank == 6) {
+                directionMoves.push_back(Square{_position.file, _position.rank + direction * 2});
             }
-            return possibleMoves;
-        }
+        possibleMoves.push_back(directionMoves);
 
-        std::unique_ptr<Piece> clone() const override {
-            return std::make_unique<Pawn>(*this);
+        if (_position.file > 0) {
+            directionMoves.clear();
+            // First side capture
+            directionMoves.push_back(Square{_position.file - 1, _position.rank + direction});
+            possibleMoves.push_back(directionMoves);
         }
+        if (_position.file < BOARD_LENGTH - 1) {
+            directionMoves.clear();
+            // Second side capture
+            directionMoves.push_back(Square{_position.file + 1, _position.rank + direction});
+            possibleMoves.push_back(directionMoves);
+        }
+    }
+    return possibleMoves;
+}
 
-        char toFEN() const override {
-            if (_color == Color::WHITE) return 'P';
-            else return 'p';
-        }
-};
+std::unique_ptr<Piece> Pawn::clone() const {
+    return std::make_unique<Pawn>(*this);
+}
+
+char Pawn::toFEN() const {
+    if (_color == Color::WHITE) return 'P';
+    else return 'p';
+}
