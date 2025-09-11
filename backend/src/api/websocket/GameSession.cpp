@@ -8,11 +8,21 @@ GameSession::GameSession()
 
 void GameSession::onMoveReceived(crow::websocket::connection& ws, std::string from, std::string to) {
 
-    Move moveReq = Parser::parseMove(from, to);
+    Parser::ParseResult moveReq = Parser::tryParseMove(from, to);
+    if (!moveReq.valid) {
+        ws.send_text(moveReq.error);
+        return;
+    }
 
     GameBoard& board = _game.getGameBoard();
-    bool res = _game.applyMove(moveReq);
-    if (res) _game.nextTurn();
+
+    bool res = _game.tryApplyMove(moveReq.move);
+    if (!res) {
+        ws.send_text("Requested move is illegal");
+        return;
+    }
+
+    _game.nextTurn();
 
     board.printBoard();
 

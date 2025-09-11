@@ -21,7 +21,7 @@ private:
 public:
     Game();
     ~Game() = default;
-    bool applyMove(const Move& move);
+    bool tryApplyMove(const Move& move);
     std::vector<Move> getLegalMoves(Square sq);
     void Game::nextTurn();
     GameState getGameState();

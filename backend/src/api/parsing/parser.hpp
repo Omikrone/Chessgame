@@ -7,6 +7,15 @@
 
 class Parser {
 public:
+
+    struct ParseResult {
+        bool valid;
+        std::string error;
+        Move move;
+    };
+
+    static bool isValidSquare(std::string sq);
+
     static Square parsePosition(std::string pos);
-    static Move parseMove(std::string from, std::string to);
+    static ParseResult tryParseMove(std::string from, std::string to);
 };

@@ -12,9 +12,9 @@ Game::Game()
 
 
 
-bool Game::applyMove(const Move& move) {
+bool Game::tryApplyMove(const Move& move) {
     Piece *piece = _board.getPieceAt(move.initPos);
-    if (piece->_color != _currentTurn) return false;
+    if (piece == nullptr || piece->_color != _currentTurn) return false;
 
     std::vector<Move> legalMoves = getLegalMoves(move.initPos);
     for (Move m: legalMoves) {

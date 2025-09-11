@@ -1,7 +1,7 @@
 #include "DataValidator.hpp"
 
 
-Result DataValidator::isMessageValid(const crow::json::rvalue& data) {
+DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& data) {
     Result result;
     result.valid = true;
 

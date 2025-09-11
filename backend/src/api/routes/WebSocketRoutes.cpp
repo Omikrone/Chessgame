@@ -19,6 +19,7 @@ void registerWebSocketRoutes(crow::App<crow::CORSHandler>& app, GameController& 
             GameSession *session = gameController.getGameSession(gameId);
             if (session == nullptr) {
                 conn.send_text("Requested game not found");
+                return;
             }
 
             std::string from = body["from"].s();
