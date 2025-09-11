@@ -8,31 +8,21 @@ void registerWebSocketRoutes(crow::App<crow::CORSHandler>& app, GameController& 
         })
         .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool is_binary){
             crow::json::rvalue body = crow::json::load(data);
-            if (!body) {
-                conn.send_text("Invalid JSON");
+
+            DataValidator::Result result = DataValidator::isMessageValid(body);
+            if (!result.valid) {
+                conn.send_text(result.error);
+                return;
             }
 
-            if (!body.has("type")) {
-                conn.send_text("Missing 'type' field");
-            }
-            if (!body.has("gameId")) {
-                conn.send_text("Missing 'gameId' field");
-            }
-            if (!body.has("from")) {
-                conn.send_text("Missing 'from' field");
-            }
-            if (!body.has("to")) {
-                conn.send_text("Missing 'to' field");
-            }
-
-            int gameId = body["gameId"].i();
-            std::string from = body["from"].s();
-            std::string to = body["to"].s();
-
+            int gameId = body["gameId"].u();
             GameSession *session = gameController.getGameSession(gameId);
             if (session == nullptr) {
                 conn.send_text("Requested game not found");
             }
+
+            std::string from = body["from"].s();
+            std::string to = body["to"].s();
             session->onMoveReceived(conn, from, to);
         })
         .onclose([](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
