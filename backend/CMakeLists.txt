@@ -4,27 +4,24 @@ project(ChessEngine LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Si aucun build type défini → Release par défaut
+# Release build type per default
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-# Trouver dépendances via vcpkg
+# Find dependencies via vcpkg
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(Boost CONFIG REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 
-# Répertoires d'includes du projet
-set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(chess ${SOURCES})
 
-# Lier dépendances
+# Link dependencies
 target_link_libraries(chess
     PRIVATE
         Threads::Threads
@@ -35,10 +32,11 @@ target_link_libraries(chess
         Crow::Crow
 )
 
-# Inclure ton dossier "include/"
+# Include directory of the project
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(chess PRIVATE ${PROJECT_INCLUDE_DIR})
 
-# Options warnings selon compilateur
+# Warning options for the compiler
 if(MSVC)
     target_compile_options(chess PRIVATE /W4)
 else()

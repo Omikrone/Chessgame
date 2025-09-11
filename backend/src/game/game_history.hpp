@@ -3,8 +3,8 @@
 #include <vector>
 #include <cassert>
 
-#include "board/pieces/utils/Move.hpp"
-#include "board/pieces/utils/Color.hpp"
+#include "game/components/move.hpp"
+#include "game/game_constants.hpp"
 
 
 

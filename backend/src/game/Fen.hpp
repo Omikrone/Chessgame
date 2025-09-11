@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Game.hpp"
+#include "game/game.hpp"
 #include <string>
-
 
 
 class FEN

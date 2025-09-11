@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../game/board/pieces/utils/Square.hpp"
-#include "../../game/board/pieces/utils/Move.hpp"
-#include "../models/requests.hpp"
+#include "game/components/square.hpp"
+#include "game/components/move.hpp"
+#include "api/models/requests.hpp"
 
 
 class Parser {

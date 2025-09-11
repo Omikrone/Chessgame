@@ -2,15 +2,16 @@
 
 #include <iostream>
 
-#include "pieces/utils/type.hpp"
-#include "pieces/utils/move.hpp"
-#include "pieces/piece.hpp"
-#include "pieces/pawn.hpp"
-#include "pieces/rook.hpp"
-#include "pieces/bishop.hpp"
-#include "pieces/knight.hpp"
-#include "pieces/king.hpp"
-#include "pieces/queen.hpp"
+#include "game/pieces/piece.hpp"
+#include "game/pieces/pawn.hpp"
+#include "game/pieces/rook.hpp"
+#include "game/pieces/bishop.hpp"
+#include "game/pieces/knight.hpp"
+#include "game/pieces/king.hpp"
+#include "game/pieces/queen.hpp"
+#include "game/components/move.hpp"
+#include "game/components/square.hpp"
+#include "game/game_constants.hpp"
 
 
 class GameBoard {
@@ -41,5 +42,5 @@ private:
     void kingSideCastle(Piece *king);
 
     void queenSideCastle(Piece *king);
-    void promotion(Piece *pawnToPromote, Type pieceType);
+    void promotion(Piece *pawnToPromote, PieceType pieceType);
 };

@@ -1,4 +1,4 @@
-#include "game_history.hpp"
+#include "game/game_history.hpp"
 
 
 void GameHistory::push(Move move) {

@@ -1,4 +1,4 @@
-#include "Fen.hpp"
+#include "game/fen.hpp"
 
 
 std::string FEN::toString(Game& game) {

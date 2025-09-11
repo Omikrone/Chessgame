@@ -1,0 +1,22 @@
+#pragma once
+
+#include "game/pieces/piece.hpp"
+#include "game/pieces/rook.hpp"
+#include "game/pieces/bishop.hpp"
+#include "game/game_constants.hpp"
+
+#include <vector>
+#include <cstdint>
+
+
+class Queen: public Piece {
+
+    public:
+        Queen(PieceType pieceType, const Square &startPosition, Color color);
+
+        std::vector<std::vector<Square>> getRawMoves() const override;
+
+        std::unique_ptr<Piece> clone() const override;
+
+        char toFEN() const override;
+};

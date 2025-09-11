@@ -1,12 +1,11 @@
 #pragma once
 
-#include "board/Board.hpp"
-#include "move/MoveGenerator.hpp"
-#include "move/MoveValidator.hpp"
-#include "board/pieces/utils/color.hpp"
-#include "board/pieces/utils/Square.hpp"
-#include "board/pieces/utils/GameState.hpp"
-#include "game_history.hpp"
+#include "game/board/board.hpp"
+#include "game/rules/move_validator.hpp"
+#include "game/rules/move_generator.hpp"
+#include "game/components/square.hpp"
+#include "game/game_history.hpp"
+#include "game/game_constants.hpp"
 
 
 class Game
