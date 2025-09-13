@@ -4,7 +4,7 @@
 
 #include "game/components/move.hpp"
 #include "game/pieces/piece.hpp"
-#include "game/board/Board.hpp"
+#include "game/board/board.hpp"
 #include "game/rules/move_generator.hpp"
 #include "game/game_history.hpp"
 
