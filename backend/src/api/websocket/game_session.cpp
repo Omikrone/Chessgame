@@ -19,12 +19,8 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 
     // Tries to apply the move on the game board
     bool res = _game.try_apply_move(moveReq.move);
-    if (!res) {
-        ws.send_text("Requested move is illegal");
-        return;
-    }
 
-    _game.next_turn();
+    if (res) _game.next_turn();
 
     // Replies to the client by sending him the game state
     crow::json::wvalue response;
@@ -32,7 +28,6 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     if (game_state == GameState::CONTINUING) {
         response["type"] = "fen";
         response["fen"] = FEN::to_string(_game);
-        
     }
     else {
         response["type"] = "endgame";
