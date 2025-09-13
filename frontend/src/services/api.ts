@@ -1,7 +1,8 @@
 import type { CreateGameResponse } from "../types/game";
 
 export async function createGame(): Promise<CreateGameResponse> {
-    const apiUrl = 'http://127.0.0.1:18080/games';
+    
+    const apiUrl = 'https://chessgame-p0kd.onrender.com/games';
 
     const res = await fetch(apiUrl, {
         method: 'POST',
