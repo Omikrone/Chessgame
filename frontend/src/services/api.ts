@@ -2,7 +2,7 @@ import type { CreateGameResponse } from "../types/game";
 
 export async function createGame(): Promise<CreateGameResponse> {
     
-    const apiUrl = 'https://chessgame-p0kd.onrender.com/games';
+    const apiUrl = import.meta.env.VITE_API_URL + "/games";
 
     const res = await fetch(apiUrl, {
         method: 'POST',

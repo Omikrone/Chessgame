@@ -6,7 +6,7 @@ type GameMessageHandler = (message : ServerResponse) => void;
 
 export function createGameSocket(onMessage : GameMessageHandler, gameId: number) {
 
-  const ws = new WebSocket(`ws://chessgame-p0kd.onrender.com/ws/${gameId}`);
+  const ws = new WebSocket(import.meta.env.VITE_WS_URL + `/ws/${gameId}`);
 
   ws.onopen = () => {
     console.log("WebSocket connected");
