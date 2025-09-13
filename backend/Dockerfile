@@ -2,7 +2,7 @@
 FROM ubuntu:22.04
 
 # ----------------------------
-# Install build dependencies and Crow framework
+# Install build dependencies
 # ----------------------------
 RUN apt-get update && apt-get install -y \
     build-essential \
