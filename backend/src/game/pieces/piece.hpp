@@ -6,6 +6,7 @@
 #include "game/components/square.hpp"
 #include "game/components/move.hpp"
 
+#include <memory>
 #include <vector>
 
 

@@ -13,6 +13,7 @@
 #include "game/components/square.hpp"
 #include "game/game_constants.hpp"
 
+#include <memory>
 #include <iostream>
 
 
