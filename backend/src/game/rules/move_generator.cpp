@@ -1,14 +1,17 @@
+// move_generator.cpp
+
 #include "game/rules/move_generator.hpp"
 
 
 std::vector<Move> MoveGenerator::get_all_possible_moves(GameBoard& board, Color side) {
     std::vector<Move> allPossibleMoves;
 
+    // Iterates on all the pieces with color 'side' and generates their moves
     for (auto& rank: board._board) {
         for (const auto& cell: rank) {
             if (cell != nullptr && cell->_color == side) {
                 std::vector<Move> possibleMoves = get_possible_moves(board, cell.get());
-                allPossibleMoves.insert(allPossibleMoves.end(), possibleMoves.begin(), possibleMoves.end());
+                allPossibleMoves.insert(allPossibleMoves.end(), possibleMoves.begin(), possibleMoves.end()); // Concate two vectors
             }
         }
     }
@@ -17,15 +20,17 @@ std::vector<Move> MoveGenerator::get_all_possible_moves(GameBoard& board, Color 
 
 std::vector<Move> MoveGenerator::get_possible_moves(GameBoard& board, Piece *piece) {
 
+    // TODO: refactor this class and improve Single responsibility
     std::vector<std::vector<Square>> rawMoves = piece->get_raw_moves();
     std::vector<Move> rawPossibleMoves;
 
+    // Handle the special moves (castle, EnPassant ...)
     if (piece->_pieceType == PieceType::PAWN) {
 
         for (std::vector<Square> dm: rawMoves) {
             if (dm.empty()) continue;
 
-            // Forward
+            // Forward move for a pawn: check if there's no obstacle or if a promotion is possible
             if (dm[0].file == piece->_position.file) {
                 for (Square p: dm) {
                     Piece *presentPiece = board._board[p.rank][p.file].get();
@@ -41,7 +46,7 @@ std::vector<Move> MoveGenerator::get_possible_moves(GameBoard& board, Piece *pie
                 }
             }
 
-            // Side take
+            // Side move for a pawn: check if promotion or enpassant is possible
             else {
                 Square takePosition = dm[0];
                 Piece *presentPiece = board._board[takePosition.rank][takePosition.file].get();
@@ -63,6 +68,7 @@ std::vector<Move> MoveGenerator::get_possible_moves(GameBoard& board, Piece *pie
     else if (piece->_pieceType == PieceType::KING) {
         for (std::vector<Square> dm: rawMoves)
         {
+            // Moves for a King: converts raw moves to castle
             for (Square p: dm) {
                 int8_t distance  = p.file - piece->_position.file;
                 Piece *presentPiece = board._board[p.rank][p.file].get();
@@ -83,6 +89,7 @@ std::vector<Move> MoveGenerator::get_possible_moves(GameBoard& board, Piece *pie
     }
     else {
 
+        // For normal moves
         for (std::vector<Square> dm: rawMoves)
         {
             for (Square p: dm) {

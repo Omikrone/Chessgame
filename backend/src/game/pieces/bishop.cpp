@@ -1,12 +1,16 @@
+// bishop.cpp
+
 #include "game/pieces/bishop.hpp"
 
 
 Bishop::Bishop(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
 
+
 std::vector<std::vector<Square>> Bishop::get_raw_moves() const {
     return get_bishop_moves(_position);
 }
+
 
 std::vector<std::vector<Square>> Bishop::get_bishop_moves(const Square &currentPosition) {
     std::vector<std::vector<Square>> possibleMoves;
@@ -50,9 +54,11 @@ std::vector<std::vector<Square>> Bishop::get_bishop_moves(const Square &currentP
     return possibleMoves;
 }
 
+
 std::unique_ptr<Piece> Bishop::clone() const {
     return std::make_unique<Bishop>(*this);
 }
+
 
 char Bishop::to_fen() const {
     if (_color == Color::WHITE) return 'B';

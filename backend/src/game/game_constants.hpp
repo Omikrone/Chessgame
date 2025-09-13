@@ -1,3 +1,5 @@
+// galme_constants.hpp
+
 #pragma once
 
 #define BOARD_LENGTH 8

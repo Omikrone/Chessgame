@@ -1,3 +1,5 @@
+// bishop.hpp
+
 #pragma once
 
 #include "game/pieces/piece.hpp"
@@ -7,6 +9,11 @@
 #include <cstdint>
 
 
+/**
+ * @brief Chess pawn.
+ *
+ * Represents the bishop piece of chess.
+ */
 class Bishop: public Piece {
 
     public:

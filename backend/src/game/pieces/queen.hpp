@@ -1,3 +1,5 @@
+// queen.hpp
+
 #pragma once
 
 #include "game/pieces/piece.hpp"
@@ -9,9 +11,15 @@
 #include <cstdint>
 
 
+/**
+ * @brief Chess queen.
+ *
+ * Represents the queen piece of chess.
+ */
 class Queen: public Piece {
 
     public:
+
         Queen(PieceType pieceType, const Square &startPosition, Color color);
 
         std::vector<std::vector<Square>> get_raw_moves() const override;

@@ -1,3 +1,5 @@
+// knight.hpp
+
 #pragma once
 
 #include "game/pieces/piece.hpp"
@@ -7,6 +9,11 @@
 #include <cstdint>
 
 
+/**
+ * @brief Chess knight.
+ *
+ * Represents the knight piece of chess.
+ */
 class Knight: public Piece {
 
     public:

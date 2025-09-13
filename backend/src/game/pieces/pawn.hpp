@@ -1,3 +1,5 @@
+// pawn.hpp
+
 #pragma once
 
 #include "game/pieces/piece.hpp"
@@ -6,7 +8,11 @@
 #include <vector>
 #include <cstdint>
 
-
+/**
+ * @brief Chess pawn.
+ *
+ * Represents the pawn piece of chess.
+ */
 class Pawn : public Piece {
 
     public:

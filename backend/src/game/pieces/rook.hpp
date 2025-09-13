@@ -1,3 +1,5 @@
+// rook.hpp
+
 #pragma once
 
 #include "game/pieces/piece.hpp"
@@ -6,10 +8,15 @@
 #include <vector>
 #include <cstdint>
 
-
+/**
+ * @brief Chess rook.
+ *
+ * Represents the rook piece of chess.
+ */
 class Rook: public Piece {
 
     public:
+
         Rook(PieceType pieceType, const Square &startPosition, Color color);
 
         std::vector<std::vector<Square>> get_raw_moves() const override;

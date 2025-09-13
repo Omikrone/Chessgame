@@ -1,8 +1,11 @@
+// knight.cpp
+
 #include "game/pieces/knight.hpp"
 
 
 Knight::Knight(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
+
 
 std::vector<std::vector<Square>> Knight::get_raw_moves() const {
     std::vector<std::vector<Square>> possibleMoves;
@@ -26,9 +29,11 @@ std::vector<std::vector<Square>> Knight::get_raw_moves() const {
     return possibleMoves;
 }
 
+
 std::unique_ptr<Piece> Knight::clone() const {
     return std::make_unique<Knight>(*this);
 }
+
 
 char Knight::to_fen() const {
     if (_color == Color::WHITE) return 'N';

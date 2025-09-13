@@ -1,3 +1,5 @@
+// rook.cpp
+
 #pragma once
 
 #include "game/pieces/rook.hpp"
@@ -10,7 +12,6 @@ Rook::Rook(PieceType pieceType, const Square &startPosition, Color color)
 std::vector<std::vector<Square>> Rook::get_raw_moves() const {
     return get_rook_moves(_position);
 }
-
 
 std::vector<std::vector<Square>> Rook::get_rook_moves(const Square &currentPosition) {
     std::vector<std::vector<Square>> possibleMoves;

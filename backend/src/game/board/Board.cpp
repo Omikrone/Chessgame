@@ -1,12 +1,13 @@
-#pragma once
-
-#include <iostream>
+// board.cpp
 
 #include "game/board/board.hpp"
 
 
 GameBoard::GameBoard()
 {
+    // Initializes the game board with the pieces
+    // TODO: simplify the method or create another class responsible for this
+
     _board.resize(BOARD_LENGTH); 
     for (auto &row : _board) {
         row.resize(BOARD_LENGTH);
@@ -93,11 +94,13 @@ void GameBoard::make_move(const Move& move) {
             break;
 
         case MoveType::PROMOTION:
+            // TODO: Make othe promotion type (rook, ...) possible
             promotion(piece, PieceType::QUEEN);
             piece = get_piece_at(move.initPos);
             move_piece(move.initPos, move.destPos);
             
         default:
+            // Normal move
             move_piece(move.initPos, move.destPos);
             break;
     }
@@ -148,7 +151,6 @@ void GameBoard::queenside_castle(Piece *king) {
 
 
 void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
-    print_board();
 
     // Store the pawn promotion data
     Color promotionColor = pawnToPromote->_color;
@@ -158,22 +160,21 @@ void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
     // Fill the free memory space with the new promotion piece
     switch (piecePieceType)
     {
+        case PieceType::ROOK:
+            newPiece = std::make_unique<Rook>(piecePieceType, promotionSq, promotionColor);
+            break;
 
-    case PieceType::ROOK:
-        newPiece = std::make_unique<Rook>(piecePieceType, promotionSq, promotionColor);
-        break;
+        case PieceType::BISHOP:
+            newPiece = std::make_unique<Bishop>(piecePieceType, promotionSq, promotionColor);
+            break;
 
-    case PieceType::BISHOP:
-        newPiece = std::make_unique<Bishop>(piecePieceType, promotionSq, promotionColor);
-        break;
-
-    case PieceType::KNIGHT:
-        newPiece = std::make_unique<Knight>(piecePieceType, promotionSq, promotionColor);
-        break;
-    
-    default:
-        newPiece = std::make_unique<Queen>(piecePieceType, promotionSq, promotionColor);
-        break;
+        case PieceType::KNIGHT:
+            newPiece = std::make_unique<Knight>(piecePieceType, promotionSq, promotionColor);
+            break;
+        
+        default:
+            newPiece = std::make_unique<Queen>(piecePieceType, promotionSq, promotionColor);
+            break;
     }
     _board[promotionSq.rank][promotionSq.file] = std::move(newPiece);
     print_board();
@@ -212,14 +213,21 @@ King &GameBoard::get_king(Color kingColor) {
 
 
 std::unique_ptr<GameBoard> GameBoard::clone() const {
+    // Creates another blank game board
     std::unique_ptr<GameBoard> newBoard = std::make_unique<GameBoard>();
     newBoard->_board.resize(BOARD_LENGTH);
 
+    // Iterates over the original game board and copy each piece to the new board
     for (int r = 0; r < BOARD_LENGTH; ++r) {
         newBoard->_board[r].resize(BOARD_LENGTH);
         for (int f = 0; f < BOARD_LENGTH; ++f) {
+
             if (_board[r][f] != nullptr) {
+
+                // Create a deep copy of the piece
                 newBoard->_board[r][f] = _board[r][f]->clone();
+
+                // Gets a pointer for each King to memorize their position
                 if (_board[r][f]->_pieceType == PieceType::KING && _board[r][f]->_color == Color::WHITE) {
                     newBoard->_whiteKing = static_cast<King *>(newBoard->_board[r][f].get());
                 } 

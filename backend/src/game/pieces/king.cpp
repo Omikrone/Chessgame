@@ -1,3 +1,5 @@
+// king.cpp
+
 #include "game/pieces/king.hpp"
 
 
@@ -31,9 +33,11 @@ std::vector<std::vector<Square>> King::get_raw_moves() const {
     return possibleMoves;
 }
 
+
 std::unique_ptr<Piece> King::clone() const {
     return std::make_unique<King>(*this);
 }
+
 
 char King::to_fen() const {
     if (_color == Color::WHITE) return 'K';
