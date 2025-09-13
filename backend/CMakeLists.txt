@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(ChessEngine LANGUAGES CXX)
+project(chess LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -20,6 +20,12 @@ elseif(UNIX)
     message(STATUS "Compiling on Linux/Mac")
     set(PLATFORM_LINUX TRUE)
 endif()
+
+# ----------------------------
+# Sources and executable
+# ----------------------------
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+add_executable(chess ${SOURCES})
 
 # ----------------------------
 # Compiling flags
@@ -53,15 +59,12 @@ endif()
 # Crow
 find_package(Crow CONFIG REQUIRED)
 
-# ----------------------------
-# Sources et executable
-# ----------------------------
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-add_executable(chess ${SOURCES})
-
 # Include directory
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
-target_include_directories(chess PRIVATE ${PROJECT_INCLUDE_DIR})
+target_include_directories(chess PRIVATE 
+    ${PROJECT_INCLUDE_DIR}
+    ${PROJECT_INCLUDE_DIR}/game
+)
 
 # Link dependencies
 target_link_libraries(chess
