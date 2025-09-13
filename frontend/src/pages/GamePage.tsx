@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import ChessBoard from "../components/ChessBoard";
 import { createGameSocket } from "../services/websocket";
 import "@lichess-org/chessground/assets/chessground.brown.css";
-import "./pieces.css";
 import { useParams } from "react-router-dom";
 import GameOverModal from "../components/GameOverModal";
 import { createGame } from "../services/api";
+import GithubButton from "../components/GithubButton";
 
 
 export default function GamePage() {
@@ -67,6 +67,7 @@ export default function GamePage() {
         updateId = {updateId}
         onMove={(from, to) => handleMoveSubmitted(from, to)}
       />
+      <GithubButton/>
       {result ?(
         <GameOverModal result={result} winner={winner} onRestart={handleOnRestart}/>
       ) : null}
