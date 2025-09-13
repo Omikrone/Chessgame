@@ -14,5 +14,5 @@ private:
 public:
     GameSession();
     ~GameSession() = default;
-    void onMoveReceived(crow::websocket::connection& ws, std::string from, std::string to);
+    void on_move_received(crow::websocket::connection& ws, std::string from, std::string to);
 };

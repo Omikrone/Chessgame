@@ -1,13 +1,13 @@
 #include "game/rules/move_generator.hpp"
 
 
-std::vector<Move> MoveGenerator::getAllPossibleMoves(GameBoard& board, Color side) {
+std::vector<Move> MoveGenerator::get_all_possible_moves(GameBoard& board, Color side) {
     std::vector<Move> allPossibleMoves;
 
     for (auto& rank: board._board) {
         for (const auto& cell: rank) {
             if (cell != nullptr && cell->_color == side) {
-                std::vector<Move> possibleMoves = getPossibleMoves(board, cell.get());
+                std::vector<Move> possibleMoves = get_possible_moves(board, cell.get());
                 allPossibleMoves.insert(allPossibleMoves.end(), possibleMoves.begin(), possibleMoves.end());
             }
         }
@@ -15,9 +15,9 @@ std::vector<Move> MoveGenerator::getAllPossibleMoves(GameBoard& board, Color sid
     return allPossibleMoves;
 }
 
-std::vector<Move> MoveGenerator::getPossibleMoves(GameBoard& board, Piece *piece) {
+std::vector<Move> MoveGenerator::get_possible_moves(GameBoard& board, Piece *piece) {
 
-    std::vector<std::vector<Square>> rawMoves = piece->getRawMoves();
+    std::vector<std::vector<Square>> rawMoves = piece->get_raw_moves();
     std::vector<Move> rawPossibleMoves;
 
     if (piece->_pieceType == PieceType::PAWN) {

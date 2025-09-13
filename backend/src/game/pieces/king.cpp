@@ -4,7 +4,7 @@
 King::King(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
 
-std::vector<std::vector<Square>> King::getRawMoves() const {
+std::vector<std::vector<Square>> King::get_raw_moves() const {
     std::vector<std::vector<Square>> possibleMoves;
     std::vector<Square> directionMoves;
 
@@ -35,7 +35,7 @@ std::unique_ptr<Piece> King::clone() const {
     return std::make_unique<King>(*this);
 }
 
-char King::toFEN() const {
+char King::to_fen() const {
     if (_color == Color::WHITE) return 'K';
     else return 'k';
 }

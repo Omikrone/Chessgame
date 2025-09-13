@@ -6,39 +6,39 @@ GameSession::GameSession()
 {}
 
 
-void GameSession::onMoveReceived(crow::websocket::connection& ws, std::string from, std::string to) {
+void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
 
-    Parser::ParseResult moveReq = Parser::tryParseMove(from, to);
+    Parser::ParseResult moveReq = Parser::try_parse_move(from, to);
     if (!moveReq.valid) {
         ws.send_text(moveReq.error);
         return;
     }
 
-    GameBoard& board = _game.getGameBoard();
+    GameBoard& board = _game.get_game_board();
 
-    bool res = _game.tryApplyMove(moveReq.move);
+    bool res = _game.try_apply_move(moveReq.move);
     if (!res) {
         ws.send_text("Requested move is illegal");
         return;
     }
 
-    _game.nextTurn();
+    _game.next_turn();
 
-    board.printBoard();
+    board.print_board();
 
     crow::json::wvalue response;
-    GameState game_state = _game.getGameState();
+    GameState game_state = _game.get_game_state();
     if (game_state == GameState::CONTINUING) {
         response["type"] = "fen";
-        response["fen"] = FEN::toString(_game);
+        response["fen"] = FEN::to_string(_game);
         
     }
     else {
         response["type"] = "endgame";
-        response["fen"] = FEN::toString(_game);
+        response["fen"] = FEN::to_string(_game);
 
         if (game_state == GameState::STALEMATE) response["result"] = "draw";
-        else if (_game.getCurrentTurn() == Color::WHITE) {
+        else if (_game.get_current_turn() == Color::WHITE) {
             response["result"] = "checkmate";
             response["winner"] = "black";
         }

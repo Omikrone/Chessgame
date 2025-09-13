@@ -22,6 +22,6 @@ public:
 
     virtual ~Piece() = default;
 
-    virtual char toFEN() const = 0;
-    virtual std::vector<std::vector<Square>> getRawMoves() const = 0;
+    virtual char to_fen() const = 0;
+    virtual std::vector<std::vector<Square>> get_raw_moves() const = 0;
 };

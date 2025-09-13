@@ -7,6 +7,6 @@
 class MoveGenerator
 {
     public:
-        static std::vector<Move> getAllPossibleMoves(GameBoard& board, Color side);
-        static std::vector<Move> getPossibleMoves(GameBoard& board, Piece *piece);
+        static std::vector<Move> get_all_possible_moves(GameBoard& board, Color side);
+        static std::vector<Move> get_possible_moves(GameBoard& board, Piece *piece);
 };

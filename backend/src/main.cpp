@@ -17,8 +17,8 @@ int main() {
     std::vector<std::unique_ptr<Game>> games;
 
     GameController controller = GameController();
-    registerGameRoutes(app, controller);
-    registerWebSocketRoutes(app, controller);
+    register_game_routes(app, controller);
+    register_websocket_routes(app, controller);
 
     app.port(18080).multithreaded().run();
 }

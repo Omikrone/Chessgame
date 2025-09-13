@@ -20,11 +20,11 @@ private:
 public:
     Game();
     ~Game() = default;
-    bool tryApplyMove(const Move& move);
-    std::vector<Move> getLegalMoves(Square sq);
-    void Game::nextTurn();
-    GameState getGameState();
-    Color getCurrentTurn() const;
-    GameBoard& getGameBoard();
-    int getNbMoves(Color side) const;
+    bool try_apply_move(const Move& move);
+    std::vector<Move> get_legal_moves(const Square sq);
+    void next_turn();
+    GameState get_game_state();
+    Color get_current_turn() const;
+    GameBoard& get_game_board();
+    int get_nb_moves(const Color side) const;
 };

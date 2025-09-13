@@ -70,45 +70,45 @@ GameBoard::GameBoard()
 }
 
 
-Piece *GameBoard::getPieceAt(Square sq) const {
+Piece *GameBoard::get_piece_at(Square sq) const {
     return _board[sq.rank][sq.file].get();
 }
 
 
-void GameBoard::makeMove(const Move& move) {
-    Piece *piece = getPieceAt(move.initPos);
+void GameBoard::make_move(const Move& move) {
+    Piece *piece = get_piece_at(move.initPos);
 
     switch (move.type)
     {
         case MoveType::CASTLE_KINGSIDE:
-            kingSideCastle(piece);
+            kingside_castle(piece);
             break;
 
         case MoveType::CASTLE_QUEENSIDE:
-            queenSideCastle(piece);
+            queenside_castle(piece);
             break;
 
         case MoveType::EN_PASSANT:
-            enPassant(piece, move);
+            enpassant(piece, move);
             break;
 
         case MoveType::PROMOTION:
             promotion(piece, PieceType::QUEEN);
-            piece = getPieceAt(move.initPos);
-            movePiece(move.initPos, move.destPos);
+            piece = get_piece_at(move.initPos);
+            move_piece(move.initPos, move.destPos);
             
         default:
-            movePiece(move.initPos, move.destPos);
+            move_piece(move.initPos, move.destPos);
             break;
     }
     piece->_hasMoved = true;
 }
 
 
-void GameBoard::enPassant(Piece *pawn, Move move) {
+void GameBoard::enpassant(Piece *pawn, Move move) {
 
     // Pawn displacement
-    movePiece(move.initPos, move.destPos);
+    move_piece(move.initPos, move.destPos);
 
     // Other pawn destruction
     if (pawn->_color == Color::WHITE) {
@@ -121,34 +121,34 @@ void GameBoard::enPassant(Piece *pawn, Move move) {
 }
 
 
-void GameBoard::kingSideCastle(Piece *king) {
+void GameBoard::kingside_castle(Piece *king) {
 
     // Rook displacement
     Square initPos = {static_cast<int8_t>(king->_position.file + 3), king->_position.rank};
     Square destPos = {king->_position.file + 1, king->_position.rank};
-    movePiece(initPos, destPos);
+    move_piece(initPos, destPos);
 
     // King displacement
     destPos = {static_cast<int8_t>(king->_position.file + 2), king->_position.rank};
-    movePiece(king->_position, destPos);
+    move_piece(king->_position, destPos);
 }
 
 
-void GameBoard::queenSideCastle(Piece *king) {
+void GameBoard::queenside_castle(Piece *king) {
 
     // Rook displacement
     Square initPos = {static_cast<int8_t>(king->_position.file - 4), king->_position.rank};
     Square destPos = {king->_position.file - 1, king->_position.rank};
-    movePiece(initPos, destPos);
+    move_piece(initPos, destPos);
 
     // King displacement
     destPos = {static_cast<int8_t>(king->_position.file - 2), king->_position.rank};
-    movePiece(king->_position, destPos);
+    move_piece(king->_position, destPos);
 }
 
 
 void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
-    printBoard();
+    print_board();
 
     // Store the pawn promotion data
     Color promotionColor = pawnToPromote->_color;
@@ -176,12 +176,12 @@ void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
         break;
     }
     _board[promotionSq.rank][promotionSq.file] = std::move(newPiece);
-    printBoard();
+    print_board();
 
 }
 
 
-bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
+bool GameBoard::is_square_attacked(std::vector<Move>& ennemyMoves, Square sq) {
     for (Move m: ennemyMoves)
     {
         // If a possible (legal) ennemy move reach the square, then the square is attacked by the other team
@@ -193,7 +193,7 @@ bool GameBoard::isSquareAttacked(std::vector<Move>& ennemyMoves, Square sq) {
 }
 
 
-void GameBoard::movePiece(Square from, Square to) {
+void GameBoard::move_piece(Square from, Square to) {
         
     // Piece displacement
     auto& src = _board[from.rank][from.file];
@@ -205,7 +205,7 @@ void GameBoard::movePiece(Square from, Square to) {
 }
 
 
-King &GameBoard::getKing(Color kingColor) {
+King &GameBoard::get_king(Color kingColor) {
     if (kingColor == Color::WHITE) return *_whiteKing;
     else return *_blackKing;
 }
@@ -234,13 +234,13 @@ std::unique_ptr<GameBoard> GameBoard::clone() const {
 }
 
 
-void GameBoard::printBoard() {
+void GameBoard::print_board() {
     for (int8_t j = BOARD_LENGTH - 1; j >= 0; j--)
     {
         for (int8_t i = 0; i < BOARD_LENGTH; i++)
         {
             if (_board[j][i] != nullptr) {
-                std::cout << " " << _board[j][i].get()->toFEN() << " ";
+                std::cout << " " << _board[j][i].get()->to_fen() << " ";
             }
             else {
                 std::cout << "   ";

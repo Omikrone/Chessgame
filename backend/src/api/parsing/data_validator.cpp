@@ -1,7 +1,7 @@
 #include "api/parsing/data_validator.hpp"
 
 
-DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& data) {
+DataValidator::Result DataValidator::is_message_valid(const crow::json::rvalue& data) {
     Result result;
     result.valid = true;
 
@@ -15,7 +15,7 @@ DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& da
     }
     else {
         try {data["type"].s();}
-        catch(const std::runtime_error& e) {return {false, "Invalid 'type' field"};}
+        catch(const std::runtime_error& /*e*/) {return {false, "Invalid 'type' field"};}
     }
 
     if (!data.has("gameId")) {
@@ -23,7 +23,7 @@ DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& da
     }
     else {
         try {data["gameId"].u();}
-        catch(const std::runtime_error& e) {return {false, "Invalid 'gameId' field"};}
+        catch(const std::runtime_error& /*e*/) {return {false, "Invalid 'gameId' field"};}
     }
 
     if (!data.has("from")) {
@@ -31,7 +31,7 @@ DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& da
     }
     else {
         try {data["from"].s();}
-        catch(const std::runtime_error& e) {return {false, "Invalid 'from' field"};}
+        catch(const std::runtime_error& /*e*/) {return {false, "Invalid 'from' field"};}
     }
 
     if (!data.has("to")) {
@@ -39,7 +39,7 @@ DataValidator::Result DataValidator::isMessageValid(const crow::json::rvalue& da
     }
     else {
         try {data["to"].s();}
-        catch(const std::runtime_error& e) {return {false, "Invalid 'to' field"};}
+        catch(const std::runtime_error& /*e*/) {return {false, "Invalid 'to' field"};}
     }
 
     return result;

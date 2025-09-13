@@ -4,7 +4,7 @@
 Pawn::Pawn(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
 
-std::vector<std::vector<Square>> Pawn::getRawMoves() const {
+std::vector<std::vector<Square>> Pawn::get_raw_moves() const {
     std::vector<std::vector<Square>> possibleMoves;
 
     std::int8_t direction = static_cast<std::int8_t>(_color);
@@ -41,7 +41,7 @@ std::unique_ptr<Piece> Pawn::clone() const {
     return std::make_unique<Pawn>(*this);
 }
 
-char Pawn::toFEN() const {
+char Pawn::to_fen() const {
     if (_color == Color::WHITE) return 'P';
     else return 'p';
 }

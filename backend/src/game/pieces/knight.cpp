@@ -4,7 +4,7 @@
 Knight::Knight(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
 
-std::vector<std::vector<Square>> Knight::getRawMoves() const {
+std::vector<std::vector<Square>> Knight::get_raw_moves() const {
     std::vector<std::vector<Square>> possibleMoves;
     std::vector<Square> directionMoves;
 
@@ -30,7 +30,7 @@ std::unique_ptr<Piece> Knight::clone() const {
     return std::make_unique<Knight>(*this);
 }
 
-char Knight::toFEN() const {
+char Knight::to_fen() const {
     if (_color == Color::WHITE) return 'N';
     else return 'n';
 }

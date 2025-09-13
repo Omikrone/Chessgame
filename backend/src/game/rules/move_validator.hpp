@@ -14,15 +14,13 @@ class MoveValidator
 private:
     GameBoard& _board;
     GameHistory& _history;
-    bool checkKingSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves);
-    bool checkQueenSideCastle(Piece *king, std::vector<Move>& ennemyPossibleMoves);
-    std::vector<Move> filterEnPassantMoves(std::vector<Move>& possibleMoves, Color side);
-    std::vector<Move> filterCastleMoves(std::vector<Move>& possibleMoves, Color side);
-    std::vector<Move> filterCheckMoves(std::vector<Move>& possibleMoves, Color side);
+    bool check_kingside_castle(Piece *king, std::vector<Move>& ennemyPossibleMoves);
+    bool check_queenside_castle(Piece *king, std::vector<Move>& ennemyPossibleMoves);
+    std::vector<Move> filter_enpassant_moves(std::vector<Move>& possibleMoves, Color side);
+    std::vector<Move> filter_castle_moves(std::vector<Move>& possibleMoves, Color side);
+    std::vector<Move> filter_check_moves(std::vector<Move>& possibleMoves, Color side);
 public:
     MoveValidator(GameBoard& board, GameHistory& history);
     ~MoveValidator() = default;
-    std::vector<Move> filterLegalMoves(std::vector<Move>& rawPossibleMoves, Color side);
+    std::vector<Move> filter_legal_moves(std::vector<Move>& rawPossibleMoves, Color side);
 };
-
-std::vector<std::vector<Piece*>> deepCopyBoard(const std::vector<std::vector<Piece*>>& board);

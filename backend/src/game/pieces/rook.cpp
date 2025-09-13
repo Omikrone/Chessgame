@@ -7,12 +7,12 @@ Rook::Rook(PieceType pieceType, const Square &startPosition, Color color)
     : Piece(pieceType, startPosition, color) {}
 
             
-std::vector<std::vector<Square>> Rook::getRawMoves() const {
-    return getRookMoves(_position);
+std::vector<std::vector<Square>> Rook::get_raw_moves() const {
+    return get_rook_moves(_position);
 }
 
 
-std::vector<std::vector<Square>> Rook::getRookMoves(const Square &currentPosition) {
+std::vector<std::vector<Square>> Rook::get_rook_moves(const Square &currentPosition) {
     std::vector<std::vector<Square>> possibleMoves;
 
     // Direction to the top
@@ -56,7 +56,7 @@ std::unique_ptr<Piece> Rook::clone() const {
 }
      
 
-char Rook::toFEN() const {
+char Rook::to_fen() const {
     if (_color == Color::WHITE) return 'R';
     else return 'r';
 }

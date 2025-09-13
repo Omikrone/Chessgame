@@ -9,12 +9,12 @@
 class GameController
 {
 private:
-    std::unordered_map<int, GameSession> _sessions;
-    int _nextId = 1;
+    std::unordered_map<uint64_t, GameSession> _sessions;
+    uint64_t _nextId = 1;
     
 public:
     GameController() = default;
     ~GameController() = default;
-    int createGame();
-    GameSession* getGameSession(int gameId);
+    uint64_t create_game();
+    GameSession* get_game_session(uint64_t gameId);
 };

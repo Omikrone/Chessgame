@@ -28,19 +28,19 @@ public:
     GameBoard(GameBoard&&) = default;
     GameBoard& operator=(GameBoard&&) = default;
 
-    Piece *getPieceAt(Square sq) const;
-    void makeMove(const Move &move);
-    King& getKing(Color kingColor);
-    bool isSquareAttacked(std::vector<Move>& ennemyMoves, Square position);
+    Piece *get_piece_at(Square sq) const;
+    void make_move(const Move &move);
+    King& get_king(Color kingColor);
+    bool is_square_attacked(std::vector<Move>& ennemyMoves, Square position);
     std::unique_ptr<GameBoard> clone() const;
-    void printBoard();
+    void print_board();
 
 private:
-    void movePiece(Square from, Square to);
-    void enPassant(Piece *pawn, Move move);
+    void move_piece(Square from, Square to);
+    void enpassant(Piece *pawn, Move move);
 
-    void kingSideCastle(Piece *king);
+    void kingside_castle(Piece *king);
 
-    void queenSideCastle(Piece *king);
+    void queenside_castle(Piece *king);
     void promotion(Piece *pawnToPromote, PieceType pieceType);
 };

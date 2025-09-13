@@ -38,6 +38,7 @@ target_include_directories(chess PRIVATE ${PROJECT_INCLUDE_DIR})
 
 # Warning options for the compiler
 if(MSVC)
+    add_compile_definitions(_WIN32_WINNT=0x0A00)
     target_compile_options(chess PRIVATE /W4)
 else()
     target_compile_options(chess PRIVATE -Wall -Wextra -pedantic)
