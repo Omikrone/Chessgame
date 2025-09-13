@@ -1,3 +1,5 @@
+// data_validator.cpp
+
 #include "api/parsing/data_validator.hpp"
 
 
@@ -5,11 +7,13 @@ DataValidator::Result DataValidator::is_message_valid(const crow::json::rvalue& 
     Result result;
     result.valid = true;
 
+    // If there's no data
     if (!data) {
         result.valid = false;
         result.error = "Missing or invalid JSON data";
     }
 
+    // Tries to convert each required field into it's type
     if (!data.has("type")) {
         return {false, "Missing 'type' field"};
     }

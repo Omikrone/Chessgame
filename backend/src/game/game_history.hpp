@@ -6,6 +6,7 @@
 #include "game/game_constants.hpp"
 
 #include <vector>
+#include <cassert>
 
 
 /**
@@ -13,10 +14,13 @@
  *
  */
 class GameHistory {
+
     private:
+
         std::vector<Move> _history;
 
     public:
+
         GameHistory() = default;
 
         ~GameHistory() = default;

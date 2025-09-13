@@ -1,3 +1,5 @@
+// game_session.cpp
+
 #include "api/websocket/game_session.hpp"
 
 
@@ -8,14 +10,14 @@ GameSession::GameSession()
 
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
 
+    // Tries to parse the positions sent by the client
     Parser::ParseResult moveReq = Parser::try_parse_move(from, to);
     if (!moveReq.valid) {
         ws.send_text(moveReq.error);
         return;
     }
 
-    GameBoard& board = _game.get_game_board();
-
+    // Tries to apply the move on the game board
     bool res = _game.try_apply_move(moveReq.move);
     if (!res) {
         ws.send_text("Requested move is illegal");
@@ -24,8 +26,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 
     _game.next_turn();
 
-    board.print_board();
-
+    // Replies to the client by sending him the game state
     crow::json::wvalue response;
     GameState game_state = _game.get_game_state();
     if (game_state == GameState::CONTINUING) {
@@ -50,5 +51,4 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 
     std::string s = response.dump();
     ws.send_text(s);
-    std::cout << s;
 }

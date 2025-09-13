@@ -1,7 +1,11 @@
+// parser.cpp
+
 #include "api/parsing/parser.hpp"
 
 
 bool Parser::is_valid_square(std::string sq) {
+
+    // Checks the range
     return (sq.length() == 2 
         && sq.at(0) >= 'a'
         && sq.at(0) <= 'h'
@@ -23,6 +27,8 @@ Parser::ParseResult Parser::try_parse_move(std::string from, std::string to) {
         return {false, from + " or " + to + " is not a valid square", NULL};
     }
 
+    // Creates the corresponding move
+    // TODO: Create an alternative structure without take and type
     move.initPos = Parser::parse_position(from.substr(0, 2));
     move.destPos = Parser::parse_position(to.substr(0, 2));
     move.take = false;

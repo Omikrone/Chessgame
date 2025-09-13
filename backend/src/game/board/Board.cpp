@@ -152,7 +152,7 @@ void GameBoard::queenside_castle(Piece *king) {
 
 void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
 
-    // Store the pawn promotion data
+    // Stores the pawn promotion data
     Color promotionColor = pawnToPromote->_color;
     Square promotionSq = pawnToPromote->_position;
     std::unique_ptr<Piece> newPiece;

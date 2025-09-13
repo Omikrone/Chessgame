@@ -34,7 +34,7 @@ class GameBoard {
         void move_piece(Square from, Square to);
 
         /**
-         * @brief Apply the En Passant move to a piece.
+         * @brief Applies the En Passant move to a piece.
          *
          * @param pawn The piece to move (a pawn).
          * @param move The specific move to apply.
@@ -42,14 +42,14 @@ class GameBoard {
         void enpassant(Piece *pawn, Move move);
 
         /**
-         * @brief Apply the kingside castle move to a piece.
+         * @brief Applies the kingside castle move to a piece.
          *
          * @param king The piece to move (a king).
          */
         void kingside_castle(Piece *king);
 
         /**
-         * @brief Apply the queenside castle move to a piece.
+         * @brief Applies the queenside castle move to a piece.
          *
          * @param king The piece to move (a king).
          */
@@ -80,7 +80,7 @@ class GameBoard {
         Piece *get_piece_at(Square sq) const;
 
         /**
-         * @brief Apply a given move on the game board.
+         * @brief Applies a given move on the game board.
          *
          * @param move The move to apply.
          */
