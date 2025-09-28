@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "game/game.hpp"
 #include "api/websocket/game_session.hpp"
 
 #include <unordered_map>

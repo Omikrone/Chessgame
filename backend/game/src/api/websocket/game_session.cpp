@@ -18,22 +18,27 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     }
 
     // Tries to apply the move on the game board
-    bool res = _game.try_apply_move(moveReq.move);
+    bool res = _game.try_apply_move(moveReq.from, moveReq.to);
 
-    if (res) _game.next_turn();
+    EndGame game_state;
+    if (res) {
+        _game.next_turn();
+        game_state = _game.get_game_state();
+    }
+    else game_state = EndGame::CONTINUING;
 
     // Replies to the client by sending him the game state
     crow::json::wvalue response;
-    GameState game_state = _game.get_game_state();
-    if (game_state == GameState::CONTINUING) {
+   
+    if (game_state == EndGame::CONTINUING) {
         response["type"] = "fen";
-        response["fen"] = FEN::to_string(_game);
+        response["fen"] = _game.get_fen();
     }
     else {
         response["type"] = "endgame";
-        response["fen"] = FEN::to_string(_game);
+        response["fen"] = _game.get_fen();
 
-        if (game_state == GameState::STALEMATE) response["result"] = "draw";
+        if (game_state == EndGame::STALEMATE) response["result"] = "draw";
         else if (_game.get_current_turn() == Color::WHITE) {
             response["result"] = "checkmate";
             response["winner"] = "black";

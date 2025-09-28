@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "game/components/square.hpp"
-#include "game/components/move.hpp"
+#include <string>
 
 
 /**
@@ -22,7 +21,8 @@ class Parser {
         struct ParseResult {
             bool valid;         // If the parse was succesful or not 
             std::string error;  // Optionnal: the detailled error
-            Move move;          // Optionnal: the corresponding Move after the parse
+            int from;         // Optionnal: the corresponding Move after the parse
+            int to;
         };
 
         /**
@@ -39,7 +39,7 @@ class Parser {
          * @param pos A string representing the position.
          * @return the corresponding square.
          */
-        static Square parse_position(std::string pos);
+        static int parse_position(std::string pos);
 
         /**
          * @brief Tries to parse two given positions into a move.

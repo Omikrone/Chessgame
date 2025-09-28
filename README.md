@@ -4,15 +4,15 @@
 ## Introduction
 
 This project is a straightforward chess game built with C++. It features a C++ backend server and a web-based frontend developed using Vite.
-This project is intended to be the main base of the future chess engine "Euphron".
 
-- **Current version:** 1.0.0
+- **Current version:** 1.1.0
 
 
 ## Features
 
 This chess game includes the following features:
-- Basic chess rules implemented.
+- Session management for handling multiple games.
+- Compatible with standard chess rules.
 - Communication between server and web interface using WebSockets.
 - Play chess against another player on the same computer.
 
@@ -39,9 +39,14 @@ You can install Crow by following the instructions on its [GitHub repository](ht
     cd Chessgame
 ```
 
-2. Build the C++ server using CMake:
+This project is meant to be used with the [Chessboard](https://github.com/Omikrone/Chessboard) library for the chess rules and logic. To install it, follow these steps:
 ```bash
     cd backend
+    git clone https://github.com/Omikrone/Chessboard.git chess
+```
+
+2. Build the C++ server using CMake:
+```bash
     cmake -S . -B build
     cd build && cmake --build . --config Release
 ```
@@ -57,7 +62,7 @@ You can install Crow by following the instructions on its [GitHub repository](ht
 1. Start the C++ server:
 ```bash
     cd backend/build
-    ./chess
+    ./game/Release/chessgame.exe
 ```
 
 2. Start the frontend:
@@ -71,8 +76,7 @@ You can install Crow by following the instructions on its [GitHub repository](ht
 ## Future Improvements
 
 Future improvements for this project may include:
-- [ ] Adding zobrist hashing for detecting threefold repetition and other advanced rules.
+- [X] Adding compatibility with the Chessboard library for chess rules and logic.
 - [ ] Better Handling of the game session and player management.
 - [ ] Implementing a multiplayer mode over the network.
 - [ ] Enhancing the user interface with more features and better design.
-- [ ] Adding a compatibility mode for chess engines (like Euphron in the future).

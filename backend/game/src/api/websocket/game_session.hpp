@@ -3,8 +3,8 @@
 #pragma once
 
 #include "api/parsing/parser.hpp"
-#include "game/game.hpp"
-#include "game/fen.hpp"
+#include "game.hpp"
+#include "fen.hpp"
 
 #include "crow.h"
 

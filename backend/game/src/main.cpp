@@ -1,7 +1,7 @@
 // main.cpp
 
 #include "api/controllers/game_controller.hpp"
-#include "game/game.hpp"
+#include "game.hpp"
 #include "api/routes/game_routes.hpp"
 #include "api/routes/websocket_routes.hpp"
 
