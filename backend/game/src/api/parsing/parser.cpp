@@ -13,7 +13,7 @@ bool Parser::is_valid_square(std::string sq) {
         && sq.at(1) <= '8');
 }
 
-int Parser::parse_position(std::string pos) {
+int Parser::pos_to_int(std::string pos) {
     int position;
     int8_t file = pos.at(0) - 'a'; // Convert letter (i.e. 'a') to array indice (i.e. 0)
     int8_t rank = pos.at(1) - '1';
@@ -21,7 +21,15 @@ int Parser::parse_position(std::string pos) {
     return position;
 }
 
-Parser::ParseResult Parser::try_parse_move(std::string from, std::string to) {
+std::string Parser::int_to_pos(int pos) {
+    std::string pos_str;
+    char rank = pos / 8;
+    char file = pos % 8 + 'a';
+    pos_str += rank + file;
+    return pos_str;
+}
+
+Parser::ParseIntResult Parser::move_to_int(std::string from, std::string to) {
     int from_i, to_i;
     if (!Parser::is_valid_square(from) || !Parser::is_valid_square(to)) {
         return {false, from + " or " + to + " is not a valid square", NULL};
@@ -29,7 +37,7 @@ Parser::ParseResult Parser::try_parse_move(std::string from, std::string to) {
 
     // Creates the corresponding move
     // TODO: Create an alternative structure without take and type
-    from_i = Parser::parse_position(from.substr(0, 2));
-    to_i = Parser::parse_position(to.substr(0, 2));
+    from_i = Parser::pos_to_int(from.substr(0, 2));
+    to_i = Parser::pos_to_int(to.substr(0, 2));
     return {true, "", from_i, to_i};
 }

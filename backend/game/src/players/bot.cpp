@@ -1,0 +1,37 @@
+// bot.cpp
+
+#include <bot.hpp>
+
+#include "httplib.h"
+
+
+Bot::Bot(const std::string engine_addr, const int engine_port) :
+    _engine_addr(engine_addr),
+    _engine_port(engine_port),
+    _cli(_engine_addr, _engine_port)
+    {}
+
+
+bool Bot::test_connection() {
+    const char *cmd = "uci";
+    auto res = _cli.Post("/commands", cmd, "text/plain");
+    if (res && res->status==200 && res->body=="uciok") return true;
+    else return false;
+}
+
+
+void Bot::set_position(const std::string fen) {
+    const std::string full_cmd = "position " + fen;
+    auto res = _cli.Post("/commands", full_cmd, "text/plain");
+}
+
+
+BBMove Bot::find_best_move() {
+    const char *cmd = "go";
+    auto res = _cli.Post("/commands", cmd, "text/plain");
+    if (res && res->status==200) {
+        UCIMove move = {res->body.substr(res->body.size() - 4)};
+        BBMove bb_move = UCIParser::uci_to_bb(move);
+        return bb_move;
+    }
+}

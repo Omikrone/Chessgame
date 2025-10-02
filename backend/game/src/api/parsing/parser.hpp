@@ -18,7 +18,7 @@ class Parser {
          * @brief Represents a Result of a parse.
          *
          */
-        struct ParseResult {
+        struct ParseIntResult {
             bool valid;         // If the parse was succesful or not 
             std::string error;  // Optionnal: the detailled error
             int from;         // Optionnal: the corresponding Move after the parse
@@ -39,7 +39,7 @@ class Parser {
          * @param pos A string representing the position.
          * @return the corresponding square.
          */
-        static int parse_position(std::string pos);
+        static int pos_to_int(std::string pos);
 
         /**
          * @brief Tries to parse two given positions into a move.
@@ -48,5 +48,7 @@ class Parser {
          * @param to A string representing the destination.
          * @return The result of the parse.
          */
-        static ParseResult try_parse_move(std::string from, std::string to);
+        static ParseIntResult move_to_int(std::string from, std::string to);
+
+        static std::string int_to_pos(int pos);
 };

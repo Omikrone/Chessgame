@@ -11,7 +11,7 @@ GameSession::GameSession()
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
 
     // Tries to parse the positions sent by the client
-    Parser::ParseResult moveReq = Parser::try_parse_move(from, to);
+    Parser::ParseIntResult moveReq = Parser::move_to_int(from, to);
     if (!moveReq.valid) {
         ws.send_text(moveReq.error);
         return;
