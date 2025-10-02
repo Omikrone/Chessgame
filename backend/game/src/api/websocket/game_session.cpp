@@ -4,7 +4,7 @@
 
 
 GameSession::GameSession()
-: _game(Game()) 
+: _game(Game()), _bot("127.0.0.1", 18088)
 {}
 
 
@@ -19,13 +19,25 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 
     // Tries to apply the move on the game board
     bool res = _game.try_apply_move(moveReq.from, moveReq.to);
-
     EndGame game_state;
     if (res) {
         _game.next_turn();
         game_state = _game.get_game_state();
     }
     else game_state = EndGame::CONTINUING;
+
+    send_game_state(ws, game_state)
+    send_bot_move(ws);
+}
+
+
+void GameSession::send_bot_move(crow::websocket::connection& ws, EndGame game_state) {
+    BBMove best_move = _bot.find_best_move();
+    _game.try_apply_move(best_move.from, best_move.to);
+}
+
+
+void GameSession::send_game_state(crow::websocket::connection& ws) {
 
     // Replies to the client by sending him the game state
     crow::json::wvalue response;

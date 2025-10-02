@@ -3,6 +3,7 @@
 #pragma once
 
 #include "api/parsing/parser.hpp"
+#include "players/bot.hpp"
 #include "game.hpp"
 #include "fen.hpp"
 
@@ -19,6 +20,7 @@ class GameSession
     private:
 
         Game _game;
+        Bot _bot;
 
     public:
 
@@ -34,4 +36,8 @@ class GameSession
          * @param to The destination of the move request.
          */
         void on_move_received(crow::websocket::connection& ws, std::string from, std::string to);
+
+        void send_bot_move(crow::websocket::connection& ws);
+
+        void send_game_state(crow::websocket::connection& ws);
 };
