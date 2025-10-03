@@ -1,6 +1,8 @@
 // websocket_routes.cpp
 
 #include "api/routes/websocket_routes.hpp"
+#include <thread>   // std::this_thread::sleep_for
+#include <chrono>   // std::chrono::seconds, milliseconds
 
 
 void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& gameController) {
@@ -11,6 +13,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             CROW_LOG_INFO << "Client connected!";
         })
         .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/){
+            std::cout << "received" << std::endl;
 
             // Parses the data received to a rvalue
             crow::json::rvalue body = crow::json::load(data);
@@ -34,6 +37,8 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             std::string from = body["from"].s();
             std::string to = body["to"].s();
             session->on_move_received(conn, from, to);
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            session->send_bot_move(conn);
         })
         .onclose([](crow::websocket::connection& /*conn*/, const std::string& reason, uint16_t) {
             CROW_LOG_INFO << "Client disconnected : " << reason;

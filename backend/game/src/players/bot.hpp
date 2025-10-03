@@ -5,7 +5,8 @@
 #include "uci_parser.hpp"
 
 #include <string>
-#include <httplib.h>
+#include <vector>
+#include "httplib.h"
 
 
 class Bot
@@ -24,6 +25,6 @@ class Bot
 
         bool test_connection();
         void new_game();
-        void set_position(const std::string fen);
+        void set_position(const std::string fen, BBMove played_move);
         BBMove find_best_move();
 };

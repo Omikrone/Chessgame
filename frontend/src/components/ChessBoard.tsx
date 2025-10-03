@@ -24,6 +24,7 @@ export default function ChessBoard({ onMove, fen, updateId, orientation = "white
         free: true,
         events: {
           after: (from: string, to: string) => {
+            console.log("MOVE PLAYED!");
             onMove(from, to);
           }
         },

@@ -9,6 +9,7 @@ GameSession::GameSession()
 
 
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
+    std::cout << "MESSAGE RECEIVED" << std::endl;
 
     // Tries to parse the positions sent by the client
     Parser::ParseIntResult moveReq = Parser::move_to_int(from, to);
@@ -26,18 +27,29 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     }
     else game_state = EndGame::CONTINUING;
 
-    send_game_state(ws, game_state)
-    send_bot_move(ws);
+    send_game_state(ws, game_state);
+    update_bot_position({moveReq.from, moveReq.to});
 }
 
 
-void GameSession::send_bot_move(crow::websocket::connection& ws, EndGame game_state) {
+void GameSession::send_bot_move(crow::websocket::connection& ws) {
+    
     BBMove best_move = _bot.find_best_move();
-    _game.try_apply_move(best_move.from, best_move.to);
+    std::cout << "BEST MOVES ?: " << best_move.from << best_move.to << std::endl;
+    bool res = _game.try_apply_move(best_move.from, best_move.to);
+    if (res) std::cout << "LEGAL MOVE" << std::endl;
+    _game.next_turn();
+    send_game_state(ws, _game.get_game_state());
+    std::cout << "All moves sent" << std::endl;
+}
+
+void GameSession::update_bot_position(BBMove bb_move) {
+    _bot.set_position("startpos", bb_move);
 }
 
 
-void GameSession::send_game_state(crow::websocket::connection& ws) {
+void GameSession::send_game_state(crow::websocket::connection& ws, EndGame game_state) {
+    
 
     // Replies to the client by sending him the game state
     crow::json::wvalue response;
@@ -63,4 +75,5 @@ void GameSession::send_game_state(crow::websocket::connection& ws) {
 
     std::string s = response.dump();
     ws.send_text(s);
+    std::cout << "Sendin game state" << std::endl;
 }

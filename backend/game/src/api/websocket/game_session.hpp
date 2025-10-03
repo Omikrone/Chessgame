@@ -39,5 +39,7 @@ class GameSession
 
         void send_bot_move(crow::websocket::connection& ws);
 
-        void send_game_state(crow::websocket::connection& ws);
+        void update_bot_position(BBMove bb_move);
+
+        void send_game_state(crow::websocket::connection& ws, EndGame game_state);
 };

@@ -23,9 +23,10 @@ int Parser::pos_to_int(std::string pos) {
 
 std::string Parser::int_to_pos(int pos) {
     std::string pos_str;
-    char rank = pos / 8;
+    char rank = pos / 8 + '1';
     char file = pos % 8 + 'a';
-    pos_str += rank + file;
+    pos_str.push_back(file);
+    pos_str.push_back(rank);
     return pos_str;
 }
 

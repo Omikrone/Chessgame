@@ -1,6 +1,6 @@
 // bot.cpp
 
-#include <bot.hpp>
+#include "bot.hpp"
 
 #include "httplib.h"
 
@@ -20,8 +20,8 @@ bool Bot::test_connection() {
 }
 
 
-void Bot::set_position(const std::string fen) {
-    const std::string full_cmd = "position " + fen;
+void Bot::set_position(const std::string fen, BBMove move) {
+    std::string full_cmd = "position " + fen + UCIParser::bb_to_uci(move).move;
     auto res = _cli.Post("/commands", full_cmd, "text/plain");
 }
 
@@ -31,6 +31,7 @@ BBMove Bot::find_best_move() {
     auto res = _cli.Post("/commands", cmd, "text/plain");
     if (res && res->status==200) {
         UCIMove move = {res->body.substr(res->body.size() - 4)};
+        std::cout << "Message received : " << res->body << std::endl;
         BBMove bb_move = UCIParser::uci_to_bb(move);
         return bb_move;
     }
