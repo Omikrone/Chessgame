@@ -3,9 +3,13 @@
 #include "api/websocket/game_session.hpp"
 
 
-GameSession::GameSession()
-: _game(Game()), _bot("127.0.0.1", 18088)
+GameSession::GameSession(const int id)
+: _id(id), _game(Game()), _bot("127.0.0.1", 18088, id), _last_activity(std::chrono::steady_clock::now())
 {}
+
+GameSession::~GameSession() {
+    _bot.quit();
+}
 
 
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
@@ -27,6 +31,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     }
     else game_state = EndGame::CONTINUING;
 
+    _bot.select_bot();
     send_game_state(ws, game_state);
     update_bot_position({moveReq.from, moveReq.to});
 }
@@ -43,8 +48,17 @@ void GameSession::send_bot_move(crow::websocket::connection& ws) {
     std::cout << "All moves sent" << std::endl;
 }
 
+
 void GameSession::update_bot_position(BBMove bb_move) {
-    _bot.set_position("startpos", bb_move);
+    _bot.set_position("startpos ", bb_move);
+}
+
+void GameSession::bot_new_game(uint64_t game_id) {
+    _bot.new_game();
+}
+
+void GameSession::bot_quit_game(uint64_t game_id) {
+    _bot.quit();
 }
 
 
@@ -76,4 +90,15 @@ void GameSession::send_game_state(crow::websocket::connection& ws, EndGame game_
     std::string s = response.dump();
     ws.send_text(s);
     std::cout << "Sendin game state" << std::endl;
+}
+
+bool GameSession::is_idle() const {
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = now - _last_activity;
+    return elapsed > std::chrono::minutes(30);
+}
+
+
+void GameSession::reset_idle() {
+    _last_activity = std::chrono::steady_clock::now();
 }

@@ -23,7 +23,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 return;
             }
 
-            // Searches for trhe corresponding game
+            // Searches for the corresponding game
             uint64_t gameId = body["gameId"].u();
             GameSession *session = gameController.get_game_session(gameId);
             if (session == nullptr) {
@@ -36,8 +36,10 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             std::string to = body["to"].s();
             session->on_move_received(conn, from, to);
             session->send_bot_move(conn);
+            session->reset_idle();
         })
-        .onclose([](crow::websocket::connection& /*conn*/, const std::string& reason, uint16_t) {
+        .onclose([&gameController](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
+            gameController.remove_idle_games();
             CROW_LOG_INFO << "Client disconnected : " << reason;
         });
 }

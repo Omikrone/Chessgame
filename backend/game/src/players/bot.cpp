@@ -5,11 +5,26 @@
 #include "httplib.h"
 
 
-Bot::Bot(const std::string engine_addr, const int engine_port) :
+Bot::Bot(const std::string engine_addr, const int engine_port, int game_id) :
     _engine_addr(engine_addr),
     _engine_port(engine_port),
-    _cli(_engine_addr, _engine_port)
-    {}
+    _cli(_engine_addr, _engine_port),
+    _game_id(game_id)
+{
+    new_game();
+}
+
+
+void Bot::new_game() {
+    std::string cmd = "new_game " + std::to_string(_game_id);
+    auto res = _cli.Post("/commands", cmd, "text/plain");
+}
+
+
+void Bot::select_bot() {
+    std::string cmd = "select " + std::to_string(_game_id);
+    auto res = _cli.Post("/commands", cmd, "text/plain");
+}
 
 
 bool Bot::test_connection() {
@@ -35,4 +50,10 @@ BBMove Bot::find_best_move() {
         BBMove bb_move = UCIParser::uci_to_bb(move);
         return bb_move;
     }
+}
+
+
+void Bot::quit() {
+    std::string cmd = "quit " + std::to_string(_game_id);
+    auto res = _cli.Post("/commands", cmd, "text/plain");
 }

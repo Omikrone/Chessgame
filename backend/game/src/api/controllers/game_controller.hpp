@@ -16,8 +16,8 @@ class GameController
 {
     private:
 
-        std::unordered_map<uint64_t, GameSession> _sessions;
-        uint64_t _nextId = 1;
+        std::unordered_map<uint64_t, std::unique_ptr<GameSession>> _sessions;
+        uint64_t _next_id = 1;
         
     public:
 
@@ -37,5 +37,8 @@ class GameController
          *
          * @return A pointer to the corresponding game session.
          */
-        GameSession* get_game_session(uint64_t gameId);
+        GameSession* get_game_session(uint64_t game_id);
+
+
+        void remove_idle_games();
 };

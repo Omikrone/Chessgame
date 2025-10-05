@@ -3,7 +3,7 @@
 #include "api/routes/game_routes.hpp"
 
 
-void register_game_routes(crow::App<crow::CORSHandler>& app, GameController &gameController) {
+void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& gameController) {
     
     // Creates a new POST route for creating new games
     CROW_ROUTE(app, "/games").methods("POST"_method)

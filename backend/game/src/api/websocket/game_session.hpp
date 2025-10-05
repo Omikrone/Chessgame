@@ -8,6 +8,7 @@
 #include "fen.hpp"
 
 #include "crow.h"
+#include <chrono>
 
 
 /**
@@ -21,12 +22,14 @@ class GameSession
 
         Game _game;
         Bot _bot;
+        const int _id;
+        std::chrono::steady_clock::time_point _last_activity;
 
     public:
 
-        GameSession();
+        GameSession(int id);
 
-        ~GameSession() = default;
+        ~GameSession();
 
         /**
          * @brief Handles a move request sent by a client.
@@ -37,9 +40,19 @@ class GameSession
          */
         void on_move_received(crow::websocket::connection& ws, std::string from, std::string to);
 
+        void bot_new_game(uint64_t game_id);
+
+        void select_bot(uint64_t game_id);
+
         void send_bot_move(crow::websocket::connection& ws);
 
         void update_bot_position(BBMove bb_move);
 
+        void bot_quit_game(uint64_t game_id);
+
         void send_game_state(crow::websocket::connection& ws, EndGame game_state);
+
+        bool is_idle() const;
+
+        void reset_idle();
 };
