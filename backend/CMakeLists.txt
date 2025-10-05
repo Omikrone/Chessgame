@@ -10,6 +10,13 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+include(FetchContent)
+FetchContent_Declare(
+  chess
+  GIT_REPOSITORY https://github.com/Omikrone/Chessboard
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(chess)
+
 # Ajout des sous-projets
-add_subdirectory(chess)
 add_subdirectory(game)
