@@ -1,9 +1,7 @@
 version: "3.9"
 services:
   engine:
-    build:
-      context: .
-      target: engine.Dockerfile
+    build: ./engine
     container_name: chess_engine
     restart: unless-stopped
     ports:

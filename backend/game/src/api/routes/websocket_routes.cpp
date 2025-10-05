@@ -38,7 +38,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             session->send_bot_move(conn);
             session->reset_idle();
         })
-        .onclose([&gameController](crow::websocket::connection& conn, const std::string& reason, uint16_t) {
+        .onclose([&gameController](crow::websocket::connection& conn, const std::string& reason) {
             gameController.remove_idle_games();
             CROW_LOG_INFO << "Client disconnected : " << reason;
         });
