@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  engine:
+    build:
+      context: .
+      target: engine.Dockerfile
+    container_name: chess_engine
+    restart: unless-stopped
+    ports:
+      - "18088:18088"
+
+  backend:
+    build: ./backend
+    container_name: chess_server
+    depends_on:
+      - engine
+    environment:
+      - ENGINE_HOST=engine
+    ports:
+      - "18080:18080"
+
+  frontend:
+    build: ./frontend
+    container_name: chess_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"

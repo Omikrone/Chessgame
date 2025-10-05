@@ -1,0 +1,16 @@
+
+FROM debian:12 AS build
+
+RUN apt-get update && apt-get install -y cmake g++ git
+
+WORKDIR /app
+COPY . .
+RUN cmake -B build -S . && cmake --build build --config Release
+
+
+FROM debian:12
+
+WORKDIR /app
+COPY --from=build /app/build/chessgame /usr/local/bin/chessgame
+EXPOSE 18080
+ENTRYPOINT ["/usr/local/bin/chessgame"]
