@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/Omikrone/Euphron.git /src
 
 WORKDIR /src
-RUN git switch uci && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j$(nproc)
+RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j$(nproc)
 
 RUN ls -l build/
 

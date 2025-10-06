@@ -2,9 +2,11 @@
 
 #include "api/websocket/game_session.hpp"
 
+const char* host_env = std::getenv("ENGINE_HOST");
+const char* port_env = std::getenv("ENGINE_PORT");
 
 GameSession::GameSession(const int id)
-: _id(id), _game(Game()), _bot("127.0.0.1", 18088, id), _last_activity(std::chrono::steady_clock::now())
+: _id(id), _game(Game()), _bot(std::string(host_env), std::stoi(port_env), id), _last_activity(std::chrono::steady_clock::now())
 {}
 
 GameSession::~GameSession() {
@@ -13,7 +15,6 @@ GameSession::~GameSession() {
 
 
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
-    std::cout << "MESSAGE RECEIVED" << std::endl;
 
     // Tries to parse the positions sent by the client
     Parser::ParseIntResult moveReq = Parser::move_to_int(from, to);

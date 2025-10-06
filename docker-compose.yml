@@ -13,7 +13,8 @@ services:
     depends_on:
       - engine
     environment:
-      - ENGINE_HOST=engine
+      - ENGINE_HOST=${ENGINE_HOST}
+      - ENGINE_PORT=${ENGINE_PORT}
     ports:
       - "18080:18080"
 
@@ -24,3 +25,6 @@ services:
       - backend
     ports:
       - "8080:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_WS_URL=${VITE_WS_URL}
