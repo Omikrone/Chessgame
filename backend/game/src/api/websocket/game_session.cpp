@@ -5,8 +5,11 @@
 const char* host_env = std::getenv("ENGINE_HOST");
 const char* port_env = std::getenv("ENGINE_PORT");
 
+std::string host = host_env ? std::string(host_env) : std::string("127.0.0.1");
+std::string port = port_env ? std::string(port_env) : std::string("18088");
+
 GameSession::GameSession(const int id)
-: _id(id), _game(Game()), _bot(std::string(host_env), std::stoi(port_env), id), _last_activity(std::chrono::steady_clock::now())
+: _id(id), _game(Game()), _bot(host, std::stoi(port), id), _last_activity(std::chrono::steady_clock::now())
 {}
 
 GameSession::~GameSession() {
