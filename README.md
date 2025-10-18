@@ -5,7 +5,7 @@
 
 This project is a straightforward chess game built with C++. It features a C++ backend server and a web-based frontend developed using Vite.
 
-- **Current version:** 1.1.0
+- **Current version:** 1.2.0
 
 
 ## Features
@@ -14,7 +14,8 @@ This chess game includes the following features:
 - Session management for handling multiple games.
 - Compatible with standard chess rules.
 - Communication between server and web interface using WebSockets.
-- Play chess against another player on the same computer.
+- Compatibility with UCI protocol for chess engines.
+- Play chess against [Euphron](https://github.com/Omikrone/Euphron), a chess engine developed in C++ !
 
 
 ## Installation
@@ -77,6 +78,6 @@ This project is meant to be used with the [Chessboard](https://github.com/Omikro
 
 Future improvements for this project may include:
 - [X] Adding compatibility with the Chessboard library for chess rules and logic.
-- [ ] Better Handling of the game session and player management.
+- [X] Better Handling of the game session and player management.
 - [ ] Implementing a multiplayer mode over the network.
 - [ ] Enhancing the user interface with more features and better design.

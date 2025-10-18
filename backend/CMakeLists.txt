@@ -14,7 +14,7 @@ include(FetchContent)
 FetchContent_Declare(
   chess
   GIT_REPOSITORY https://github.com/Omikrone/Chessboard
-  GIT_TAG main
+  GIT_TAG v1.2.0
 )
 FetchContent_MakeAvailable(chess)
 

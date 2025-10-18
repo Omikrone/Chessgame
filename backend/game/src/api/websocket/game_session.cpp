@@ -52,14 +52,12 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 void GameSession::send_bot_move(crow::websocket::connection& ws) {
     
     BBMove best_move = _bot.find_best_move();
-    std::cout << "BEST MOVES ?: " << best_move.from << best_move.to << std::endl;
     std::cout << "FEN before bot move : " << _game.get_fen() << std::endl;
     bool res = _game.try_apply_move(best_move.from, best_move.to);
     if (!res) std::cout << "ILLEGAL MOVE" << std::endl;
     std::cout << "FEN after bot move : " << _game.get_fen() << std::endl;
     _game.next_turn();
     send_game_state(ws, _game.get_game_state());
-    std::cout << "All moves sent" << std::endl;
 }
 
 
