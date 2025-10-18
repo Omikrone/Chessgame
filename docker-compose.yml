@@ -16,15 +16,18 @@ services:
       - ENGINE_HOST=${ENGINE_HOST}
       - ENGINE_PORT=${ENGINE_PORT}
     ports:
-      - "18080:18080"
+      - "49180:18080"
 
   frontend:
-    build: ./frontend
+    build:
+      context:
+        ./frontend
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_WS_URL=${VITE_WS_URL}
     container_name: chess_frontend
     depends_on:
       - backend
     ports:
       - "8080:80"
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
-      - VITE_WS_URL=${VITE_WS_URL}
+

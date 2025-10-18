@@ -19,6 +19,6 @@ RUN ls -l build/
 
 FROM debian:12
 
-COPY --from=build /src/build/src/engine/chessengine /usr/local/bin/chessengine
+COPY --from=build /src/build/chessengine /usr/local/bin/chessengine
 EXPOSE 18088
 ENTRYPOINT ["/usr/local/bin/chessengine"]
