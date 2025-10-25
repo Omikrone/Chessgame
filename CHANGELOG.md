@@ -1,7 +1,13 @@
 # Change Log
 
 
-## [1.2.0] - 2023-10-19
+## [1.2.1] - 2025-10-25
+
+### Added
+- Compatibility with version 1.3.0 of the Chessboard library.
+
+
+## [1.2.0] - 2025-10-19
 
 ### Added
 
@@ -26,7 +32,7 @@
 - Separation between game logic and server code for better maintainability (see [Chessboard library](https://github.com/Omikrone/Chessboard)).
 
 
-## [1.0.0] - 2023-09-13
+## [1.0.0] - 2025-09-13
 
 ### Added
 
