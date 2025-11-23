@@ -65,12 +65,10 @@ FetchContent_MakeAvailable(crow)
 
 include(FetchContent)
 FetchContent_Declare(
-  httplib
-  GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
-  GIT_TAG v0.27.0
+  websocketpp
+  GIT_REPOSITORY https://github.com/zaphoyd/websocketpp
 )
-
-FetchContent_MakeAvailable(httplib)
+FetchContent_MakeAvailable(websocketpp)
 
 # ----------------------------
 # Lien avec libs

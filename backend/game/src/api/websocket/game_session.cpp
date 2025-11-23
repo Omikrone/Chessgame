@@ -18,6 +18,7 @@ GameSession::~GameSession() {
 
 
 void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
+    reset_idle();
 
     // Tries to parse the positions sent by the client
     Parser::ParseIntResult moveReq = Parser::move_to_int(from, to);
@@ -28,23 +29,17 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
 
     // Tries to apply the move on the game board
     bool res = _game.try_apply_move(moveReq.from, moveReq.to);
-    EndGame game_state;
-    if (res) {
-        _game.next_turn();
-        game_state = _game.get_game_state();
-    }
-    else {
-        game_state = EndGame::CONTINUING;
-        send_game_state(ws, game_state);
-        return;
-    }
-    if (game_state != EndGame::CONTINUING) {
-        send_game_state(ws, game_state);
+    if (!res) {
+        ws.send_text("Illegal move");
         return;
     }
 
-    _bot.select_bot();
-    update_bot_position({moveReq.from, moveReq.to});
+    GameState state = _game.get_game_state();
+    send_game_state(ws, state);
+    if (state != GameState::CONTINUING) return;
+
+    _engine.update_position(_id, _game.get_fen(), {moveReq.from, moveReq.to});
+
     send_bot_move(ws);
 }
 
@@ -59,20 +54,6 @@ void GameSession::send_bot_move(crow::websocket::connection& ws) {
     _game.next_turn();
     send_game_state(ws, _game.get_game_state());
 }
-
-
-void GameSession::update_bot_position(BBMove bb_move) {
-    _bot.set_position("startpos ", bb_move);
-}
-
-void GameSession::bot_new_game(uint64_t game_id) {
-    _bot.new_game();
-}
-
-void GameSession::bot_quit_game(uint64_t game_id) {
-    _bot.quit();
-}
-
 
 void GameSession::send_game_state(crow::websocket::connection& ws, EndGame game_state) {
     
