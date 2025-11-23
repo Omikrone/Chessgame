@@ -1,8 +1,6 @@
 // bot.cpp
 
-#include "bot.hpp"
-
-#include "httplib.h"
+#include "engine/bot.hpp"
 
 
 Bot::Bot(const std::string engine_addr, const int engine_port, int game_id) :
