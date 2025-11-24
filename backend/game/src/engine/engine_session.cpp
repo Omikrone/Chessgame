@@ -32,7 +32,7 @@ void EngineSession::on_message(websocketpp::connection_hdl hdl, websocketpp::cli
     }
 }
 
-std::string EngineSession::send_command(const std::string& command) {
+std::string EngineSession::send_command(const std::string& command, bool has_to_wait) {
     {
         std::unique_lock<std::mutex> lock(_mutex);
         _response.clear();
@@ -40,8 +40,10 @@ std::string EngineSession::send_command(const std::string& command) {
 
     _cli.send(_hdl, command, websocketpp::frame::opcode::text);
 
-    std::unique_lock<std::mutex> lock(_mutex);
-    _cv.wait(lock, [this]{ return !_response.empty(); });
+    if (has_to_wait) {
+        std::unique_lock<std::mutex> lock(_mutex);
+        _cv.wait(lock, [this]{ return !_response.empty(); });
+    }
 
     return _response;
 }

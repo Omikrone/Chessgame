@@ -17,6 +17,7 @@ void EngineUCI::update_position(int game_id, const std::string fen, std::vector<
     for (const auto& move : played_moves) {
         cmd += " " + move.to_uci();
     }
+    _session.send_command(cmd, false);
 }
 
 
@@ -28,4 +29,11 @@ Move EngineUCI::find_best_move(int game_id, std::optional<int> depth) {
     else {
         cmd += " depth 3";
     }
+    std::string response = _session.send_command(cmd, true);
+    std::string bestmove_prefix = "bestmove ";;
+    if (response.rfind(bestmove_prefix, 0) == 0) {
+        std::string uci_move = response.substr(bestmove_prefix.length(), 4);
+        return Move::from_uci(uci_move);
+    }
+    return Move();
 }

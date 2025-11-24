@@ -24,6 +24,6 @@ class EngineSession
         EngineSession(std::string engine_addr, int engine_port);
         ~EngineSession() = default;
 
-        std::string send_command(const std::string& command);
+        std::string send_command(const std::string& command, bool has_to_wait);
         void close_connection();
 };
