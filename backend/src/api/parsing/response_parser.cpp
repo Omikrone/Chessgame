@@ -25,3 +25,10 @@ const crow::json::wvalue ResponseParser::parse_game_state(const GameState game_s
     }
     return response;
 }
+
+const crow::json::wvalue ResponseParser::parse_command(const std::string& command, const int game_id) {
+    crow::json::wvalue response;
+    response["session_id"] = game_id;
+    response["command"] = command;
+    return response;
+}

@@ -12,7 +12,9 @@ std::string port = port_env ? std::string(port_env) : std::string("18088");
 
 GameSession::GameSession(const int id)
 : _id(id), _game(Game()), _engine(host, std::stoi(port), id), _last_activity(std::chrono::steady_clock::now())
-{}
+{
+    std::cout << "Created game session with ID " << _id << std::endl;
+}
 
 GameSession::~GameSession() {
     _engine.quit();

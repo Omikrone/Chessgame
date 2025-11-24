@@ -7,7 +7,7 @@ EngineUCI::EngineUCI(const std::string engine_addr, const int engine_port, int g
     _engine_addr(engine_addr),
     _engine_port(engine_port),
     _game_id(game_id),
-    _session(engine_addr, engine_port)
+    _session(engine_addr, engine_port, game_id)
 {
 }
 
@@ -29,7 +29,9 @@ Move EngineUCI::find_best_move(int game_id, std::optional<int> depth) {
     else {
         cmd += " depth 3";
     }
+    cmd = "go movetime 5000";
     std::string response = _session.send_command(cmd, true);
+    std::cout << "Engine response: " << response << std::endl;
     std::string bestmove_prefix = "bestmove ";;
     if (response.rfind(bestmove_prefix, 0) == 0) {
         std::string uci_move = response.substr(bestmove_prefix.length(), 4);
