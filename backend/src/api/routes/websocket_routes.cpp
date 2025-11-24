@@ -35,7 +35,6 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             std::string from = body["from"].s();
             std::string to = body["to"].s();
             session->on_move_received(conn, from, to);
-            session->reset_idle();
         })
         .onclose([&gameController](crow::websocket::connection& conn, const std::string& reason) {
             gameController.remove_idle_games();

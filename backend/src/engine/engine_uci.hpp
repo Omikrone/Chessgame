@@ -28,4 +28,5 @@ class EngineUCI
 
         void update_position(int game_id, const std::string fen, std::vector<Move> played_moves);
         Move find_best_move(int game_id, std::optional<int> depth = std::nullopt);
+        void quit();
 };

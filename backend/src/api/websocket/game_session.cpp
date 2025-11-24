@@ -2,18 +2,20 @@
 
 #include "api/websocket/game_session.hpp"
 
+
 const char* host_env = std::getenv("ENGINE_HOST");
 const char* port_env = std::getenv("ENGINE_PORT");
 
 std::string host = host_env ? std::string(host_env) : std::string("127.0.0.1");
 std::string port = port_env ? std::string(port_env) : std::string("18088");
 
+
 GameSession::GameSession(const int id)
-: _id(id), _game(Game()), _bot(host, std::stoi(port), id), _last_activity(std::chrono::steady_clock::now())
+: _id(id), _game(Game()), _engine(host, std::stoi(port), id), _last_activity(std::chrono::steady_clock::now())
 {}
 
 GameSession::~GameSession() {
-    _bot.quit();
+    _engine.quit();
 }
 
 
@@ -35,55 +37,25 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     }
 
     GameState state = _game.get_game_state();
-    send_game_state(ws, state);
+    crow::json::wvalue game_state1 = ResponseParser::parse_game_state(state, _game.get_fen(), _game.get_current_turn());
+    std::string s = game_state1.dump();
+    ws.send_text(s);
     if (state != GameState::CONTINUING) return;
 
-    _engine.update_position(_id, _game.get_fen(), {moveReq.from, moveReq.to});
+    _engine.update_position(_id, _game.get_fen(), _game.get_played_moves());
 
-    send_bot_move(ws);
-}
-
-
-void GameSession::send_bot_move(crow::websocket::connection& ws) {
-    
-    BBMove best_move = _bot.find_best_move();
+    Move best_move = _engine.find_best_move(_id);
     std::cout << "FEN before bot move : " << _game.get_fen() << std::endl;
-    bool res = _game.try_apply_move(best_move.from, best_move.to);
+    res = _game.try_apply_move(best_move.from, best_move.to);
     if (!res) std::cout << "ILLEGAL MOVE" << std::endl;
     std::cout << "FEN after bot move : " << _game.get_fen() << std::endl;
     _game.next_turn();
-    send_game_state(ws, _game.get_game_state());
-}
 
-void GameSession::send_game_state(crow::websocket::connection& ws, EndGame game_state) {
-    
-
-    // Replies to the client by sending him the game state
-    crow::json::wvalue response;
-   
-    if (game_state == EndGame::CONTINUING) {
-        response["type"] = "fen";
-        response["fen"] = _game.get_fen();
-    }
-    else {
-        response["type"] = "endgame";
-        response["fen"] = _game.get_fen();
-
-        if (game_state == EndGame::STALEMATE) response["result"] = "draw";
-        else if (_game.get_current_turn() == Color::WHITE) {
-            response["result"] = "checkmate";
-            response["winner"] = "black";
-        }
-        else {
-            response["result"] = "checkmate";
-            response["winner"] = "white";      
-        }
-    }
-
-    std::string s = response.dump();
+    crow::json::wvalue game_state2 = ResponseParser::parse_game_state(_game.get_game_state(), _game.get_fen(), _game.get_current_turn());
+    s = game_state2.dump();
     ws.send_text(s);
-    std::cout << "Sendin game state" << std::endl;
 }
+
 
 bool GameSession::is_idle() const {
     auto now = std::chrono::steady_clock::now();

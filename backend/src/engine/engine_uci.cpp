@@ -37,3 +37,7 @@ Move EngineUCI::find_best_move(int game_id, std::optional<int> depth) {
     }
     return Move();
 }
+
+void EngineUCI::quit() {
+    _session.close_connection();
+}

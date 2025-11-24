@@ -4,9 +4,10 @@
 
 #include "api/parsing/parser.hpp"
 #include "engine/engine_uci.hpp"
-#include "game.hpp"
-#include "fen.hpp"
+#include "api/parsing/response_parser.hpp"
 
+#include "game.hpp"
+#include "uci/fen.hpp"
 #include "crow.h"
 #include <chrono>
 
@@ -24,8 +25,6 @@ class GameSession
         EngineUCI _engine;
         const int _id;
         std::chrono::steady_clock::time_point _last_activity;
-        
-        bool is_idle() const;
 
         void reset_idle();
 
@@ -43,4 +42,6 @@ class GameSession
          * @param to The destination of the move request.
          */
         void on_move_received(crow::websocket::connection& ws, std::string from, std::string to);
+
+        bool is_idle() const;
 };
