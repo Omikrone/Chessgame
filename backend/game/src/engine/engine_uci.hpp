@@ -3,12 +3,11 @@
 #pragma once
 
 #include "moves/move.hpp"
+#include "engine/engine_session.hpp"
 
 #include <optional>
 #include <string>
 #include <vector>
-#include <websocketpp/config/asio_no_tls_client.hpp>
-#include <websocketpp/client.hpp>
 
 
 class EngineUCI
@@ -19,16 +18,14 @@ class EngineUCI
         const std::string _engine_addr;
         const int _engine_port;
         const int _game_id;
-        websocketpp::client<websocketpp::config::asio_client> _cli;
-        websocketpp::connection_hdl _hdl;
+        std::string _response;
+        EngineSession _session;
 
     public:
 
         EngineUCI(const std::string engine_addr, const int engine_port, int game_id);
         ~EngineUCI() = default;
 
-        void init_ws_connection();
-        void update_position(int game_id, const std::string fen, Move played_move);
+        void update_position(int game_id, const std::string fen, std::vector<Move> played_moves);
         Move find_best_move(int game_id, std::optional<int> depth = std::nullopt);
-        void close_ws_connection();
 };
