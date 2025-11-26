@@ -12,8 +12,14 @@ EngineUCI::EngineUCI(const std::string engine_addr, const int engine_port, int g
 }
 
 
-void EngineUCI::update_position(int game_id, const std::string fen, std::vector<Move> played_moves) {
-    std::string cmd = "position fen " + fen + " moves";
+void EngineUCI::update_position(int game_id, bool is_startpos, const std::string fen, std::vector<Move> played_moves) {
+    std::string cmd = "position ";
+    if (is_startpos) {
+        cmd += fen;
+    } else {
+        cmd += "fen " + fen;
+    }
+    cmd += " moves";
     for (const auto& move : played_moves) {
         cmd += " " + move.to_uci();
     }

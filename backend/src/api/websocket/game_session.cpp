@@ -37,6 +37,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
         ws.send_text("Illegal move");
         return;
     }
+    _game.next_turn();
 
     GameState state = _game.get_game_state();
     crow::json::wvalue game_state1 = ResponseParser::parse_game_state(state, _game.get_fen(), _game.get_current_turn());
@@ -44,7 +45,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, std::string 
     ws.send_text(s);
     if (state != GameState::CONTINUING) return;
 
-    _engine.update_position(_id, _game.get_fen(), _game.get_played_moves());
+    _engine.update_position(_id, true, "startpos", _game.get_played_moves());
 
     Move best_move = _engine.find_best_move(_id);
     std::cout << "FEN before bot move : " << _game.get_fen() << std::endl;
