@@ -1,7 +1,7 @@
-#include "api/validators/move_validator.hpp"
+#include "api/validators/move_request_validator.hpp"
 
 
- Result<MoveRequest> MoveValidator::validate(const MoveRequest& request) {
+ Result<MoveRequest> MoveRequestValidator::validate(const MoveRequest& request) {
     if (request.game_id <= 0) {
         return Result<MoveRequest>::failure({"Invalid game_id"});
     }
@@ -15,8 +15,8 @@
     }
 
     if (request.promotion.has_value()) {
-        const std::string& promo = request.promotion.value();
-        if (promo != "q" && promo != "r" && promo != "b" && promo != "n") {
+        const char promo = request.promotion.value();
+        if (promo != 'q' && promo != 'r' && promo != 'b' && promo != 'n') {
             return Result<MoveRequest>::failure({"Invalid promotion"});
         }
     }

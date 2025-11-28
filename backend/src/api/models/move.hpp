@@ -10,5 +10,12 @@ struct MoveRequest
     int game_id;
     std::string from;
     std::string to;
-    std::optional<std::string> promotion;
+    std::optional<char> promotion;
+};
+
+struct BitboardMove
+{
+    int from;
+    int to;
+    std::optional<char> promotion;
 };

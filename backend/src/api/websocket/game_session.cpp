@@ -21,18 +21,11 @@ GameSession::~GameSession() {
 }
 
 
-void GameSession::on_move_received(crow::websocket::connection& ws, std::string from, std::string to) {
+void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove move) {
     reset_idle();
 
-    // Tries to parse the positions sent by the client
-    Parser::ParseIntResult moveReq = Parser::move_to_int(from, to);
-    if (!moveReq.valid) {
-        ws.send_text(moveReq.error);
-        return;
-    }
-
     // Tries to apply the move on the game board
-    bool res = _game.try_apply_move(moveReq.from, moveReq.to);
+    bool res = _game.try_apply_move(move.from, move.to);
     if (!res) {
         ws.send_text("Illegal move");
         return;

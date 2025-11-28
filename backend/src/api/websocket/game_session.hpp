@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "api/parsing/parser.hpp"
 #include "engine/engine_uci.hpp"
 #include "api/parsing/response_parser.hpp"
+#include "api/models/move.hpp"
 
 #include "game.hpp"
 #include "uci/fen.hpp"
@@ -41,7 +41,7 @@ class GameSession
          * @param from The initial position of the move request.
          * @param to The destination of the move request.
          */
-        void on_move_received(crow::websocket::connection& ws, std::string from, std::string to);
+        void on_move_received(crow::websocket::connection& ws, BitboardMove move);
 
         bool is_idle() const;
 };

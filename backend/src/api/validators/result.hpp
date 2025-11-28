@@ -9,7 +9,7 @@ template<typename T>
 struct Result {
     bool ok;
     std::optional<T> value;
-    std::optional<std::vector<std::string>> error;
+    std::optional<std::vector<std::string>> errors;
 
     static Result<T> success(const T& val) {
         return Result<T>{true, val, std::nullopt};

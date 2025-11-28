@@ -5,7 +5,7 @@
 #include "api/validators/result.hpp"
 
 
-class MoveValidator {
+class MoveRequestValidator {
     public:
         static Result<MoveRequest> validate(const MoveRequest& request);
 };
