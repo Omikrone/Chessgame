@@ -2,6 +2,7 @@
 
 #include "crow/json.h"
 #include <string>
+#include <optional>
 
 
 struct MoveRequest
@@ -9,7 +10,7 @@ struct MoveRequest
     int game_id;
     std::string from;
     std::string to;
-    std::string promotion;
+    std::optional<std::string> promotion;
 
     static MoveRequest from_json(const crow::json::rvalue& json) {
         MoveRequest req;
@@ -19,7 +20,7 @@ struct MoveRequest
         if (json.has("promotion")) {
             req.promotion = json["promotion"].s();
         } else {
-            req.promotion = "";
+            req.promotion = std::nullopt;
         }
         return req;
     }
