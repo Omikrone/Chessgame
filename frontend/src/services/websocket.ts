@@ -1,7 +1,7 @@
-import type { MoveRequest, Position } from "@/types";
+import type { ErrorResponse, MoveRequest, Position } from "@/types";
 
 
-type GameMessageHandler = (message : Position) => void;
+type GameMessageHandler = (message : Position | ErrorResponse) => void;
 
 
 export function createGameSocket(onMessage : GameMessageHandler, gameId: number) {

@@ -11,6 +11,9 @@ export default function GameOverModal({ result, reason, winner, onRestart }: Gam
 
   let description = "";
   switch (reason) {
+    case 'stalemate':
+      description = "Pat ! Aucun des joueurs ne peut effectuer de coup légal.";
+      break;
     case 'insufficient_material':
       description = "Matériel insuffisant pour mater.";
       break;

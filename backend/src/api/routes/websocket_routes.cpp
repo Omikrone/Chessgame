@@ -11,12 +11,11 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
             CROW_LOG_INFO << "Client connected!";
         })
         .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/){
-            std::cout << "received" << std::endl;
+            std::cout << "received : " << data << std::endl;
             try {
 
                 // Parses the data received to a rvalue
-                crow::json::rvalue body;
-                crow::json::load(data);
+                crow::json::rvalue body = crow::json::load(data);
 
                 // Validates the different fields of the message
                 MoveJsonValidator::validate(body);
@@ -33,11 +32,12 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 BitboardMove bb_move = BitboardMoveFactory::from_move_request(move);
 
                 session->on_move_received(conn, bb_move);
-                
+
             } catch (const GameException& e) {
                 ErrorResponse error = ErrorMapper::to_error_response(e);
                 conn.send_text(error.to_json().dump());
             } catch (const std::exception& e) {
+                std::cout << "Internal server error: " << e.what() << std::endl;
                 ErrorResponse error;
                 error.code = 500;
                 error.message = "Internal server error";
