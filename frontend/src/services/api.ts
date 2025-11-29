@@ -1,7 +1,7 @@
-import type { CreateGameResponse } from "../types/game";
+import type { CreateGame } from "@/types";
 
 
-export async function createGame(): Promise<CreateGameResponse> {
+export async function createGame(): Promise<CreateGame> {
     
     const apiUrl = import.meta.env.VITE_API_URL + "/games";
 
@@ -14,5 +14,5 @@ export async function createGame(): Promise<CreateGameResponse> {
         throw new Error("API error");
     }
 
-    return res.json() as Promise<CreateGameResponse>;
+    return res.json() as Promise<CreateGame>;
 }

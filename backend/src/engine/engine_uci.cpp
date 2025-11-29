@@ -35,7 +35,7 @@ Move EngineUCI::find_best_move(int game_id, std::optional<int> depth) {
     else {
         cmd += " depth 3";
     }
-    cmd = "go movetime 10000";
+    cmd = "go movetime 1000";
     std::string response = _session.send_command(cmd, true);
     std::cout << "Engine response: " << response << std::endl;
     std::string bestmove_prefix = "bestmove ";;

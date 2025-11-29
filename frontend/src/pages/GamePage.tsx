@@ -16,7 +16,7 @@ export default function GamePage() {
   const [fen, setFen] = useState("start");
   const [updateId, setUpdateId] = useState(0);
   const socketRef = useRef<ReturnType<typeof createGameSocket> | null>(null);
-  const [result, setResult] = useState<"checkmate" | "draw" | null>(null);
+  const [result, setResult] = useState<"checkmate" | "draw" | "stalemate" | "timeout" | null>(null);
   const [winner, setWinner] = useState<"white" | "black" | null>(null);
   const navigate = useNavigate();
 
@@ -34,9 +34,9 @@ export default function GamePage() {
         setFen(message.fen);
         setUpdateId(id => id + 1);
       }
-      if (message.type === "endgame" && message.result) {
-        setResult(message.result);
-        if (message.winner) setWinner(message.winner);
+      if (message.game_over) {
+        setResult(message.reason || null);
+        setWinner(message.winner || null);
       }
     }, Number(gameId));
     socketRef.current = socket;
@@ -49,7 +49,7 @@ export default function GamePage() {
 
   function handleMoveSubmitted(from: string, to: string) {
     if (!gameId) return;
-    socketRef.current?.sendMove({type: 'move', gameId: Number(gameId), from, to});
+    socketRef.current?.sendMove({gameId: Number(gameId), from, to});
   }
 
   function handleOnRestart() {

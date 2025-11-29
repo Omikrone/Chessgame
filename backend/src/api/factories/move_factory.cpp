@@ -3,7 +3,7 @@
 
 MoveRequest MoveFactory::from_json(const crow::json::rvalue& json) {
     MoveRequest req;
-    req.game_id = json["game_id"].i();
+    req.game_id = json["gameId"].i();
     req.from = json["from"].s();
     req.to = json["to"].s();
     if (json.has("promotion")) {
