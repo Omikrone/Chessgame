@@ -16,7 +16,8 @@ export default function GamePage() {
   const [fen, setFen] = useState("start");
   const [updateId, setUpdateId] = useState(0);
   const socketRef = useRef<ReturnType<typeof createGameSocket> | null>(null);
-  const [result, setResult] = useState<"checkmate" | "draw" | "stalemate" | "timeout" | null>(null);
+  const [result, setResult] = useState<"checkmate" | "draw" | "timeout" | null>(null);
+  const [reason, setReason] = useState<'stalemate' | 'insufficient_material' | 'draw_by_fifty_move_rule' | 'draw_by_75_move_rule' | 'draw_by_threefold_repetition' | 'win_on_time' | null>(null);
   const [winner, setWinner] = useState<"white" | "black" | null>(null);
   const navigate = useNavigate();
 
@@ -35,7 +36,8 @@ export default function GamePage() {
         setUpdateId(id => id + 1);
       }
       if (message.game_over) {
-        setResult(message.reason || null);
+        setResult(message.result || null);
+        setReason(message.reason || null);
         setWinner(message.winner || null);
       }
     }, Number(gameId));
@@ -54,6 +56,7 @@ export default function GamePage() {
 
   function handleOnRestart() {
     setResult(null);
+    setReason(null);
     setWinner(null);
     setUpdateId(0);
     setFen("start");
@@ -69,7 +72,7 @@ export default function GamePage() {
       />
       <GithubButton/>
       {result ?(
-        <GameOverModal result={result} winner={winner} onRestart={handleOnRestart}/>
+        <GameOverModal result={result} reason={reason} winner={winner} onRestart={handleOnRestart}/>
       ) : null}
     </div>
   );

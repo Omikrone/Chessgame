@@ -9,6 +9,7 @@ struct PositionResponse{
     std::string fen;
     bool game_over;
     std::optional<std::string> winner;
+    std::optional<std::string> result;
     std::optional<std::string> reason;
 
     crow::json::wvalue to_json() const {
@@ -18,9 +19,12 @@ struct PositionResponse{
         if (winner.has_value()) {
             response["winner"] = winner.value();
         }
+        if (result.has_value()) {
+            response["result"] = result.value();
+        }
         if (reason.has_value()) {
             response["reason"] = reason.value();
         }
-        return response.dump();
+        return response;
     }
 };

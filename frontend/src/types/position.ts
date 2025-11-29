@@ -2,5 +2,6 @@ export interface Position {
     fen: string;
     game_over: boolean;
     winner?: 'white' | 'black';
-    reason?: 'checkmate' | 'draw' | 'stalemate' | 'timeout';
+    result?: 'checkmate' | 'draw';
+    reason?: 'stalemate' | 'insufficient_material' | 'draw_by_fifty_move_rule' | 'draw_by_75_move_rule' | 'draw_by_threefold_repetition' | 'win_on_time';
 }

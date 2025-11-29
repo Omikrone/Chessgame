@@ -4,6 +4,7 @@
 
 #include "engine/engine_uci.hpp"
 #include "api/parsing/response_parser.hpp"
+#include "api/mappers/position_mapper.hpp"
 #include "api/models/move.hpp"
 
 #include "game.hpp"

@@ -33,7 +33,8 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     _game.next_turn();
 
     GameState state = _game.get_game_state();
-    crow::json::wvalue game_state1 = ResponseParser::parse_game_state(state, _game.get_fen(), _game.get_current_turn());
+    PositionResponse position_response = PositionMapper::to_position_response(state, _game.get_fen(), _game.get_current_turn());
+    crow::json::wvalue game_state1 = position_response.to_json();
     std::string s = game_state1.dump();
     ws.send_text(s);
     if (state != GameState::CONTINUING) return;
@@ -47,8 +48,9 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     std::cout << "FEN after bot move : " << _game.get_fen() << std::endl;
     _game.next_turn();
 
-    crow::json::wvalue game_state2 = ResponseParser::parse_game_state(_game.get_game_state(), _game.get_fen(), _game.get_current_turn());
-    s = game_state2.dump();
+    state = _game.get_game_state();
+    PositionResponse game_state2 = PositionMapper::to_position_response(state, _game.get_fen(), _game.get_current_turn());
+    s = game_state2.to_json().dump();    
     ws.send_text(s);
 }
 
