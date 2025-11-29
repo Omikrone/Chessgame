@@ -6,6 +6,7 @@
 #include "api/parsing/response_parser.hpp"
 #include "api/mappers/position_mapper.hpp"
 #include "api/models/move.hpp"
+#include "api/exceptions/game_exception.hpp"
 
 #include "game.hpp"
 #include "uci/fen.hpp"

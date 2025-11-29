@@ -12,37 +12,37 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
         })
         .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/){
             std::cout << "received" << std::endl;
+            try {
 
-            // Parses the data received to a rvalue
-            crow::json::rvalue body = crow::json::load(data);
+                // Parses the data received to a rvalue
+                crow::json::rvalue body;
+                crow::json::load(data);
 
-            // Validates the different fields of the message
-            Result<crow::json::rvalue> validationResult = MoveJsonValidator::validate(body);
-            if (!validationResult.ok) {
-                conn.send_text(validationResult.errors.value()[0]);
-                return;
+                // Validates the different fields of the message
+                MoveJsonValidator::validate(body);
+
+                MoveRequest move = MoveFactory::from_json(body);
+
+                // Searches for the corresponding game
+                uint64_t game_id = move.game_id;
+                GameSession* session = gameController.get_game_session(game_id);
+
+                // Validates the move request
+                MoveRequestValidator::validate(move);
+
+                BitboardMove bb_move = BitboardMoveFactory::from_move_request(move);
+
+                session->on_move_received(conn, bb_move);
+                
+            } catch (const GameException& e) {
+                ErrorResponse error = ErrorMapper::to_error_response(e);
+                conn.send_text(error.to_json().dump());
+            } catch (const std::exception& e) {
+                ErrorResponse error;
+                error.code = 500;
+                error.message = "Internal server error";
+                conn.send_text(error.to_json().dump());
             }
-
-            MoveRequest move = MoveFactory::from_json(body);
-
-            // Searches for the corresponding game
-            uint64_t game_id = move.game_id;
-            GameSession *session = gameController.get_game_session(game_id);
-            if (session == nullptr) {
-                conn.send_text("Requested game not found");
-                return;
-            }
-
-            // Validates the move request
-            Result<MoveRequest> moveValidationResult = MoveRequestValidator::validate(move);
-            if (!moveValidationResult.ok) {
-                conn.send_text(moveValidationResult.errors.value()[0]);
-                return;
-            }
-
-            BitboardMove bb_move = BitboardMoveFactory::from_move_request(move);
-
-            session->on_move_received(conn, bb_move);
         })
         .onclose([&gameController](crow::websocket::connection& conn, const std::string& reason) {
             gameController.remove_idle_games();

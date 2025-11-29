@@ -2,10 +2,10 @@
 
 #include "api/models/move.hpp"
 #include "api/validators/square_validator.hpp"
-#include "api/validators/result.hpp"
+#include "api/exceptions/game_exception.hpp"
 
 
 class MoveRequestValidator {
     public:
-        static Result<MoveRequest> validate(const MoveRequest& request);
+        static void validate(const MoveRequest& request);
 };

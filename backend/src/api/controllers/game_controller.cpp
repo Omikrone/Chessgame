@@ -1,6 +1,7 @@
 // game_controller.cpp
 
 #include "api/controllers/game_controller.hpp"
+#include "api/exceptions/game_exception.hpp"
 
 
 uint64_t GameController::create_game() {
@@ -12,7 +13,7 @@ uint64_t GameController::create_game() {
 
 GameSession* GameController::get_game_session(uint64_t game_id) {
     auto it = _sessions.find(game_id);
-    if (it == _sessions.end()) return nullptr;
+    if (it == _sessions.end()) throw GameException("Game session not found", 404);
     return it->second.get();
 }
 

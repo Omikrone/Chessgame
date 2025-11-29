@@ -1,7 +1,7 @@
 #include "move_json_validator.hpp"
 
 
-Result<crow::json::rvalue> MoveJsonValidator::validate(const crow::json::rvalue& data) {
+void MoveJsonValidator::validate(const crow::json::rvalue& data) {
     std::vector<std::string> errors;
 
     if (!data.has("from")) {
@@ -21,7 +21,6 @@ Result<crow::json::rvalue> MoveJsonValidator::validate(const crow::json::rvalue&
     }
 
     if (!errors.empty()) {
-        return Result<crow::json::rvalue>::failure(errors);
+        throw GameException(errors[0], 400);
     }
-    return Result<crow::json::rvalue>::success(data);
 }

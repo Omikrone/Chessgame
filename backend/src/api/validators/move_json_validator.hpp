@@ -1,6 +1,6 @@
 #pragma once
 
-#include "result.hpp"
+#include "api/exceptions/game_exception.hpp"
 
 #include "crow/json.h"
 #include <string>
@@ -9,5 +9,5 @@
 
 class MoveJsonValidator {
     public:
-        static Result<crow::json::rvalue> validate(const crow::json::rvalue& data);
+        static void validate(const crow::json::rvalue& data);
 }; 
