@@ -4,6 +4,8 @@
 #include <string>
 #include <optional>
 
+#include "game/game_constants.hpp"
+
 
 struct MoveRequest
 {
@@ -17,5 +19,5 @@ struct BitboardMove
 {
     int from;
     int to;
-    std::optional<char> promotion;
+    std::optional<PieceType> promotion;
 };

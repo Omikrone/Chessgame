@@ -9,6 +9,7 @@ import { createGame } from "../services/api";
 import GithubButton from "../components/GithubButton";
 import type { ErrorResponse, Position } from "@/types";
 import { ErrorNotification } from "@/components/ErrorNotification";
+import PromotionModal from "@/components/PromotionModal";
 
 
 export default function GamePage() {
@@ -22,6 +23,9 @@ export default function GamePage() {
   const [reason, setReason] = useState<'stalemate' | 'insufficient_material' | 'draw_by_fifty_move_rule' | 'draw_by_75_move_rule' | 'draw_by_threefold_repetition' | 'win_on_time' | null>(null);
   const [winner, setWinner] = useState<"white" | "black" | null>(null);
   const [error, setError] = useState<ErrorResponse | null>(null);
+  const [promotionColor, setPromotionColor] = useState<'w' | 'b' | null>(null);
+  const [promotionFrom, setPromotionFrom] = useState<string | null>(null);
+  const [promotionTo, setPromotionTo] = useState<string | null>(null);
   const navigate = useNavigate();
 
   async function handleNewGame() {
@@ -53,9 +57,25 @@ export default function GamePage() {
     }
   }, [gameId])
 
-  function handleMoveSubmitted(from: string, to: string) {
+  function handleMoveSubmitted(from: string, to: string, piece?: string) {
     if (!gameId) return;
-    socketRef.current?.sendMove({gameId: Number(gameId), from, to});
+    console.log("Move submitted :", {from, to, piece});
+
+    if ((piece?.toLowerCase().at(0) === 'p') && (to[1] === '8' || to[1] === '1')) {
+      setPromotionFrom(from);
+      setPromotionTo(to);
+      setPromotionColor(fen.split(' ')[1] === 'w' ? 'w' : 'b');
+      return;
+    }
+    socketRef.current?.sendMove({gameId: Number(gameId), from, to, promotion: undefined});
+  }
+
+  function handlePromotionSelected(piece: 'q' | 'r' | 'b' | 'n') {
+    if (!gameId || !promotionFrom || !promotionTo || !piece) return;
+    socketRef.current?.sendMove({gameId: Number(gameId), from: promotionFrom, to: promotionTo, promotion: piece});
+    setPromotionColor(null);
+    setPromotionFrom(null);
+    setPromotionTo(null);
   }
 
   function handleOnRestart() {
@@ -72,11 +92,17 @@ export default function GamePage() {
       <ChessBoard
         fen={fen}
         updateId = {updateId}
-        onMove={(from, to) => handleMoveSubmitted(from, to)}
+        onMove={(from, to, piece) => handleMoveSubmitted(from, to, piece)}
       />
       <GithubButton/>
       {result ?(
         <GameOverModal result={result} reason={reason} winner={winner} onRestart={handleOnRestart}/>
+      ) : null}
+      {promotionColor ? (
+        <PromotionModal
+          color={promotionColor === 'w' ? 'white' : 'black'}
+          onSelect={handlePromotionSelected}
+        />
       ) : null}
       {error ? (
         <ErrorNotification

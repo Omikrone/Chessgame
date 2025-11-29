@@ -2,6 +2,8 @@
 
 #include "api/models/move.hpp"
 
+#include "game/game_constants.hpp"
+
 
 class BitboardMoveFactory {
     private:

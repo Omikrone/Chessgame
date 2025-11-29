@@ -10,7 +10,7 @@ interface ErrorNotificationProps {
 export const ErrorNotification = ({
   error,
   onClose,
-  autoHideDuration = 5000,
+  autoHideDuration = 3000,
 }: ErrorNotificationProps) => {
   const [isVisible, setIsVisible] = useState(false);
 

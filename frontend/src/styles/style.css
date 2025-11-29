@@ -228,3 +228,21 @@ piece.queen.black {
 piece.king.black {
   background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bK.svg");
 }
+
+:root {
+  --piece-white-q: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wQ.svg");
+  --piece-white-r: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wR.svg");
+  --piece-white-b: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wB.svg");
+  --piece-white-n: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wN.svg");
+  --piece-black-q: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bQ.svg");
+  --piece-black-r: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bR.svg");
+  --piece-black-b: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bB.svg");
+  --piece-black-n: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bN.svg");
+}
+
+/** Style pour les pièces dans le modal de promotion */
+.piece {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}

@@ -15,7 +15,26 @@ BitboardMove BitboardMoveFactory::from_move_request(const MoveRequest& request) 
     BitboardMove move;
     move.from = square_to_int(request.from);
     move.to = square_to_int(request.to);
-    move.promotion = request.promotion;
+    if (!request.promotion.has_value()) {
+        return move;
+    }
+    switch (request.promotion.value())
+    {
+        case 'q':
+            move.promotion = PieceType::QUEEN;
+            break;
+        case 'r':
+            move.promotion = PieceType::ROOK;
+            break;
+        case 'b':
+            move.promotion = PieceType::BISHOP;
+            break;
+        case 'n':
+            move.promotion = PieceType::KNIGHT;
+            break;
+        default:
+            break;
+    }
     return move;
 }
 

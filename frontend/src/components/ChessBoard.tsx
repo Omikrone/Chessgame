@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import { Chessground } from "@lichess-org/chessground";
 import "@lichess-org/chessground/assets/chessground.base.css";
+import type { Api } from "@lichess-org/chessground/api";
+import type { Key } from "@lichess-org/chessground/types";
 
 
 type ChessBoardProps = {
-  onMove: (from: string, to: string) => void;
+  onMove: (from: string, to: string, piece?: string) => void;
   orientation?: "white" | "black";
   fen: string;
   updateId: number;
@@ -12,7 +14,8 @@ type ChessBoardProps = {
 
 export default function ChessBoard({ onMove, fen, updateId, orientation = "white" }: ChessBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
-  const cgRef = useRef<any>(null);
+  const cgRef = useRef<Api | null>(null);
+  const pieces = cgRef.current?.state.pieces;
 
   useEffect(() => {
     if (!boardRef.current) return;
@@ -24,7 +27,11 @@ export default function ChessBoard({ onMove, fen, updateId, orientation = "white
         free: true,
         events: {
           after: (from: string, to: string) => {
-            onMove(from, to);
+            const cg = cgRef.current;
+            if (!cg) return;
+            const piece = cg.state.pieces.get(to as Key);
+            console.log("Piece moved:", {from, to, piece});
+            onMove(from, to, piece ? piece.role : undefined);
           }
         },
       },

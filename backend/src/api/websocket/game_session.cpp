@@ -25,7 +25,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     reset_idle();
 
     // Tries to apply the move on the game board
-    bool res = _game.try_apply_move(move.from, move.to);
+    bool res = _game.try_apply_move(move.from, move.to, move.promotion);
     if (!res) {
         throw GameException("Illegal move", 400);
     }
@@ -46,7 +46,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     if (!res) {
         throw GameException("Engine played illegal move", 500);
     }
-    
+
     std::cout << "FEN after bot move : " << _game.get_fen() << std::endl;
     _game.next_turn();
 
