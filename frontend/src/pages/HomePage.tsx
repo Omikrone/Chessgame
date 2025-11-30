@@ -16,7 +16,9 @@ export default function HomePage() {
 
   async function handleNewGame() {
     const newGame = await createGame();
-    navigate(`/games/${newGame.gameId}`);
+    navigate(`/games/${newGame.gameId}`, {
+      state: { playerColor: newGame.playerColor }
+    });
   }
 
   return (

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChessBoard from "../components/ChessBoard";
 import { createGameSocket } from "../services/websocket";
 import "@lichess-org/chessground/assets/chessground.brown.css";
@@ -15,6 +15,8 @@ import PromotionModal from "@/components/PromotionModal";
 export default function GamePage() {
 
   const { gameId } = useParams<{ gameId: string }>();
+  const location = useLocation();
+  const playerColor = location.state?.playerColor || "white";
   
   const [fen, setFen] = useState("start");
   const [updateId, setUpdateId] = useState(0);
@@ -30,7 +32,9 @@ export default function GamePage() {
 
   async function handleNewGame() {
     const newGame = await createGame();
-    navigate(`/games/${newGame.gameId}`);
+    navigate(`/games/${newGame.gameId}`,
+      { state: { playerColor: newGame.playerColor } }
+    );
   }
 
   useEffect(() => {
@@ -67,12 +71,12 @@ export default function GamePage() {
       setPromotionColor(fen.split(' ')[1] === 'w' ? 'w' : 'b');
       return;
     }
-    socketRef.current?.sendMove({gameId: Number(gameId), from, to, promotion: undefined});
+    socketRef.current?.sendMove({gameId: Number(gameId), msgType: "move", from, to, promotion: undefined});
   }
 
   function handlePromotionSelected(piece: 'q' | 'r' | 'b' | 'n') {
     if (!gameId || !promotionFrom || !promotionTo || !piece) return;
-    socketRef.current?.sendMove({gameId: Number(gameId), from: promotionFrom, to: promotionTo, promotion: piece});
+    socketRef.current?.sendMove({gameId: Number(gameId), msgType: "move", from: promotionFrom, to: promotionTo, promotion: piece});
     setPromotionColor(null);
     setPromotionFrom(null);
     setPromotionTo(null);
@@ -93,6 +97,7 @@ export default function GamePage() {
         fen={fen}
         updateId = {updateId}
         onMove={(from, to, piece) => handleMoveSubmitted(from, to, piece)}
+        orientation={playerColor}
       />
       <GithubButton/>
       {result ?(

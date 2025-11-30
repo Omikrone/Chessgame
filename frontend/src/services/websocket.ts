@@ -1,4 +1,4 @@
-import type { ErrorResponse, MoveRequest, Position } from "@/types";
+import type { ErrorResponse, MoveRequest, Position, Request } from "@/types";
 
 
 type GameMessageHandler = (message : Position | ErrorResponse) => void;
@@ -10,6 +10,8 @@ export function createGameSocket(onMessage : GameMessageHandler, gameId: number)
 
   ws.onopen = () => {
     console.log("WebSocket connected");
+    const initRequest: Request = { msgType: "init", gameId };
+    ws.send(JSON.stringify(initRequest));
   };
 
   ws.onmessage = (event) => {

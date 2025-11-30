@@ -15,7 +15,6 @@ type ChessBoardProps = {
 export default function ChessBoard({ onMove, fen, updateId, orientation = "white" }: ChessBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const cgRef = useRef<Api | null>(null);
-  const pieces = cgRef.current?.state.pieces;
 
   useEffect(() => {
     if (!boardRef.current) return;
