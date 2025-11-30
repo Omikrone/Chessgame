@@ -3,7 +3,7 @@
 #pragma once
 
 #include "api/controllers/game_controller.hpp"
-#include "api/validators/move_json_validator.hpp"
+#include "api/validators/json_validator.hpp"
 #include "api/validators/move_request_validator.hpp"
 #include "api/factories/bb_move_factory.hpp"
 #include "api/factories/move_factory.hpp"

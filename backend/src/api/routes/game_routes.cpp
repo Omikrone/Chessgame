@@ -10,12 +10,17 @@ void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& gam
     ([&app, &gameController](const crow::request& /*req*/){
 
         // Creates a new game
-        uint64_t gameId = gameController.create_game();
+        GameSession* game = gameController.create_game();
 
         // Replies by sending the game ID to the client
         crow::json::wvalue res;
         res["status"] = "success";
-        res["gameId"] = gameId;
+        res["gameId"] = game->get_id();
+        if (game->get_player_color() == Color::WHITE) {
+            res["playerColor"] = "white";
+        } else {
+            res["playerColor"] = "black";
+        }
         return crow::response(200, res);
     });
 }

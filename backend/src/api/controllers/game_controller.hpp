@@ -30,7 +30,7 @@ class GameController
          *
          * @return The game ID of the new game session.
          */
-        uint64_t create_game();
+        GameSession* create_game();
 
         /**
          * @brief Gets a game session by its ID.

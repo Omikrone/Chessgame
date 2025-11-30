@@ -12,6 +12,7 @@
 #include "uci/fen.hpp"
 #include "crow.h"
 #include <chrono>
+#include <random>
 
 
 /**
@@ -27,8 +28,11 @@ class GameSession
         EngineUCI _engine;
         const int _id;
         std::chrono::steady_clock::time_point _last_activity;
+        Color _player_color = Color::WHITE;
 
         void reset_idle();
+
+        void apply_player_move(crow::websocket::connection& ws, BitboardMove move);
 
     public:
 
@@ -45,5 +49,11 @@ class GameSession
          */
         void on_move_received(crow::websocket::connection& ws, BitboardMove move);
 
+        void apply_engine_move(crow::websocket::connection& ws);
+
         bool is_idle() const;
+
+        Color get_player_color() const;
+
+        int get_id() const;
 };

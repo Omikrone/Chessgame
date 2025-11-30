@@ -10,6 +10,7 @@
 struct MoveRequest
 {
     int game_id;
+    std::string msg_type;
     std::string from;
     std::string to;
     std::optional<char> promotion;

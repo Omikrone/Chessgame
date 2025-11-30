@@ -4,10 +4,10 @@
 #include "api/exceptions/game_exception.hpp"
 
 
-uint64_t GameController::create_game() {
+GameSession* GameController::create_game() {
     uint64_t id = _next_id++;
     _sessions.try_emplace(id, std::make_unique<GameSession>(id));
-    return id;
+    return _sessions[id].get();
 }
 
 

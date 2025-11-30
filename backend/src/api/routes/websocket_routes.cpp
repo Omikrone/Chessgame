@@ -18,21 +18,34 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 crow::json::rvalue body = crow::json::load(data);
 
                 // Validates the different fields of the message
-                MoveJsonValidator::validate(body);
+                JsonValidator::validate(body);
 
-                MoveRequest move = MoveFactory::from_json(body);
+                if (body["msgType"].s() == "init") {
+                    // Initialization message
+                    int game_id = body["gameId"].i();
+                    GameSession* session = gameController.get_game_session(game_id);
 
-                // Searches for the corresponding game
-                uint64_t game_id = move.game_id;
-                GameSession* session = gameController.get_game_session(game_id);
+                    if (session->get_player_color() == Color::BLACK) {
+                        // If the player is black, engine plays first move
+                        session->apply_engine_move(conn);
+                        return;
+                    }
+                }
+                
+                if (body["msgType"].s() == "move") {
+                    MoveRequest move = MoveFactory::from_json(body);
 
-                // Validates the move request
-                MoveRequestValidator::validate(move);
+                    // Searches for the corresponding game
+                    uint64_t game_id = move.game_id;
+                    GameSession* session = gameController.get_game_session(game_id);
 
-                BitboardMove bb_move = BitboardMoveFactory::from_move_request(move);
+                    // Validates the move request
+                    MoveRequestValidator::validate(move);
 
-                session->on_move_received(conn, bb_move);
+                    BitboardMove bb_move = BitboardMoveFactory::from_move_request(move);
 
+                    session->on_move_received(conn, bb_move);
+                }
             } catch (const GameException& e) {
                 ErrorResponse error = ErrorMapper::to_error_response(e);
                 conn.send_text(error.to_json().dump());

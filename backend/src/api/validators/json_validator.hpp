@@ -7,7 +7,7 @@
 #include <vector>
 
 
-class MoveJsonValidator {
+class JsonValidator {
     public:
         static void validate(const crow::json::rvalue& data);
 }; 
