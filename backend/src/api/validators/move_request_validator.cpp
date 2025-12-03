@@ -1,7 +1,6 @@
 #include "api/validators/move_request_validator.hpp"
 
-
- void MoveRequestValidator::validate(const MoveRequest& request) {
+void MoveRequestValidator::validate(const MoveRequest& request) {
     if (request.game_id <= 0) {
         throw GameException("Invalid game_id", 400);
     }

@@ -1,6 +1,5 @@
 #include "api/factories/bb_move_factory.hpp"
 
-
 int BitboardMoveFactory::square_to_int(const std::string& square) {
     char file = square[0];
     char rank = square[1];
@@ -18,8 +17,7 @@ BitboardMove BitboardMoveFactory::from_move_request(const MoveRequest& request) 
     if (!request.promotion.has_value()) {
         return move;
     }
-    switch (request.promotion.value())
-    {
+    switch (request.promotion.value()) {
         case 'q':
             move.promotion = PieceType::QUEEN;
             break;
@@ -37,5 +35,3 @@ BitboardMove BitboardMoveFactory::from_move_request(const MoveRequest& request) 
     }
     return move;
 }
-
-    

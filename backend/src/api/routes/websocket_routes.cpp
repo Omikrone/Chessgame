@@ -2,18 +2,13 @@
 
 #include "api/routes/websocket_routes.hpp"
 
-
 void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& gameController) {
-
     // Creates a new websocket route
     CROW_WEBSOCKET_ROUTE(app, "/ws/<int>")
-        .onopen([](crow::websocket::connection& /*conn*/) {
-            CROW_LOG_INFO << "Client connected!";
-        })
-        .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/){
+        .onopen([](crow::websocket::connection& /*conn*/) { CROW_LOG_INFO << "Client connected!"; })
+        .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/) {
             std::cout << "received : " << data << std::endl;
             try {
-
                 // Parses the data received to a rvalue
                 crow::json::rvalue body = crow::json::load(data);
 
@@ -31,7 +26,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                         return;
                     }
                 }
-                
+
                 if (body["msgType"].s() == "move") {
                     MoveRequest move = MoveFactory::from_json(body);
 

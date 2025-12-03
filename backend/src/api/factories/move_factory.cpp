@@ -1,6 +1,5 @@
 #include "api/factories/move_factory.hpp"
 
-
 MoveRequest MoveFactory::from_json(const crow::json::rvalue& json) {
     MoveRequest req;
     req.game_id = json["gameId"].i();

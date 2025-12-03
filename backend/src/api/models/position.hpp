@@ -1,15 +1,15 @@
 #pragma once
 
-#include "crow/json.h"
-#include <string>
 #include <optional>
+#include <string>
 
+#include "crow/json.h"
 
 /**
  * @brief Struct representing the response for a position request.
- * 
+ *
  */
-struct PositionResponse{
+struct PositionResponse {
     std::string fen;
     bool game_over;
     std::optional<std::string> winner;
