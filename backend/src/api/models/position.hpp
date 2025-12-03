@@ -5,6 +5,10 @@
 #include <optional>
 
 
+/**
+ * @brief Struct representing the response for a position request.
+ * 
+ */
 struct PositionResponse{
     std::string fen;
     bool game_over;

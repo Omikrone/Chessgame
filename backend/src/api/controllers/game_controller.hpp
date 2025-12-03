@@ -39,6 +39,9 @@ class GameController
          */
         GameSession* get_game_session(uint64_t game_id);
 
-
+        /**
+         * @brief Removes idle games from the controller.
+         * 
+         */
         void remove_idle_games();
 };

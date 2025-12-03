@@ -7,6 +7,10 @@
 #include "game/game_constants.hpp"
 
 
+/**
+ * @brief Struct representing a move request from the client.
+ * 
+ */
 struct MoveRequest
 {
     int game_id;
@@ -16,6 +20,10 @@ struct MoveRequest
     std::optional<char> promotion;
 };
 
+/**
+ * @brief Struct representing a move in bitboard format.
+ * 
+ */
 struct BitboardMove
 {
     int from;

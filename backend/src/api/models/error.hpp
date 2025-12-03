@@ -3,6 +3,10 @@
 #include "crow/json.h"
 
 
+/**
+ * @brief Struct representing an error response.
+ * 
+ */
 struct ErrorResponse {
     int code;
     std::string message;

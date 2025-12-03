@@ -7,7 +7,17 @@
 #include <vector>
 
 
+/**
+ * @brief Class for validating JSON data.
+ * 
+ */
 class JsonValidator {
     public:
+    
+        /**
+         * @brief Validates the given JSON data.
+         * 
+         * @param data The JSON data to validate.
+         */
         static void validate(const crow::json::rvalue& data);
 }; 
