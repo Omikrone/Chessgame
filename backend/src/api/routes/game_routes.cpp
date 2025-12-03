@@ -7,7 +7,7 @@ void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& gam
     
     // Creates a new POST route for creating new games
     CROW_ROUTE(app, "/games").methods("POST"_method)
-    ([&app, &gameController](const crow::request& /*req*/){
+    ([&gameController](const crow::request& /*req*/){
 
         // Creates a new game
         GameSession* game = gameController.create_game();

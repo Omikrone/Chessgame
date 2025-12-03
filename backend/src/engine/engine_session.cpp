@@ -29,7 +29,7 @@ EngineSession::EngineSession(std::string engine_addr, int engine_port, int game_
     ws_thread.detach();
 }
 
-void EngineSession::on_message(websocketpp::connection_hdl hdl, websocketpp::client<websocketpp::config::asio_client>::message_ptr msg) {
+void EngineSession::on_message(websocketpp::connection_hdl /*hdl*/, websocketpp::client<websocketpp::config::asio_client>::message_ptr msg) {
     std::unique_lock<std::mutex> lock(_mutex);
     _response = msg->get_payload();
     std::cout << "Received message: " << _response << std::endl;

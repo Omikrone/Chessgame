@@ -33,7 +33,7 @@ class EngineSession
          * @param hdl The connection handle.
          * @param msg The message received.
          */
-        void on_message(websocketpp::connection_hdl hdl, websocketpp::client<websocketpp::config::asio_client>::message_ptr msg);
+        void on_message(websocketpp::connection_hdl /*hdl*/, websocketpp::client<websocketpp::config::asio_client>::message_ptr msg);
 
     public:
     

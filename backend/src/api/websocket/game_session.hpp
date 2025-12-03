@@ -24,9 +24,9 @@ class GameSession
 {
     private:
 
+        const int _id;
         Game _game;
         EngineUCI _engine;
-        const int _id;
         std::chrono::steady_clock::time_point _last_activity;
         Color _player_color = Color::WHITE;
 
