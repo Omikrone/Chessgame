@@ -12,7 +12,7 @@ EngineUCI::EngineUCI(const std::string engine_addr, const int engine_port, int g
 }
 
 
-void EngineUCI::update_position(int game_id, bool is_startpos, const std::string fen, std::vector<Move> played_moves) {
+void EngineUCI::update_position(bool is_startpos, const std::string fen, std::vector<Move> played_moves) {
     std::string cmd = "position ";
     if (is_startpos) {
         cmd += fen;
@@ -27,7 +27,7 @@ void EngineUCI::update_position(int game_id, bool is_startpos, const std::string
 }
 
 
-Move EngineUCI::find_best_move(int game_id, std::optional<int> depth) {
+Move EngineUCI::find_best_move(std::optional<int> depth) {
     std::string cmd = "go";
     if (depth.has_value()) {
         cmd += " depth " + std::to_string(depth.value());

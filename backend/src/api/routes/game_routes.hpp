@@ -4,12 +4,8 @@
 
 #include "api/controllers/game_controller.hpp"
 
-// Turns off the warning of unreachable code in crow
-#pragma warning(push)
-#pragma warning(disable : 4702)
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#pragma warning(pop)
 
 
 /**

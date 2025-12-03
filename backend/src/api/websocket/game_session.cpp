@@ -26,9 +26,9 @@ GameSession::~GameSession() {
 }
 
 void GameSession::apply_engine_move(crow::websocket::connection& ws) {
-    _engine.update_position(_id, true, "startpos", _game.get_played_moves());
+    _engine.update_position(true, "startpos", _game.get_played_moves());
 
-    Move best_move = _engine.find_best_move(_id);
+    Move best_move = _engine.find_best_move();
     std::cout << "FEN before bot move : " << _game.get_fen() << std::endl;
     bool res = _game.try_apply_move(best_move.from, best_move.to);
     if (!res) {

@@ -10,12 +10,8 @@
 #include "api/exceptions/game_exception.hpp"
 #include "api/mappers/error_mapper.hpp"
 
-// Turns off the warning of unreachable code in crow
-#pragma warning(push)
-#pragma warning(disable : 4702)
 #include "crow.h"
 #include "crow/middlewares/cors.h"
-#pragma warning(pop)
 
 
 /**

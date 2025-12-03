@@ -74,7 +74,7 @@ find_package(OpenSSL REQUIRED)
 if(PLATFORM_WINDOWS)
     find_package(Boost REQUIRED COMPONENTS random)
 else()
-    find_package(Boost REQUIRED COMPONENTS system filesystem)
+    find_package(Boost REQUIRED COMPONENTS system filesystem random)
 endif()
 
 # -------------------------------------------------------------------

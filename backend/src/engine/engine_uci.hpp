@@ -26,7 +26,7 @@ class EngineUCI
         EngineUCI(const std::string engine_addr, const int engine_port, int game_id);
         ~EngineUCI() = default;
 
-        void update_position(int game_id, bool is_startpos, const std::string fen, std::vector<Move> played_moves);
-        Move find_best_move(int game_id, std::optional<int> depth = std::nullopt);
+        void update_position(bool is_startpos, const std::string fen, std::vector<Move> played_moves);
+        Move find_best_move(std::optional<int> depth = std::nullopt);
         void quit();
 };
