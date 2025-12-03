@@ -28,9 +28,7 @@ void EngineSession::on_message(websocketpp::connection_hdl /*hdl*/,
                                websocketpp::client<websocketpp::config::asio_client>::message_ptr msg) {
     std::unique_lock<std::mutex> lock(_mutex);
     _response = msg->get_payload();
-    std::cout << "Received message: " << _response << std::endl;
     if (_response.rfind("info", 0) == 0) {
-        std::cout << "Engine info: " << _response << std::endl;
     } else {
         _cv.notify_one();
     }
@@ -48,7 +46,6 @@ std::string EngineSession::send_command(const std::string& command, bool has_to_
     if (has_to_wait) {
         std::unique_lock<std::mutex> lock(_mutex);
         _cv.wait(lock, [this] { return !_response.empty(); });
-        std::cout << "Received response: " << _response << std::endl;
     }
 
     return _response;

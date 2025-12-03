@@ -15,7 +15,6 @@ GameSession::GameSession(const int id)
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
     _player_color = dis(gen) == 0 ? Color::WHITE : Color::BLACK;
-    std::cout << "Player color : " << (_player_color == Color::WHITE ? "white" : "black") << std::endl;
 }
 
 GameSession::~GameSession() { _engine.quit(); }
@@ -24,13 +23,11 @@ void GameSession::apply_engine_move(crow::websocket::connection& ws) {
     _engine.update_position(true, "startpos", _game.get_played_moves());
 
     Move best_move = _engine.find_best_move();
-    std::cout << "FEN before bot move : " << _game.get_fen() << std::endl;
     bool res = _game.try_apply_move(best_move.from, best_move.to);
     if (!res) {
         throw GameException("Engine played illegal move", 500);
     }
 
-    std::cout << "FEN after bot move : " << _game.get_fen() << std::endl;
     _game.next_turn();
 
     GameState state = _game.get_game_state();

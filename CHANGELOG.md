@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.3.0] - 2025-12-03
+
+### Added
+- Added promotion choice feature when a pawn reaches the last rank.
+- Implemented random color assignment for players at the start of a new game.
+- Improved frontend UI by indicating the reason for game termination (checkmate, stalemate, draw).
+- Improved parsing and validation of the client's move requests.
+- Added support of WebSocket for engine communication.
+
 
 ## [1.2.1] - 2025-10-25
 
