@@ -12,7 +12,6 @@ endif()
 
 project(chessgame LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # -------------------------------------------------------------------
@@ -85,6 +84,10 @@ file(GLOB_RECURSE GAME_SOURCES "src/*.cpp")
 # -------------------------------------------------------------------
 # Executable
 # -------------------------------------------------------------------
+add_definitions(-DASIO_STANDALONE)
+add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
+set_property(TARGET chessgame PROPERTY CXX_STANDARD 17)
+
 add_executable(chessgame ${GAME_SOURCES})
 message(STATUS "Including: ${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_include_directories(chessgame
