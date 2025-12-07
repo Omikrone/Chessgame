@@ -21,4 +21,4 @@ FROM debian:12
 
 COPY --from=build /src/build/chessengine /usr/local/bin/chessengine
 EXPOSE 18088
-ENTRYPOINT ["/usr/local/bin/chessengine"]
+ENTRYPOINT ["/usr/local/bin/chessengine", "--http"]

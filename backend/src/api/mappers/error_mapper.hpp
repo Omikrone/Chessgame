@@ -1,15 +1,19 @@
 #pragma once
 
-#include "api/models/error.hpp"
 #include "api/exceptions/game_exception.hpp"
+#include "api/models/error.hpp"
 
-
+/**
+ * @brief Class for mapping exceptions to error responses.
+ *
+ */
 class ErrorMapper {
-    public:
-        static ErrorResponse to_error_response(const GameException& exception) {
-            ErrorResponse response;
-            response.code = exception.code();
-            response.message = exception.what();
-            return response;
-        }
+   public:
+    /**
+     * @brief Maps a GameException to an ErrorResponse.
+     *
+     * @param exception The GameException to map.
+     * @return The mapped ErrorResponse.
+     */
+    static ErrorResponse to_error_response(const GameException& exception);
 };

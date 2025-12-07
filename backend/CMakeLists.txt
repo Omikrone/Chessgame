@@ -73,7 +73,7 @@ find_package(OpenSSL REQUIRED)
 if(PLATFORM_WINDOWS)
     find_package(Boost REQUIRED COMPONENTS random)
 else()
-    find_package(Boost REQUIRED COMPONENTS system filesystem)
+    find_package(Boost REQUIRED COMPONENTS system filesystem random)
 endif()
 
 # -------------------------------------------------------------------
@@ -86,9 +86,9 @@ file(GLOB_RECURSE GAME_SOURCES "src/*.cpp")
 # -------------------------------------------------------------------
 add_definitions(-DASIO_STANDALONE)
 add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
-set_property(TARGET chessgame PROPERTY CXX_STANDARD 17)
 
 add_executable(chessgame ${GAME_SOURCES})
+set_property(TARGET chessgame PROPERTY CXX_STANDARD 17)
 message(STATUS "Including: ${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_include_directories(chessgame
     PRIVATE

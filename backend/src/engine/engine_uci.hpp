@@ -2,31 +2,48 @@
 
 #pragma once
 
-#include "moves/move.hpp"
-#include "engine/engine_session.hpp"
-
 #include <optional>
 #include <string>
 #include <vector>
 
+#include "engine/engine_session.hpp"
+#include "moves/move.hpp"
 
-class EngineUCI
-{
+/**
+ * @brief Class representing a UCI chess engine.
+ */
+class EngineUCI {
+   private:
+    const std::string _engine_addr;
+    const int _engine_port;
+    const int _game_id;
+    std::string _response;
+    EngineSession _session;
 
-    private:
+   public:
+    EngineUCI(const std::string engine_addr, const int engine_port, int game_id);
+    ~EngineUCI() = default;
 
-        const std::string _engine_addr;
-        const int _engine_port;
-        const int _game_id;
-        std::string _response;
-        EngineSession _session;
+    /**
+     * @brief Updates the position in the engine.
+     *
+     * @param is_startpos True if the position is the starting position, else false.
+     * @param fen The FEN string representing the position (if not startpos).
+     * @param played_moves The list of moves played to reach the position.
+     */
+    void update_position(bool is_startpos, const std::string fen, std::vector<Move> played_moves);
 
-    public:
+    /**
+     * @brief Finds the best move from the current position.
+     *
+     * @param depth Optional depth to which the engine should search.
+     * @return The best Move found by the engine.
+     */
+    Move find_best_move(std::optional<int> depth = std::nullopt);
 
-        EngineUCI(const std::string engine_addr, const int engine_port, int game_id);
-        ~EngineUCI() = default;
-
-        void update_position(int game_id, bool is_startpos, const std::string fen, std::vector<Move> played_moves);
-        Move find_best_move(int game_id, std::optional<int> depth = std::nullopt);
-        void quit();
+    /**
+     * @brief Quits the engine session.
+     *
+     */
+    void quit();
 };

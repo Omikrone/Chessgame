@@ -1,11 +1,19 @@
 #pragma once
 
+#include "api/exceptions/game_exception.hpp"
 #include "api/models/move.hpp"
 #include "api/validators/square_validator.hpp"
-#include "api/exceptions/game_exception.hpp"
 
-
+/**
+ * @brief Class for validating move requests.
+ *
+ */
 class MoveRequestValidator {
-    public:
-        static void validate(const MoveRequest& request);
+   public:
+    /**
+     * @brief Validates the given move request.
+     *
+     * @param request The move request to validate.
+     */
+    static void validate(const MoveRequest& request);
 };

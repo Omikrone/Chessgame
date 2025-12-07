@@ -12,7 +12,7 @@ FROM debian:12
 
 WORKDIR /app
 
-COPY --from=build /app/build/game/chessgame /usr/local/bin/chessgame
+COPY --from=build /app/build/chessgame /usr/local/bin/chessgame
 
 EXPOSE 18080
 ENTRYPOINT ["/usr/local/bin/chessgame"]

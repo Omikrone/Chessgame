@@ -1,7 +1,7 @@
 #include "api/mappers/position_mapper.hpp"
 
-
-PositionResponse PositionMapper::to_position_response(const GameState game_state, const std::string& fen, Color current_turn) {
+PositionResponse PositionMapper::to_position_response(const GameState game_state, const std::string& fen,
+                                                      Color current_turn) {
     PositionResponse response;
     response.fen = fen;
     response.game_over = (game_state != GameState::CONTINUING);
