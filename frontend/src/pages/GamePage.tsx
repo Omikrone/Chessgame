@@ -5,7 +5,7 @@ import { createGameSocket } from "../services/websocket";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import { useParams } from "react-router-dom";
 import GameOverModal from "../components/GameOverModal";
-import { createGame } from "../services/api";
+import { createGame, getGame } from "../services/api";
 import GithubButton from "../components/GithubButton";
 import type { ErrorResponse, Position } from "@/types";
 import { ErrorNotification } from "@/components/ErrorNotification";
@@ -14,6 +14,7 @@ import PromotionModal from "@/components/PromotionModal";
 export default function GamePage() {
   const { gameId } = useParams<{ gameId: string }>();
   const location = useLocation();
+  console.log("GamePage location.state:", location.state);
   const playerColor = location.state?.playerColor || "white";
   
   const [fen, setFen] = useState("start");
@@ -28,26 +29,26 @@ export default function GamePage() {
   const [promotionTo, setPromotionTo] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  if (location.state.fen) {
+    setFen(location.state.fen);
+    location.state.fen = null;
+  }
+
   const isPlayerTurn = useMemo(() => {
     if (fen === "start") {
-      console.log("FEN is 'start', defaulting to white's turn");
       return playerColor === "white";
     }
     
     const fenParts = fen.split(' ');
     if (fenParts.length < 2) {
-      console.log("Invalid FEN format:", fen);
       return false;
     }
     
     const turn = fenParts[1];
-    console.log("Turn from FEN:", turn, "Player color:", playerColor);
     
     return (turn === 'w' && playerColor === 'white') || 
            (turn === 'b' && playerColor === 'black');
   }, [fen, playerColor]);
-
-  console.log("GamePage render - isPlayerTurn:", isPlayerTurn, "fen:", fen, "playerColor:", playerColor);
 
   async function handleNewGame() {
     const newGame = await createGame();
@@ -55,6 +56,21 @@ export default function GamePage() {
       { state: { playerColor: newGame.playerColor } }
     );
   }
+
+  // useEffect(() => {
+  //   if (!gameId) return;
+
+  //   async function fetchGame() {
+  //     try {
+  //       const game = await getGame(Number(gameId));
+  //       setFen(game.fen);
+  //     } catch (error) {
+  //       console.error("Failed to fetch game data:", error);
+  //     }
+  //   }
+
+  //   fetchGame();
+  // }, [gameId]);
 
   useEffect(() => {
     if (!gameId) return;
@@ -66,7 +82,6 @@ export default function GamePage() {
         setError(message);
       } else {
         requestAnimationFrame(() => {
-          console.log("Setting new FEN:", message.fen);
           setFen(message.fen);
           setUpdateId(id => id + 1);
           if (message.game_over) {
@@ -76,7 +91,7 @@ export default function GamePage() {
           }
         });
       }
-    }, Number(gameId));
+    }, Number(gameId), location.state?.fen ? false : true);
     
     socketRef.current = socket;
 

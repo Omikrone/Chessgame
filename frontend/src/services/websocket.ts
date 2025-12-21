@@ -2,7 +2,7 @@ import type { ErrorResponse, MoveRequest, Position, Request } from "@/types";
 
 type GameMessageHandler = (message: Position | ErrorResponse) => void;
 
-export function createGameSocket(onMessage: GameMessageHandler, gameId: number) {
+export function createGameSocket(onMessage: GameMessageHandler, gameId: number, newGame: boolean = false) {
   const ws = new WebSocket(import.meta.env.VITE_WS_URL + `/ws/${gameId}`);
 
   let connectionEstablished = false;
@@ -11,6 +11,7 @@ export function createGameSocket(onMessage: GameMessageHandler, gameId: number) 
   ws.onopen = () => {
     console.log("WebSocket connected");
     connectionEstablished = true;
+    if (!newGame) return;
     const initRequest: Request = { msgType: "init", gameId };
     ws.send(JSON.stringify(initRequest));
     
