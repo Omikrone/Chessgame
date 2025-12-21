@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Chessground } from "@lichess-org/chessground";
+import { Chess } from "chess.js";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import type { Api } from "@lichess-org/chessground/api";
 import type { Key } from "@lichess-org/chessground/types";
@@ -9,7 +10,6 @@ type ChessBoardProps = {
   orientation?: "white" | "black";
   fen: string;
   updateId: number;
-  movable?: boolean;
 };
 
 export default function ChessBoard({ 
@@ -17,70 +17,106 @@ export default function ChessBoard({
   fen, 
   updateId, 
   orientation = "white",
-  movable = true 
 }: ChessBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const cgRef = useRef<Api | null>(null);
 
-  console.log("ChessBoard render - movable:", movable, "orientation:", orientation, "fen:", fen);
+  const onMoveRef = useRef(onMove);
+
+  useEffect(() => {
+    onMoveRef.current = onMove;
+  }, [onMove]);
+
+  const getDests = (fen: string) => {
+    try {
+        const chess = new Chess(fen === "start" ? undefined : fen);
+        const dests = new Map<Key, Key[]>();
+        
+        chess.moves({ verbose: true }).forEach((move) => {
+          const from = move.from as Key;
+          const to = move.to as Key;
+          if (!dests.has(from)) dests.set(from, []);
+          dests.get(from)?.push(to);
+        });
+        
+        return dests;
+    } catch (e) {
+        console.error("Invalid FEN:", fen);
+        return new Map();
+    }
+  };
 
   useEffect(() => {
     if (!boardRef.current) return;
 
     const actualFen = fen === "start" ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" : fen;
+    const dests = getDests(actualFen);
 
     cgRef.current = Chessground(boardRef.current, {
       fen: actualFen,
       orientation,
       movable: {
-        free: movable,
-        color: movable ? orientation : undefined,
-        events: movable ? {
+        free: false,
+        color: orientation,
+        dests: dests,
+        showDests: true,
+        events: {
           after: (from: string, to: string) => {
-            console.log("ChessBoard: Move detected");
-            const cg = cgRef.current;
-            if (!cg) return;
-            const piece = cg.state.pieces.get(to as Key);
-            console.log("Piece moved:", {from, to, piece});
-            onMove(from, to, piece ? piece.role : undefined);
+             const piece = cgRef.current?.state.pieces.get(to as Key);
+             onMoveRef.current(from, to, piece?.role);
           }
-        } : undefined,
+        },
       },
       draggable: {
-        enabled: movable
+        enabled: true,
+        showGhost: true
       },
       selectable: {
-        enabled: movable
+        enabled: true
+      },
+      highlight: {
+        lastMove: true,
+        check: true
       }
     });
 
     return () => {
       cgRef.current?.destroy();
     };
-  }, [orientation, onMove, movable]);
+  }, []); 
 
   useEffect(() => {
     if (cgRef.current) {
       const actualFen = fen === "start" ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" : fen;
-      console.log("Updating Chessground FEN to:", actualFen);
-      cgRef.current.set({ fen: actualFen });
+
+      const dests = getDests(actualFen);
+
+      const chess = new Chess(actualFen);
+      const turnColor = chess.turn() === 'w' ? 'white' : 'black';
+
+      cgRef.current.set({ 
+        fen: actualFen,
+        turnColor: turnColor,
+        movable: {
+            dests: dests, 
+            color: orientation,
+            events: {
+              after: (from: string, to: string) => {
+                 const piece = cgRef.current?.state.pieces.get(to as Key);
+                 onMoveRef.current(from, to, piece?.role);
+              }
+            }
+        },
+        check: chess.inCheck()
+      });
     }
-  }, [fen, updateId]);
+  }, [fen, updateId, orientation]);
 
   useEffect(() => {
     if (cgRef.current) {
-      console.log("Updating Chessground movable to:", movable);
-      cgRef.current.set({
-        movable: {
-          free: movable,
-          color: movable ? orientation : undefined
-        },
-        draggable: {
-          enabled: movable
-        }
-      });
+        cgRef.current.set({ orientation });
     }
-  }, [movable, orientation]);
+  }, [orientation]);
 
   return <div ref={boardRef} style={{ width: 700, height: 700 }} />;
 }

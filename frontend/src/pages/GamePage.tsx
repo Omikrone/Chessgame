@@ -149,7 +149,6 @@ export default function GamePage() {
         updateId={updateId}
         onMove={(from, to, piece) => handleMoveSubmitted(from, to, piece)}
         orientation={playerColor}
-        movable={isPlayerTurn}
       />
       <GithubButton/>
       {result ?(
