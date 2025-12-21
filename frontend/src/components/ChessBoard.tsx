@@ -107,6 +107,7 @@ export default function ChessBoard({
               }
             }
         },
+        premovable: { enabled: false },
         check: chess.inCheck()
       });
     }
