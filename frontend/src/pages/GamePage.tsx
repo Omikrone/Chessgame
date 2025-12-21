@@ -29,10 +29,25 @@ export default function GamePage() {
   const navigate = useNavigate();
 
   const isPlayerTurn = useMemo(() => {
-    const turn = fen.split(' ')[1];
+    if (fen === "start") {
+      console.log("FEN is 'start', defaulting to white's turn");
+      return playerColor === "white";
+    }
+    
+    const fenParts = fen.split(' ');
+    if (fenParts.length < 2) {
+      console.log("Invalid FEN format:", fen);
+      return false;
+    }
+    
+    const turn = fenParts[1];
+    console.log("Turn from FEN:", turn, "Player color:", playerColor);
+    
     return (turn === 'w' && playerColor === 'white') || 
            (turn === 'b' && playerColor === 'black');
   }, [fen, playerColor]);
+
+  console.log("GamePage render - isPlayerTurn:", isPlayerTurn, "fen:", fen, "playerColor:", playerColor);
 
   async function handleNewGame() {
     const newGame = await createGame();
@@ -51,6 +66,7 @@ export default function GamePage() {
         setError(message);
       } else {
         requestAnimationFrame(() => {
+          console.log("Setting new FEN:", message.fen);
           setFen(message.fen);
           setUpdateId(id => id + 1);
           if (message.game_over) {
@@ -74,7 +90,7 @@ export default function GamePage() {
     if (!gameId) return;
 
     if (!isPlayerTurn) {
-      console.log("Not player's turn, ignoring move");
+      console.log("Not player's turn, ignoring move. isPlayerTurn:", isPlayerTurn);
       return;
     }
     

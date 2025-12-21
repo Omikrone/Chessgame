@@ -22,17 +22,22 @@ export default function ChessBoard({
   const boardRef = useRef<HTMLDivElement>(null);
   const cgRef = useRef<Api | null>(null);
 
+  console.log("ChessBoard render - movable:", movable, "orientation:", orientation, "fen:", fen);
+
   useEffect(() => {
     if (!boardRef.current) return;
 
+    const actualFen = fen === "start" ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" : fen;
+
     cgRef.current = Chessground(boardRef.current, {
-      fen,
+      fen: actualFen,
       orientation,
       movable: {
         free: movable,
-        color: movable ? (orientation === "white" ? "white" : "black") : undefined,
+        color: movable ? orientation : undefined,
         events: movable ? {
           after: (from: string, to: string) => {
+            console.log("ChessBoard: Move detected");
             const cg = cgRef.current;
             if (!cg) return;
             const piece = cg.state.pieces.get(to as Key);
@@ -56,16 +61,19 @@ export default function ChessBoard({
 
   useEffect(() => {
     if (cgRef.current) {
-      cgRef.current.set({ fen });
+      const actualFen = fen === "start" ? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" : fen;
+      console.log("Updating Chessground FEN to:", actualFen);
+      cgRef.current.set({ fen: actualFen });
     }
   }, [fen, updateId]);
 
   useEffect(() => {
     if (cgRef.current) {
+      console.log("Updating Chessground movable to:", movable);
       cgRef.current.set({
         movable: {
           free: movable,
-          color: movable ? (orientation === "white" ? "white" : "black") : undefined
+          color: movable ? orientation : undefined
         },
         draggable: {
           enabled: movable
