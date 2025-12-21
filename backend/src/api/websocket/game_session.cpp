@@ -1,5 +1,3 @@
-// game_session.cpp
-
 #include "api/websocket/game_session.hpp"
 
 const char* host_env = std::getenv("ENGINE_HOST");
@@ -49,6 +47,10 @@ void GameSession::apply_player_move(crow::websocket::connection& ws, BitboardMov
         PositionMapper::to_position_response(state, _game.get_fen(), _game.get_current_turn());
     crow::json::wvalue game_state1 = position_response.to_json();
     std::string s = game_state1.dump();
+    
+    // LOG IMPORTANT
+    std::cout << "Sending player move response: " << s << std::endl;
+    
     ws.send_text(s);
 }
 
@@ -58,7 +60,17 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     apply_player_move(ws, move);
     GameState state = _game.get_game_state();
     if (state != GameState::CONTINUING) return;
-    apply_engine_move(ws);
+    
+    std::thread engine_thread([this, &ws]() {
+        try {
+            apply_engine_move(ws);
+        } catch (const std::exception& e) {
+            std::cerr << "Engine error: " << e.what() << std::endl;
+        }
+    });
+    
+    engine_thread.detach();
+    std::cout << "game state sent! (after player move)" << std::endl;
 }
 
 bool GameSession::is_idle() const {

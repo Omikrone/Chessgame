@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <random>
+#include <future>
 
 #include "api/exceptions/game_exception.hpp"
 #include "api/mappers/position_mapper.hpp"
