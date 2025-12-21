@@ -41,18 +41,24 @@ export default function GamePage() {
     if (!gameId) return;
 
     const socket = createGameSocket((message: Position | ErrorResponse) => {
+      console.log("Processing message:", message);
+      
       if ('error' in message) {
         setError(message);
       } else {
-        setFen(message.fen);
-        setUpdateId(id => id + 1);
-        if (message.game_over) {
-          setResult(message.result || null);
-          setReason(message.reason || null);
-          setWinner(message.winner || null);
-        }
+
+        requestAnimationFrame(() => {
+          setFen(message.fen);
+          setUpdateId(id => id + 1);
+          if (message.game_over) {
+            setResult(message.result || null);
+            setReason(message.reason || null);
+            setWinner(message.winner || null);
+          }
+        });
       }
     }, Number(gameId));
+    
     socketRef.current = socket;
 
     return () => {
