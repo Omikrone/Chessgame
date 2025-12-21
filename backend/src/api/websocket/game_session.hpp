@@ -83,4 +83,11 @@ class GameSession {
      * @return The id.
      */
     int get_id() const;
+
+    /**
+     * @brief Gets the board of the game.
+     *
+     * @return The board.
+     */
+    std::string get_board_fen();
 };
