@@ -15,6 +15,8 @@ export default function GamePage() {
   const { gameId } = useParams<{ gameId: string }>();
   const location = useLocation();
   console.log("GamePage location.state:", location.state);
+
+  const isNewGame = location.state?.isNewGame || false;
   const playerColor = location.state?.playerColor || "white";
   
   const [fen, setFen] = useState("start");
@@ -28,7 +30,7 @@ export default function GamePage() {
   const [promotionFrom, setPromotionFrom] = useState<string | null>(null);
   const [promotionTo, setPromotionTo] = useState<string | null>(null);
   const navigate = useNavigate();
-  
+
   const [isGameLoaded, setIsGameLoaded] = useState(false);
 
   const isPlayerTurn = useMemo(() => {
@@ -49,9 +51,12 @@ export default function GamePage() {
 
   async function handleNewGame() {
     const newGame = await createGame();
-    navigate(`/games/${newGame.gameId}`,
-      { state: { playerColor: newGame.playerColor } }
-    );
+    navigate(`/games/${newGame.gameId}`, {
+      state: { 
+        playerColor: newGame.playerColor,
+        isNewGame: true
+      }
+    });
   }
 
   useEffect(() => {
@@ -59,15 +64,18 @@ export default function GamePage() {
 
     const loadGameState = async () => {
       try {
-        if (location.state?.fen) {
-          setFen(location.state.fen);
+        console.log("Loading game, isNewGame:", isNewGame);
+
+        if (isNewGame) {
+          console.log("New game detected, using start FEN");
+          setFen("start");
           setIsGameLoaded(true);
           return;
         }
 
-        console.log("Loading game state from API for gameId:", gameId);
+        console.log("Loading existing game state from API for gameId:", gameId);
         const gameData = await getGame(Number(gameId));
-
+        
         if (gameData.fen && gameData.fen !== fen) {
           console.log("Setting initial FEN from API:", gameData.fen);
           setFen(gameData.fen);
@@ -85,11 +93,13 @@ export default function GamePage() {
     };
 
     loadGameState();
-  }, [gameId, location.state]);
+  }, [gameId, isNewGame]);
 
   useEffect(() => {
     if (!gameId || !isGameLoaded) return;
 
+    console.log("Creating WebSocket, isNewGame for socket:", isNewGame);
+    
     const socket = createGameSocket((message: Position | ErrorResponse) => {
       console.log("Processing message:", message);
       
@@ -106,7 +116,7 @@ export default function GamePage() {
           }
         });
       }
-    }, Number(gameId));
+    }, Number(gameId), isNewGame);
     
     socketRef.current = socket;
 
@@ -114,7 +124,7 @@ export default function GamePage() {
       socket.close();
       socketRef.current = null;
     }
-  }, [gameId, isGameLoaded]);
+  }, [gameId, isGameLoaded, isNewGame]);
 
   function handleMoveSubmitted(from: string, to: string, piece?: string) {
     if (!gameId) return;
