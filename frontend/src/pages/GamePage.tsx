@@ -5,7 +5,7 @@ import { createGameSocket } from "../services/websocket";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import { useParams } from "react-router-dom";
 import GameOverModal from "../components/GameOverModal";
-import { createGame } from "../services/api";
+import { createGame, getGame } from "../services/api";
 import GithubButton from "../components/GithubButton";
 import type { ErrorResponse, Position } from "@/types";
 import { ErrorNotification } from "@/components/ErrorNotification";
@@ -14,6 +14,7 @@ import PromotionModal from "@/components/PromotionModal";
 export default function GamePage() {
   const { gameId } = useParams<{ gameId: string }>();
   const location = useLocation();
+  console.log("GamePage location.state:", location.state);
   const playerColor = location.state?.playerColor || "white";
   
   const [fen, setFen] = useState("start");
@@ -27,27 +28,24 @@ export default function GamePage() {
   const [promotionFrom, setPromotionFrom] = useState<string | null>(null);
   const [promotionTo, setPromotionTo] = useState<string | null>(null);
   const navigate = useNavigate();
+  
+  const [isGameLoaded, setIsGameLoaded] = useState(false);
 
   const isPlayerTurn = useMemo(() => {
     if (fen === "start") {
-      console.log("FEN is 'start', defaulting to white's turn");
       return playerColor === "white";
     }
     
     const fenParts = fen.split(' ');
     if (fenParts.length < 2) {
-      console.log("Invalid FEN format:", fen);
       return false;
     }
     
     const turn = fenParts[1];
-    console.log("Turn from FEN:", turn, "Player color:", playerColor);
     
     return (turn === 'w' && playerColor === 'white') || 
            (turn === 'b' && playerColor === 'black');
   }, [fen, playerColor]);
-
-  console.log("GamePage render - isPlayerTurn:", isPlayerTurn, "fen:", fen, "playerColor:", playerColor);
 
   async function handleNewGame() {
     const newGame = await createGame();
@@ -59,6 +57,39 @@ export default function GamePage() {
   useEffect(() => {
     if (!gameId) return;
 
+    const loadGameState = async () => {
+      try {
+        if (location.state?.fen) {
+          setFen(location.state.fen);
+          setIsGameLoaded(true);
+          return;
+        }
+
+        console.log("Loading game state from API for gameId:", gameId);
+        const gameData = await getGame(Number(gameId));
+
+        if (gameData.fen && gameData.fen !== fen) {
+          console.log("Setting initial FEN from API:", gameData.fen);
+          setFen(gameData.fen);
+        }
+        
+        setIsGameLoaded(true);
+      } catch (err) {
+        console.error("Failed to load game state:", err);
+        setError({
+          code: 404,
+          error: "Game not found or failed to load"
+        });
+        setIsGameLoaded(true);
+      }
+    };
+
+    loadGameState();
+  }, [gameId, location.state]);
+
+  useEffect(() => {
+    if (!gameId || !isGameLoaded) return;
+
     const socket = createGameSocket((message: Position | ErrorResponse) => {
       console.log("Processing message:", message);
       
@@ -66,7 +97,6 @@ export default function GamePage() {
         setError(message);
       } else {
         requestAnimationFrame(() => {
-          console.log("Setting new FEN:", message.fen);
           setFen(message.fen);
           setUpdateId(id => id + 1);
           if (message.game_over) {
@@ -84,7 +114,7 @@ export default function GamePage() {
       socket.close();
       socketRef.current = null;
     }
-  }, [gameId])
+  }, [gameId, isGameLoaded]);
 
   function handleMoveSubmitted(from: string, to: string, piece?: string) {
     if (!gameId) return;
@@ -126,6 +156,14 @@ export default function GamePage() {
     setUpdateId(0);
     setFen("start");
     handleNewGame();
+  }
+
+  if (!isGameLoaded) {
+    return (
+      <div className="h-screen flex items-center justify-center p-max bg-beige-light">
+        <div className="text-xl text-brown-dark">Loading game...</div>
+      </div>
+    );
   }
 
   return (

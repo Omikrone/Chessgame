@@ -3,3 +3,9 @@ export interface CreateGame {
     gameId : number;
     playerColor : 'white' | 'black';
 }
+
+export interface GetGame {
+    gameId : number;
+    fen : string;
+    playerColor : 'white' | 'black';
+}

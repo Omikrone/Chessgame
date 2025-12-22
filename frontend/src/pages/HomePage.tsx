@@ -5,9 +5,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GithubButton from "../components/GithubButton";
 
-
 export default function HomePage() {
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +15,10 @@ export default function HomePage() {
   async function handleNewGame() {
     const newGame = await createGame();
     navigate(`/games/${newGame.gameId}`, {
-      state: { playerColor: newGame.playerColor }
+      state: { 
+        playerColor: newGame.playerColor,
+        fen: "start"
+      }
     });
   }
 

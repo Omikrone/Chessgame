@@ -84,3 +84,7 @@ void GameSession::reset_idle() { _last_activity = std::chrono::steady_clock::now
 Color GameSession::get_player_color() const { return _player_color; }
 
 int GameSession::get_id() const { return _id; }
+
+std::string GameSession::get_board_fen() {
+    return _game.get_fen();
+}
