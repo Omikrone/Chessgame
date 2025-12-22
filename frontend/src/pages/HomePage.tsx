@@ -17,7 +17,7 @@ export default function HomePage() {
     navigate(`/games/${newGame.gameId}`, {
       state: { 
         playerColor: newGame.playerColor,
-        fen: "start"
+        isNewGame: true
       }
     });
   }
