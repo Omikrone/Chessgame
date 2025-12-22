@@ -28,11 +28,8 @@ export default function GamePage() {
   const [promotionFrom, setPromotionFrom] = useState<string | null>(null);
   const [promotionTo, setPromotionTo] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  if (location.state.fen) {
-    setFen(location.state.fen);
-    location.state.fen = null;
-  }
+  
+  const [isGameLoaded, setIsGameLoaded] = useState(false);
 
   const isPlayerTurn = useMemo(() => {
     if (fen === "start") {
@@ -57,23 +54,41 @@ export default function GamePage() {
     );
   }
 
-  // useEffect(() => {
-  //   if (!gameId) return;
-
-  //   async function fetchGame() {
-  //     try {
-  //       const game = await getGame(Number(gameId));
-  //       setFen(game.fen);
-  //     } catch (error) {
-  //       console.error("Failed to fetch game data:", error);
-  //     }
-  //   }
-
-  //   fetchGame();
-  // }, [gameId]);
-
   useEffect(() => {
     if (!gameId) return;
+
+    const loadGameState = async () => {
+      try {
+        if (location.state?.fen) {
+          setFen(location.state.fen);
+          setIsGameLoaded(true);
+          return;
+        }
+
+        console.log("Loading game state from API for gameId:", gameId);
+        const gameData = await getGame(Number(gameId));
+
+        if (gameData.fen && gameData.fen !== fen) {
+          console.log("Setting initial FEN from API:", gameData.fen);
+          setFen(gameData.fen);
+        }
+        
+        setIsGameLoaded(true);
+      } catch (err) {
+        console.error("Failed to load game state:", err);
+        setError({
+          code: 404,
+          error: "Game not found or failed to load"
+        });
+        setIsGameLoaded(true);
+      }
+    };
+
+    loadGameState();
+  }, [gameId, location.state]);
+
+  useEffect(() => {
+    if (!gameId || !isGameLoaded) return;
 
     const socket = createGameSocket((message: Position | ErrorResponse) => {
       console.log("Processing message:", message);
@@ -91,7 +106,7 @@ export default function GamePage() {
           }
         });
       }
-    }, Number(gameId), location.state?.fen ? false : true);
+    }, Number(gameId));
     
     socketRef.current = socket;
 
@@ -99,7 +114,7 @@ export default function GamePage() {
       socket.close();
       socketRef.current = null;
     }
-  }, [gameId])
+  }, [gameId, isGameLoaded]);
 
   function handleMoveSubmitted(from: string, to: string, piece?: string) {
     if (!gameId) return;
@@ -141,6 +156,14 @@ export default function GamePage() {
     setUpdateId(0);
     setFen("start");
     handleNewGame();
+  }
+
+  if (!isGameLoaded) {
+    return (
+      <div className="h-screen flex items-center justify-center p-max bg-beige-light">
+        <div className="text-xl text-brown-dark">Loading game...</div>
+      </div>
+    );
   }
 
   return (
