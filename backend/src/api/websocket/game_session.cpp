@@ -21,12 +21,12 @@ void GameSession::apply_engine_move(crow::websocket::connection& ws) {
     _engine.update_position(true, "startpos", _game.get_played_moves());
 
     Move best_move = _engine.find_best_move();
-    bool res = _game.try_apply_move(best_move.from, best_move.to);
+    std::cout << "Engine best move: " << best_move.to_uci() << std::endl;
+    bool res = _game.try_apply_move(best_move);
     if (!res) {
+        std::cerr << "Engine played illegal move from: " << best_move.to_uci() << std::endl;
         throw GameException("Engine played illegal move", 500);
     }
-
-    _game.next_turn();
 
     GameState state = _game.get_game_state();
     PositionResponse game_state =
@@ -36,11 +36,15 @@ void GameSession::apply_engine_move(crow::websocket::connection& ws) {
 }
 
 void GameSession::apply_player_move(crow::websocket::connection& ws, BitboardMove move) {
-    bool res = _game.try_apply_move(move.from, move.to, move.promotion);
+    Move uci_move = {move.from, move.to, MoveType::NORMAL, false, PieceType::NONE_PIECE};
+    if (move.promotion.has_value()) {
+        uci_move.type = MoveType::PROMOTION;
+        uci_move.promotion_type = move.promotion.value();
+    }
+    bool res = _game.try_apply_move(uci_move);
     if (!res) {
         throw GameException("Illegal move", 400);
     }
-    _game.next_turn();
 
     GameState state = _game.get_game_state();
     PositionResponse position_response =
@@ -48,7 +52,6 @@ void GameSession::apply_player_move(crow::websocket::connection& ws, BitboardMov
     crow::json::wvalue game_state1 = position_response.to_json();
     std::string s = game_state1.dump();
     
-    // LOG IMPORTANT
     std::cout << "Sending player move response: " << s << std::endl;
     
     ws.send_text(s);
