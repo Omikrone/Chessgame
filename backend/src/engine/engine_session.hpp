@@ -15,7 +15,7 @@
 /**
  * @brief Class representing a session with the UCI engine over WebSocket.
  */
-class EngineSession {
+class EngineSession: public std::enable_shared_from_this<EngineSession> {
    private:
     const std::string _engine_addr = "localhost";
     const int _engine_port = 18080;
@@ -38,6 +38,8 @@ class EngineSession {
    public:
     EngineSession(std::string engine_addr, int engine_port, int game_id);
     ~EngineSession() = default;
+
+    void start();
 
     /**
      * @brief Sends a command to the engine.

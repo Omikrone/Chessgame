@@ -5,8 +5,11 @@
 EngineUCI::EngineUCI(const std::string engine_addr, const int engine_port, int game_id)
     : _engine_addr(engine_addr),
       _engine_port(engine_port),
-      _game_id(game_id),
-      _session(engine_addr, engine_port, game_id) {}
+      _game_id(game_id)
+{
+    _session = std::make_shared<EngineSession>(engine_addr, engine_port, game_id);
+    _session->start();
+}
 
 void EngineUCI::update_position(bool is_startpos, const std::string fen, std::vector<Move> played_moves) {
     std::string cmd = "position ";
@@ -19,7 +22,7 @@ void EngineUCI::update_position(bool is_startpos, const std::string fen, std::ve
     for (const auto& move : played_moves) {
         cmd += " " + move.to_uci();
     }
-    _session.send_command(cmd, false);
+    _session.get()->send_command(cmd, false);
 }
 
 Move EngineUCI::find_best_move(std::optional<int> depth) {
@@ -30,7 +33,7 @@ Move EngineUCI::find_best_move(std::optional<int> depth) {
         cmd += " depth 3";
     }
     cmd = "go movetime 5000";
-    std::string response = _session.send_command(cmd, true);
+    std::string response = _session.get()->send_command(cmd, true);
     std::string bestmove_prefix = "bestmove ";
     ;
     if (response.rfind(bestmove_prefix, 0) == 0) {
@@ -40,4 +43,4 @@ Move EngineUCI::find_best_move(std::optional<int> depth) {
     return Move();
 }
 
-void EngineUCI::quit() { _session.close_connection(); }
+void EngineUCI::quit() { _session.get()->close_connection(); }
