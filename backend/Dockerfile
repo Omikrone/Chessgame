@@ -1,6 +1,6 @@
 FROM debian:12 AS build
 
-RUN apt-get update && apt-get install -y cmake g++ git cmake g++ git libboost-all-dev zlib1g-dev libssl-dev libasio-dev zlib1g-dev \
+RUN apt-get update && apt-get install -y libssl3 cmake g++ git cmake g++ git libboost-all-dev zlib1g-dev libssl-dev libasio-dev zlib1g-dev \
         && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -9,6 +9,8 @@ RUN cmake -B build -S . && cmake --build build --config Release
 
 
 FROM debian:12
+
+RUN apt-get update && apt-get install -y libssl3
 
 WORKDIR /app
 

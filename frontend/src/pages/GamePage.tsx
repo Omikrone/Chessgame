@@ -182,12 +182,12 @@ export default function GamePage() {
         {isPlayerTurn ? (
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span>Your turn ({playerColor})</span>
+            <span>Votre tour ({playerColor})</span>
           </div>
         ) : (
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <span>Opponent's turn</span>
+            <span>Au tour de l'adversaire</span>
           </div>
         )}
       </div>

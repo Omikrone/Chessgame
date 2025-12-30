@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.4.0] - 2025-12-31
+
+### Added
+- Added visual indicators for the possible moves of a selected piece on the frontend.
+- Added new GET endpoint to synchronize the game state for reconnecting clients.
+
+### Changed
+- Disabled possibility to move pieces when it is not the player's turn.
+- Improved visual design by adding sliding animations for piece movements.
+
+### Fixed
+- Fixed WebSocket connection crashes when a client disconnects after a prolonged idle period.
+
 ## [1.3.0] - 2025-12-07
 
 ### Added

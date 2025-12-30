@@ -1,5 +1,3 @@
-// game_routes.cpp
-
 #include "api/routes/game_routes.hpp"
 
 void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& game_controller) {

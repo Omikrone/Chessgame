@@ -1,5 +1,3 @@
-// game_session.hpp
-
 #pragma once
 
 #include <chrono>

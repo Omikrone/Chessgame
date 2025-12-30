@@ -1,5 +1,3 @@
-// game_controller.cpp
-
 #include "api/controllers/game_controller.hpp"
 
 #include "api/exceptions/game_exception.hpp"

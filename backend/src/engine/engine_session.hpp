@@ -1,5 +1,3 @@
-// engine_session.hpp
-
 #pragma once
 
 #include <condition_variable>
@@ -39,6 +37,10 @@ class EngineSession: public std::enable_shared_from_this<EngineSession> {
     EngineSession(std::string engine_addr, int engine_port, int game_id);
     ~EngineSession() = default;
 
+    /**
+     * @brief Starts the engine session by establishing a WebSocket connection.
+     *
+     */
     void start();
 
     /**

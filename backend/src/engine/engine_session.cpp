@@ -1,5 +1,3 @@
-// engine_session.cpp
-
 #include "engine/engine_session.hpp"
 
 EngineSession::EngineSession(std::string engine_addr, int engine_port, int game_id)

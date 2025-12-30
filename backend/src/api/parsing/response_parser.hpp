@@ -1,5 +1,3 @@
-// response_parser.hpp
-
 #pragma once
 
 #include <string>

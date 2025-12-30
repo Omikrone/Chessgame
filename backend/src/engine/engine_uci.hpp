@@ -1,5 +1,3 @@
-// engine_uci.hpp
-
 #pragma once
 
 #include <optional>
