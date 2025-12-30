@@ -1,5 +1,3 @@
-// game_session.cpp
-
 #include "api/websocket/game_session.hpp"
 
 const char* host_env = std::getenv("ENGINE_HOST");
@@ -23,12 +21,12 @@ void GameSession::apply_engine_move(crow::websocket::connection& ws) {
     _engine.update_position(true, "startpos", _game.get_played_moves());
 
     Move best_move = _engine.find_best_move();
-    bool res = _game.try_apply_move(best_move.from, best_move.to);
+    std::cout << "Engine best move: " << best_move.to_uci() << std::endl;
+    bool res = _game.try_apply_move(best_move);
     if (!res) {
+        std::cerr << "Engine played illegal move from: " << best_move.to_uci() << std::endl;
         throw GameException("Engine played illegal move", 500);
     }
-
-    _game.next_turn();
 
     GameState state = _game.get_game_state();
     PositionResponse game_state =
@@ -38,17 +36,24 @@ void GameSession::apply_engine_move(crow::websocket::connection& ws) {
 }
 
 void GameSession::apply_player_move(crow::websocket::connection& ws, BitboardMove move) {
-    bool res = _game.try_apply_move(move.from, move.to, move.promotion);
+    Move uci_move = {move.from, move.to, MoveType::NORMAL, false, PieceType::NONE_PIECE};
+    if (move.promotion.has_value()) {
+        uci_move.type = MoveType::PROMOTION;
+        uci_move.promotion_type = move.promotion.value();
+    }
+    bool res = _game.try_apply_move(uci_move);
     if (!res) {
         throw GameException("Illegal move", 400);
     }
-    _game.next_turn();
 
     GameState state = _game.get_game_state();
     PositionResponse position_response =
         PositionMapper::to_position_response(state, _game.get_fen(), _game.get_current_turn());
     crow::json::wvalue game_state1 = position_response.to_json();
     std::string s = game_state1.dump();
+    
+    std::cout << "Sending player move response: " << s << std::endl;
+    
     ws.send_text(s);
 }
 
@@ -58,7 +63,17 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     apply_player_move(ws, move);
     GameState state = _game.get_game_state();
     if (state != GameState::CONTINUING) return;
-    apply_engine_move(ws);
+    
+    std::thread engine_thread([this, &ws]() {
+        try {
+            apply_engine_move(ws);
+        } catch (const std::exception& e) {
+            std::cerr << "Engine error: " << e.what() << std::endl;
+        }
+    });
+    
+    engine_thread.detach();
+    std::cout << "game state sent! (after player move)" << std::endl;
 }
 
 bool GameSession::is_idle() const {
@@ -72,3 +87,7 @@ void GameSession::reset_idle() { _last_activity = std::chrono::steady_clock::now
 Color GameSession::get_player_color() const { return _player_color; }
 
 int GameSession::get_id() const { return _id; }
+
+std::string GameSession::get_board_fen() {
+    return _game.get_fen();
+}

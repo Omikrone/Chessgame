@@ -1,5 +1,3 @@
-// websocket_routes.cpp
-
 #include "api/routes/websocket_routes.hpp"
 
 void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& gameController) {

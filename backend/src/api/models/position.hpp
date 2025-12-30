@@ -16,6 +16,11 @@ struct PositionResponse {
     std::optional<std::string> result;
     std::optional<std::string> reason;
 
+    /**
+     * @brief Converts the PositionResponse to a JSON object.
+     *
+     * @return A JSON representation of the PositionResponse.
+     */
     crow::json::wvalue to_json() const {
         crow::json::wvalue response;
         response["fen"] = fen;

@@ -1,9 +1,8 @@
-// game_session.hpp
-
 #pragma once
 
 #include <chrono>
 #include <random>
+#include <future>
 
 #include "api/exceptions/game_exception.hpp"
 #include "api/mappers/position_mapper.hpp"
@@ -82,4 +81,11 @@ class GameSession {
      * @return The id.
      */
     int get_id() const;
+
+    /**
+     * @brief Gets the board of the game.
+     *
+     * @return The board.
+     */
+    std::string get_board_fen();
 };

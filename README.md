@@ -5,7 +5,7 @@
 
 This project is a straightforward chess game built with C++. It features a C++ backend server and a web-based frontend developed using Vite.
 
-- **Current version:** 1.3.0
+- **Current version:** 1.4.0
 
 
 ## Features

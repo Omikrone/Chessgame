@@ -1,5 +1,3 @@
-// engine_session.cpp
-
 #include "engine/engine_session.hpp"
 
 EngineSession::EngineSession(std::string engine_addr, int engine_port, int game_id)
@@ -19,8 +17,11 @@ EngineSession::EngineSession(std::string engine_addr, int engine_port, int game_
 
     _hdl = con->get_handle();
     _cli.connect(con);
+}
 
-    std::thread ws_thread([this]() { _cli.run(); });
+void EngineSession::start() {
+    auto self = shared_from_this();
+    std::thread ws_thread([self]() { self->_cli.run(); });
     ws_thread.detach();
 }
 
@@ -52,5 +53,13 @@ std::string EngineSession::send_command(const std::string& command, bool has_to_
 }
 
 void EngineSession::close_connection() {
-    _cli.close(_hdl, websocketpp::close::status::normal, "Client closed connection");
+    _cli.get_io_service().post([this]() {
+        websocketpp::lib::error_code ec;
+        auto con = _cli.get_con_from_hdl(_hdl, ec);
+        if (ec) return;
+
+        if (con->get_state() == websocketpp::session::state::open) {
+            _cli.close(_hdl, websocketpp::close::status::normal, "Client closed connection");
+        }
+    });
 }

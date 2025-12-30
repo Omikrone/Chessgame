@@ -1,5 +1,3 @@
-// game_routes.hpp
-
 #pragma once
 
 #include "api/controllers/game_controller.hpp"

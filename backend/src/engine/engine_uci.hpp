@@ -1,5 +1,3 @@
-// engine_uci.hpp
-
 #pragma once
 
 #include <optional>
@@ -18,7 +16,7 @@ class EngineUCI {
     const int _engine_port;
     const int _game_id;
     std::string _response;
-    EngineSession _session;
+    std::shared_ptr<EngineSession> _session;
 
    public:
     EngineUCI(const std::string engine_addr, const int engine_port, int game_id);
