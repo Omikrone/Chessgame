@@ -14,8 +14,6 @@ RUN git clone https://github.com/Omikrone/Euphron.git /src
 WORKDIR /src
 RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j$(nproc)
 
-RUN ls -l build/
-
 
 FROM debian:12
 
