@@ -1,5 +1,3 @@
-// game_controller.hpp
-
 #pragma once
 
 #include <unordered_map>

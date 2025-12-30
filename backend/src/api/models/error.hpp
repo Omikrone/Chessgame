@@ -10,6 +10,11 @@ struct ErrorResponse {
     int code;
     std::string message;
 
+    /**
+     * @brief Converts the ErrorResponse to a JSON object.
+     *
+     * @return A JSON representation of the ErrorResponse.
+     */
     crow::json::wvalue to_json() const {
         crow::json::wvalue response;
         response["error"] = message;

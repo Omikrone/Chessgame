@@ -1,5 +1,3 @@
-// engine_uci.cpp
-
 #include "engine/engine_uci.hpp"
 
 EngineUCI::EngineUCI(const std::string engine_addr, const int engine_port, int game_id)
