@@ -27,3 +27,12 @@ void GameController::remove_idle_games() {
         }
     }
 }
+
+void GameController::remove_session(uint64_t game_id) {
+    std::lock_guard<std::mutex> lock(_sessions_mutex);
+    auto it = _sessions.find(game_id);
+    if (it != _sessions.end()) {
+        _sessions.erase(it);
+        CROW_LOG_INFO << "Removed game session: " << game_id;
+    }
+}
