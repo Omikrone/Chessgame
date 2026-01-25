@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <unordered_map>
 
 #include "api/websocket/game_session.hpp"
@@ -14,6 +15,7 @@
 class GameController {
    private:
     std::unordered_map<uint64_t, std::unique_ptr<GameSession>> _sessions;
+    mutable std::mutex _sessions_mutex;
     uint64_t _next_id = 1;
 
    public:

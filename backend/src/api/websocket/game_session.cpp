@@ -15,6 +15,12 @@ GameSession::GameSession(const int id)
     _player_color = dis(gen) == 0 ? Color::WHITE : Color::BLACK;
 }
 
+GameSession::~GameSession() {
+    if (_engine_task.valid()) {
+        _engine_task.wait();
+    }
+}
+
 void GameSession::apply_engine_move(crow::websocket::connection& ws) {
     _engine.update_position(true, "startpos", _game.get_played_moves());
 
@@ -61,16 +67,16 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
     apply_player_move(ws, move);
     GameState state = _game.get_game_state();
     if (state != GameState::CONTINUING) return;
-    
-    std::thread engine_thread([this, &ws]() {
+
+    _engine_task = std::async(std::launch::async, [this, &ws]() {
         try {
+            std::lock_guard<std::mutex> lock(_ws_mutex);
             apply_engine_move(ws);
         } catch (const std::exception& e) {
             std::cerr << "Engine error: " << e.what() << std::endl;
         }
-    });
+    }).share();
     
-    engine_thread.detach();
     std::cout << "game state sent! (after player move)" << std::endl;
 }
 

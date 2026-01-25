@@ -3,6 +3,7 @@
 #include <chrono>
 #include <random>
 #include <future>
+#include <mutex>
 
 #include "api/exceptions/game_exception.hpp"
 #include "api/mappers/position_mapper.hpp"
@@ -27,6 +28,8 @@ class GameSession {
     EngineUCI _engine;
     std::chrono::steady_clock::time_point _last_activity;
     Color _player_color = Color::WHITE;
+    std::mutex _ws_mutex;
+    std::shared_future<void> _engine_task;
 
     /**
      * @brief Resets the idle timer of the session.
@@ -45,7 +48,7 @@ class GameSession {
    public:
     GameSession(int id);
 
-    ~GameSession() = default;
+    ~GameSession();
 
     /**
      * @brief Handles a move request sent by a client.
