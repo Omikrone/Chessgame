@@ -43,7 +43,7 @@ class GameSession {
    public:
     GameSession(int id);
 
-    ~GameSession();
+    ~GameSession() = default;
 
     /**
      * @brief Handles a move request sent by a client.

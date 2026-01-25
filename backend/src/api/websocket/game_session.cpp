@@ -15,8 +15,6 @@ GameSession::GameSession(const int id)
     _player_color = dis(gen) == 0 ? Color::WHITE : Color::BLACK;
 }
 
-GameSession::~GameSession() { _engine.quit(); }
-
 void GameSession::apply_engine_move(crow::websocket::connection& ws) {
     _engine.update_position(true, "startpos", _game.get_played_moves());
 
