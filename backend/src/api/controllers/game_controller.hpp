@@ -42,4 +42,11 @@ class GameController {
      *
      */
     void remove_idle_games();
+
+    /**
+     * @brief Removes a specific game session by its ID.
+     *
+     * @param game_id The ID of the session to remove.
+     */
+    void remove_session(uint64_t game_id);
 };

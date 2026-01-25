@@ -17,6 +17,8 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                     int game_id = body["gameId"].i();
                     GameSession* session = game_controller.get_game_session(game_id);
 
+                    conn.userdata(new uint64_t(game_id));
+
                     if (session->get_player_color() == Color::BLACK) {
                         // If the player is black, engine plays first move
                         session->apply_engine_move(conn);
@@ -49,7 +51,12 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 conn.send_text(error.to_json().dump());
             }
         })
-        .onclose([&game_controller](crow::websocket::connection& /*conn*/, const std::string& reason) {
+        .onclose([&game_controller](crow::websocket::connection& conn, const std::string& reason) {
+            auto game_id_ptr = static_cast<uint64_t*>(conn.userdata());
+            if (game_id_ptr) {
+                game_controller.remove_session(*game_id_ptr);
+                delete game_id_ptr;
+            }
             game_controller.remove_idle_games();
             CROW_LOG_INFO << "Client disconnected : " << reason;
         });
