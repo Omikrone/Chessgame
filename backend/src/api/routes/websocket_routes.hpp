@@ -14,6 +14,6 @@
  * @brief Registers the websocket routes for the communication during the game.
  *
  * @param app The Crow app in which to register the routes.
- * @param gameController The controller of the multiple games.
+ * @param game_controller The controller of the multiple games.
  */
-void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& gameController);
+void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& game_controller);

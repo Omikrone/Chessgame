@@ -19,6 +19,10 @@ EngineSession::EngineSession(std::string engine_addr, int engine_port, int game_
     _cli.connect(con);
 }
 
+EngineSession::~EngineSession() {
+    close_connection();
+}
+
 void EngineSession::start() {
     auto self = shared_from_this();
     std::thread ws_thread([self]() { self->_cli.run(); });

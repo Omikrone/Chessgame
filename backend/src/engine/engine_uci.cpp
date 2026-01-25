@@ -40,5 +40,3 @@ Move EngineUCI::find_best_move(std::optional<int> depth) {
     }
     return Move();
 }
-
-void EngineUCI::quit() { _session.get()->close_connection(); }

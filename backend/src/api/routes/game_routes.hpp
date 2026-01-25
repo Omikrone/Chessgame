@@ -8,6 +8,6 @@
  * @brief Registers the http routes for the API.
  *
  * @param app The Crow app in which to register the routes.
- * @param gameController The controller of the multiple games.
+ * @param game_controller The controller of the multiple games.
  */
-void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& gameController);
+void register_game_routes(crow::App<crow::CORSHandler>& app, GameController& game_controller);

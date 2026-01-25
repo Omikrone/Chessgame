@@ -3,6 +3,7 @@
 #include <chrono>
 #include <random>
 #include <future>
+#include <mutex>
 
 #include "api/exceptions/game_exception.hpp"
 #include "api/mappers/position_mapper.hpp"
@@ -12,6 +13,8 @@
 #include "engine/engine_uci.hpp"
 #include "game.hpp"
 #include "uci/fen.hpp"
+
+#define MAX_IDLE_TIME 30 // in minutes
 
 /**
  * @brief Class representing the link between a websocket and a chess game.
@@ -25,6 +28,8 @@ class GameSession {
     EngineUCI _engine;
     std::chrono::steady_clock::time_point _last_activity;
     Color _player_color = Color::WHITE;
+    std::mutex _ws_mutex;
+    std::shared_future<void> _engine_task;
 
     /**
      * @brief Resets the idle timer of the session.
