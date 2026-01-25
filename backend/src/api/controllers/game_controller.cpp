@@ -17,7 +17,7 @@ GameSession* GameController::get_game_session(uint64_t game_id) {
 void GameController::remove_idle_games() {
     for (auto it = _sessions.begin(); it != _sessions.end();) {
         GameSession* s = it->second.get();
-        if (s->is_idle()) {
+        if (s->is_idle() || _sessions.size() > MAX_GAMES) {
             it = _sessions.erase(it);
         } else {
             ++it;

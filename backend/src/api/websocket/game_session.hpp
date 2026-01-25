@@ -13,6 +13,8 @@
 #include "game.hpp"
 #include "uci/fen.hpp"
 
+#define MAX_IDLE_TIME 30 // in minutes
+
 /**
  * @brief Class representing the link between a websocket and a chess game.
  *

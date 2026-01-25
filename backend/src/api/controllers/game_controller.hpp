@@ -4,6 +4,8 @@
 
 #include "api/websocket/game_session.hpp"
 
+#define MAX_GAMES 10
+
 /**
  * @brief Class responsible for the management of the games.
  *

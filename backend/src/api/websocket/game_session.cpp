@@ -77,7 +77,7 @@ void GameSession::on_move_received(crow::websocket::connection& ws, BitboardMove
 bool GameSession::is_idle() const {
     auto now = std::chrono::steady_clock::now();
     auto elapsed = now - _last_activity;
-    return elapsed > std::chrono::minutes(30);
+    return elapsed > std::chrono::minutes(MAX_IDLE_TIME);
 }
 
 void GameSession::reset_idle() { _last_activity = std::chrono::steady_clock::now(); }
