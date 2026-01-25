@@ -35,7 +35,7 @@ class EngineSession: public std::enable_shared_from_this<EngineSession> {
 
    public:
     EngineSession(std::string engine_addr, int engine_port, int game_id);
-    ~EngineSession() = default;
+    ~EngineSession();
 
     /**
      * @brief Starts the engine session by establishing a WebSocket connection.

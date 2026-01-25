@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.4.1] - 2026-01-25
+
+### Fixed
+- Fixed race condition to game sessions with mutex
+- Secured detached thread by using async instead
+
+### Changed
+- Added max simultaneous games limit
+- Improved engine sessions free by implementing it in the destructor
+
 ## [1.4.0] - 2025-12-31
 
 ### Added

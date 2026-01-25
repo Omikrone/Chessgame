@@ -1,10 +1,10 @@
 #include "api/routes/websocket_routes.hpp"
 
-void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& gameController) {
+void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController& game_controller) {
     // Creates a new websocket route
     CROW_WEBSOCKET_ROUTE(app, "/ws/<int>")
         .onopen([](crow::websocket::connection& /*conn*/) { CROW_LOG_INFO << "Client connected!"; })
-        .onmessage([&gameController](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/) {
+        .onmessage([&game_controller](crow::websocket::connection& conn, const std::string& data, bool /*is_binary*/) {
             try {
                 // Parses the data received to a rvalue
                 crow::json::rvalue body = crow::json::load(data);
@@ -15,7 +15,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 if (body["msgType"].s() == "init") {
                     // Initialization message
                     int game_id = body["gameId"].i();
-                    GameSession* session = gameController.get_game_session(game_id);
+                    GameSession* session = game_controller.get_game_session(game_id);
 
                     if (session->get_player_color() == Color::BLACK) {
                         // If the player is black, engine plays first move
@@ -29,7 +29,7 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
 
                     // Searches for the corresponding game
                     uint64_t game_id = move.game_id;
-                    GameSession* session = gameController.get_game_session(game_id);
+                    GameSession* session = game_controller.get_game_session(game_id);
 
                     // Validates the move request
                     MoveRequestValidator::validate(move);
@@ -49,8 +49,8 @@ void register_websocket_routes(crow::App<crow::CORSHandler>& app, GameController
                 conn.send_text(error.to_json().dump());
             }
         })
-        .onclose([&gameController](crow::websocket::connection& /*conn*/, const std::string& reason) {
-            gameController.remove_idle_games();
+        .onclose([&game_controller](crow::websocket::connection& /*conn*/, const std::string& reason) {
+            game_controller.remove_idle_games();
             CROW_LOG_INFO << "Client disconnected : " << reason;
         });
 }
