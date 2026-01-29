@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-# -------------------------------------------------------------------
 # VCPKG toolchain
-# -------------------------------------------------------------------
 if(DEFINED ENV{VCPKG_ROOT})
     set(CMAKE_TOOLCHAIN_FILE
         "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -14,17 +12,13 @@ project(chessgame LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# -------------------------------------------------------------------
 # Build type
-# -------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
     message(STATUS "Defaulting to build type: Release")
 endif()
 
-# -------------------------------------------------------------------
 # OS detection
-# -------------------------------------------------------------------
 if(WIN32)
     set(PLATFORM_WINDOWS TRUE)
     message(STATUS "Platform: Windows")
@@ -33,9 +27,7 @@ elseif(UNIX)
     message(STATUS "Platform: Linux / macOS")
 endif()
 
-# -------------------------------------------------------------------
-# Chessboard engine (chess library)
-# -------------------------------------------------------------------
+# Chessboard (chess library)
 include(FetchContent)
 FetchContent_Declare(
   chess
@@ -44,9 +36,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(chess)
 
-# -------------------------------------------------------------------
 # Crow framework
-# -------------------------------------------------------------------
 FetchContent_Declare(
   crow
   GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
@@ -54,18 +44,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(crow)
 
-# -------------------------------------------------------------------
 # Websocket++
-# -------------------------------------------------------------------
 FetchContent_Declare(
   websocketpp
   GIT_REPOSITORY https://github.com/zaphoyd/websocketpp.git
 )
 FetchContent_MakeAvailable(websocketpp)
 
-# -------------------------------------------------------------------
 # External dependencies
-# -------------------------------------------------------------------
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -76,14 +62,10 @@ else()
     find_package(Boost REQUIRED COMPONENTS system filesystem random)
 endif()
 
-# -------------------------------------------------------------------
 # Sources
-# -------------------------------------------------------------------
 file(GLOB_RECURSE GAME_SOURCES "src/*.cpp")
 
-# -------------------------------------------------------------------
 # Executable
-# -------------------------------------------------------------------
 add_definitions(-DASIO_STANDALONE)
 add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
@@ -95,9 +77,7 @@ target_include_directories(chessgame
         src
 )
 
-# -------------------------------------------------------------------
 # Compilation options
-# -------------------------------------------------------------------
 if(MSVC)
     add_compile_definitions(_WIN32_WINNT=0x0A00)
     target_compile_options(chessgame PRIVATE /W4)
@@ -105,9 +85,7 @@ else()
     target_compile_options(chessgame PRIVATE -Wall -Wextra -pedantic -pthread)
 endif()
 
-# -------------------------------------------------------------------
 # Linking
-# -------------------------------------------------------------------
 target_link_libraries(chessgame
     PRIVATE
         chess
