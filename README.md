@@ -1,11 +1,12 @@
-# Chess Game - Simple Chess Game
+# Chess Game - C++ Chessgame server & Web Interface
 
+<img src="./assets/logo.png" alt="Chessgame Logo" width="200"/>
 
 ## Introduction
 
-This project is a straightforward chess game built with C++. It features a C++ backend server and a web-based frontend developed using Vite.
+This project is a straightforward chess game built with C++. It features a C++ backend server and a web-based frontend developed using Vite. **Chessgame** is compatible with the [Euphron](https://github.com/Omikrone/Euphron) chess engine and uses the [Chessboard](https://github.com/Omikrone/Chessboard) library for chess rules and logic.
 
-- **Current version:** 1.4.1
+- **Current version:** 1.4.2
 
 
 ## Features
@@ -14,6 +15,7 @@ This chess game includes the following features:
 - Session management for handling multiple games.
 - Compatible with standard chess rules.
 - Communication between server and web interface using WebSockets.
+- Simple and intuitive web interface for playing chess.
 - Compatibility with UCI protocol (via an http wrapper) for chess engines.
 - Play chess against [Euphron](https://github.com/Omikrone/Euphron), a chess engine developed in C++ !
 
@@ -29,10 +31,28 @@ Make sure you have the following dependencies installed:
 - A C++ compiler (e.g., g++)
 - Node.js and npm (see [Node.js installation guide](https://nodejs.org/en/download/))
 
-Moreover, this project uses Crow for handling HTTP requests and WebSockets.
-You can install Crow by following the instructions on its [GitHub repository](https://github.com/CrowCpp/Crow).
+Moreover, this project uses [Crow](https://github.com/CrowCpp/Crow) for handling HTTP requests and WebSockets.
+You can either let CMake install it for you or install Crow manually by following the instructions on its [GitHub repository](https://github.com/CrowCpp/Crow).
 
-### Building the Project
+Or, you can use [Docker](https://www.docker.com/get-started) to run the project without installing dependencies manually.
+
+### Build with Docker
+
+To build and run the project using Docker, follow these steps:
+
+1. Build the images with Docker Compose:
+```bash
+    docker-compose build
+```
+
+2. You can then start the backend server and frontend with:
+```bash
+    docker-compose up
+```
+
+### Build the Project (from source)
+
+If you prefer to build the project from source, follow these steps:
 
 1. Clone the repository:
 ```bash
@@ -40,30 +60,25 @@ You can install Crow by following the instructions on its [GitHub repository](ht
     cd Chessgame
 ```
 
-This project is meant to be used with the [Chessboard](https://github.com/Omikrone/Chessboard) library for the chess rules and logic. To install it, follow these steps:
-```bash
-    cd backend
-    git clone https://github.com/Omikrone/Chessboard.git chess
-```
-
 2. Build the C++ server using CMake:
 ```bash
     cmake -S . -B build
-    cd build && cmake --build . --config Release
+    cmake --build build --config Release
 ```
 
-3. Build the frontend using npm:
+3. Install the frontend dependencies:
 ```bash
     cd ../frontend
     npm install
 ```
 
-### Running the Project
+### Start the game
+
+After building the project manually, you can start the chess game as follows:
 
 1. Start the C++ server:
 ```bash
-    cd backend/build
-    ./game/Release/chessgame.exe
+    ./build/chessgame.exe
 ```
 
 2. Start the frontend:
@@ -71,13 +86,15 @@ This project is meant to be used with the [Chessboard](https://github.com/Omikro
     cd ../frontend
     npm run dev
 ```
-3. Open your web browser and navigate to `http://localhost:5173` to access the chess game interface. 
+
+3. Don't forget to install and run [Euphron](https://github.com/Omikrone/Euphron) chess engine if you want to play against it.
+
+4. Open your web browser and navigate to `http://localhost:5173` to access the chess game interface. 
 
 
-## Future Improvements
+## Roadmap
 
 Future improvements for this project may include:
-- [X] Adding compatibility with the Chessboard library for chess rules and logic.
-- [X] Better Handling of the game session and player management.
-- [ ] Implementing a multiplayer mode over the network.
-- [ ] Enhancing the user interface with more features and better design.
+- Implementing a multiplayer mode over the network.
+- Add a clock/timer feature for timed games.
+- Add compatibility with more chess engines.
