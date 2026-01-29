@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.4.2] - 2026-01-29
+
+### Changed
+- Updated README.md with clearer instructions for starting the server and frontend after building from source.
+
 ## [1.4.1] - 2026-01-25
 
 ### Fixed
