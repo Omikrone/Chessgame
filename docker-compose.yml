@@ -5,18 +5,19 @@ services:
     container_name: chess_engine
     restart: unless-stopped
     ports:
-      - "18088:18088"
+      - "127.0.0.1:18088:18088"
 
   backend:
     build: ./backend
     container_name: chess_server
+    restart: unless-stopped
     depends_on:
       - engine
     environment:
       - ENGINE_HOST=${ENGINE_HOST}
       - ENGINE_PORT=${ENGINE_PORT}
     ports:
-      - "49180:18080"
+      - "127.0.0.1:49180:18080"
 
   frontend:
     build:
@@ -26,7 +27,8 @@ services:
         - VITE_API_URL=${VITE_API_URL}
         - VITE_WS_URL=${VITE_WS_URL}
     container_name: chess_frontend
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
-      - "49181:80"
+      - "127.0.0.1:49181:80"
